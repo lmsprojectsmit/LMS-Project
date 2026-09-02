@@ -11,7 +11,7 @@ const DEPARTMENTS = [
   "Civil Engineering (CE)",
 ];
 
-function Register({ onNavigate, isEmbedded = false }) {
+function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
   // Form State containing all requested properties
   const [formData, setFormData] = useState({
     fullName: "",
@@ -173,6 +173,9 @@ function Register({ onNavigate, isEmbedded = false }) {
     }
 
     setShowEnrolmentModal(true);
+    if (onRegistrationSuccess) {
+      onRegistrationSuccess(formData);
+    }
     console.log("Registration Data Submitted for Linear Algebra (MA25C02):", formData);
   };
 
@@ -811,7 +814,35 @@ function Register({ onNavigate, isEmbedded = false }) {
               </div>
             </div>
 
-            <div className="ticket-actions">
+            <div className="ticket-actions" style={{ flexWrap: "wrap" }}>
+              <button
+                type="button"
+                className="ticket-assessment-btn"
+                style={{
+                  background: "linear-gradient(135deg, #4f46e5, #4338ca)",
+                  color: "#ffffff",
+                  border: "none",
+                  padding: "13px 22px",
+                  borderRadius: "10px",
+                  fontWeight: "700",
+                  fontSize: "14.5px",
+                  cursor: "pointer",
+                  boxShadow: "0 4px 14px rgba(67, 56, 202, 0.3)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  width: "100%",
+                  justifyContent: "center",
+                  marginBottom: "8px"
+                }}
+                onClick={() => {
+                  setShowEnrolmentModal(false);
+                  if (onNavigate) onNavigate("assessment", formData);
+                }}
+              >
+                <span>📝 Take Capability Assessment (20 Qs • 20 Marks)</span>
+                <span>➔</span>
+              </button>
               <button
                 type="button"
                 className="ticket-print-btn"
@@ -834,7 +865,7 @@ function Register({ onNavigate, isEmbedded = false }) {
                   if (onNavigate) onNavigate("login");
                 }}
               >
-                Proceed to Login →
+                Skip to Login →
               </button>
             </div>
           </div>
