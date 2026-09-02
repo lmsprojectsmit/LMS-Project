@@ -25,8 +25,14 @@ function Login({ onNavigate }) {
       alert(`Welcome Faculty: ${formData.email || "Dr. K. Senthil Kumar"}. Redirecting to Faculty Dashboard.`);
       if (onNavigate) onNavigate("faculty");
     } else {
-      alert(`Welcome Student: ${formData.email || "Student"}. Redirecting to Diagnostic Assessment.`);
-      if (onNavigate) onNavigate("assessment");
+      // Diagnostic test is NOT required for already registered students logging in
+      alert(`Welcome back, Student (${formData.email || "Student"})! Logged in successfully.`);
+      if (onNavigate) onNavigate("home", {
+        fullName: formData.email ? formData.email.split("@")[0] : "Student",
+        email: formData.email,
+        role: "student",
+        isExistingStudent: true,
+      });
     }
   };
 

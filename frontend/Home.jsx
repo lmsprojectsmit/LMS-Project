@@ -1,6 +1,6 @@
 import "./Home.css";
 
-function Home({ onNavigate }) {
+function Home({ onNavigate, currentUser, onLogout }) {
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
     if (el) {
@@ -46,20 +46,49 @@ function Home({ onNavigate }) {
         </nav>
 
         <div className="nav-buttons">
-          <button
-            type="button"
-            className="nav-btn-secondary"
-            onClick={() => onNavigate("login")}
-          >
-            Login
-          </button>
-          <button
-            type="button"
-            className="nav-btn-primary"
-            onClick={() => onNavigate("register")}
-          >
-            Student Registration
-          </button>
+          {currentUser ? (
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{
+                background: "#ecfdf5",
+                color: "#065f46",
+                border: "1.5px solid #a7f3d0",
+                padding: "6px 14px",
+                borderRadius: "9999px",
+                fontSize: "13px",
+                fontWeight: "700",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px"
+              }}>
+                <span>👤</span>
+                <span>Welcome, {currentUser.fullName || "Student"}</span>
+              </span>
+              <button
+                type="button"
+                className="nav-btn-secondary"
+                onClick={onLogout}
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="nav-btn-secondary"
+                onClick={() => onNavigate("login")}
+              >
+                Login
+              </button>
+              <button
+                type="button"
+                className="nav-btn-primary"
+                onClick={() => onNavigate("register")}
+              >
+                Student Registration
+              </button>
+            </>
+          )}
         </div>
       </header>
 

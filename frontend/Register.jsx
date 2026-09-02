@@ -743,6 +743,21 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
               </div>
             </div>
 
+            {/* Mandatory Assessment Alert */}
+            <div style={{
+              background: "#eff6ff",
+              border: "1.5px solid #bfdbfe",
+              borderRadius: "8px",
+              padding: "12px 14px",
+              fontSize: "13px",
+              color: "#1e40af",
+              lineHeight: "1.45",
+              marginBottom: "16px",
+              textAlign: "left"
+            }}>
+              <strong>⚠️ Mandatory Enrolment Requirement:</strong> To complete course registration and calibrate your assigned syllabus modules, all registering students must take the 20-Question Diagnostic Assessment test (1 Mark each).
+            </div>
+
             <div className="ticket-actions" style={{ flexWrap: "wrap" }}>
               <button
                 type="button"
@@ -751,7 +766,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
                   background: "linear-gradient(135deg, #4f46e5, #4338ca)",
                   color: "#ffffff",
                   border: "none",
-                  padding: "13px 22px",
+                  padding: "14px 22px",
                   borderRadius: "10px",
                   fontWeight: "700",
                   fontSize: "14.5px",
@@ -769,7 +784,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
                   if (onNavigate) onNavigate("assessment", formData);
                 }}
               >
-                <span>📝 Take Capability Assessment (20 Qs • 20 Marks)</span>
+                <span>📝 Start Mandatory Capability Assessment (20 Qs • 20 Marks)</span>
                 <span>➔</span>
               </button>
               <button
@@ -785,16 +800,6 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
                 onClick={() => setShowEnrolmentModal(false)}
               >
                 Edit Details
-              </button>
-              <button
-                type="button"
-                className="ticket-login-btn"
-                onClick={() => {
-                  setShowEnrolmentModal(false);
-                  if (onNavigate) onNavigate("login");
-                }}
-              >
-                Skip to Login →
               </button>
             </div>
           </div>
