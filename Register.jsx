@@ -144,7 +144,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
     }
 
     if (!formData.rollNo.trim()) {
-      newErrors.rollNo = "Roll number / Student ID is required.";
+      newErrors.rollNo = "Registration number is required.";
     }
 
     if (!formData.password) {
@@ -420,7 +420,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
                   {/* Roll No / Reg ID */}
                   <div className="input-field">
                     <label htmlFor={rollNoId}>
-                      Roll Number / Student ID <span className="req">*</span>
+                      Registration Number <span className="req">*</span>
                     </label>
                     <input
                       id={rollNoId}
@@ -719,7 +719,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
                 <strong>{formData.fullName}</strong>
               </div>
               <div className="ticket-row">
-                <span>Roll Number:</span>
+                <span>Registration Number:</span>
                 <strong>{formData.rollNo}</strong>
               </div>
               <div className="ticket-row">

@@ -434,7 +434,7 @@ function Faculty({ onNavigate, registeredStudent }) {
   };
 
   const handleExportCSV = () => {
-    const headers = "Roll No,Name,Department,Section,Email,Phone,Score (out of 20),Category,Attendance,Lessons Completed,Remarks\n";
+    const headers = "Reg No,Name,Department,Section,Email,Phone,Score,Category,Attendance,Lessons Completed,Remarks\n";
     const rows = filteredStudents.map((s) =>
       `"${s.rollNo}","${s.name}","${s.department}","${s.section}","${s.email}","${s.phone}",${s.score},"${s.categoryLabel}",${s.attendance}%,"${s.lessonsCompleted}/${s.totalLessons}","${s.remarks.replace(/"/g, '""')}"`
     ).join("\n");
@@ -617,7 +617,7 @@ function Faculty({ onNavigate, registeredStudent }) {
             <input
               type="text"
               className="toolbar-search-input"
-              placeholder="Search by student name, roll number, department, or email..."
+              placeholder="Search by student name, registration number, department, or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -674,7 +674,7 @@ function Faculty({ onNavigate, registeredStudent }) {
               >
                 <option value="score-desc">Highest Marks First</option>
                 <option value="score-asc">Lowest Marks First</option>
-                <option value="roll-asc">Roll Number</option>
+                <option value="roll-asc">Registration Number</option>
                 <option value="name-asc">Student Name (A-Z)</option>
               </select>
             </div>
@@ -729,7 +729,7 @@ function Faculty({ onNavigate, registeredStudent }) {
             <table className="faculty-student-table">
               <thead>
                 <tr>
-                  <th>Roll No</th>
+                  <th>Reg No</th>
                   <th>Student Name & Info</th>
                   <th>Department & Sec</th>
                   <th>Contact Details</th>

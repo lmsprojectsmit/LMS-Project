@@ -93,7 +93,7 @@ function Login({ onNavigate, registeredStudent }) {
               id="login-email"
               type="text"
               name="email"
-              placeholder="e.g. rollno@institution.edu"
+              placeholder="e.g. regno@institution.edu or student@institution.edu"
               value={formData.email}
               onChange={handleChange}
               required
