@@ -150,18 +150,7 @@ function Login({ onNavigate }) {
           </a>
         </p>
 
-        <div className="back-home-container" style={{ display: "flex", justifyContent: "center", gap: "16px", marginTop: "14px" }}>
-          <a
-            href="#faculty"
-            className="back-home-link"
-            style={{ color: "#4338ca", fontWeight: "700" }}
-            onClick={(e) => {
-              e.preventDefault();
-              if (onNavigate) onNavigate("faculty");
-            }}
-          >
-            👨‍🏫 Faculty Portal →
-          </a>
+        <div className="back-home-container">
           <a
             href="#home"
             className="back-home-link"
@@ -170,7 +159,7 @@ function Login({ onNavigate }) {
               if (onNavigate) onNavigate("home");
             }}
           >
-            ← Home
+            ← Back to Platform Overview
           </a>
         </div>
       </div>
