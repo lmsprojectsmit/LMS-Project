@@ -421,6 +421,219 @@ export const ASSESSMENT_QUESTIONS = [
   }
 ];
 
+// =============================================================
+// THREE STUDENT ACADEMIC CATEGORIES & ASSIGNED LESSONS
+// =============================================================
+export const STUDENT_CATEGORIES = {
+  category1: {
+    id: "category1",
+    name: "Foundational Track",
+    title: "Category 1: Foundational Track (Remediation & Core Basics)",
+    tag: "Category 1 (0 – 9 Marks)",
+    minMarks: 0,
+    maxMarks: 9,
+    badgeClass: "badge-cat-1",
+    themeColor: "#b45309",
+    icon: "🥉",
+    level: "Beginner / Remedial Support",
+    scoreRangeLabel: "0 – 9 Marks (< 50%)",
+    summary: "Diagnostic results identify foundational conceptual gaps in matrix multiplication, 2×2/3×3 determinants, and elementary row operations.",
+    targetOutcome: "Rebuild core computational confidence through guided video proofs, formula sheets, and remedial row-reduction drills.",
+    lessons: [
+      {
+        id: "L1.1",
+        code: "LA-F101",
+        unit: "Unit I: Matrix Algebra",
+        title: "Matrix Basics, Properties & Arithmetic Operations",
+        duration: "40 mins",
+        problems: "8 Guided Exercises",
+        difficulty: "Beginner",
+        objectives: "Master row-column dimensions, conditions for valid matrix multiplication, and transpose symmetry properties.",
+        keyFormula: "(AB)_{ij} = \\sum_{k=1}^n a_{ik} b_{kj} \\quad \\text{and} \\quad (AB)^T = B^T A^T",
+        notes: "Matrix multiplication AB is valid only when the number of columns in A matches the number of rows in B. In general, matrix multiplication is NOT commutative (AB ≠ BA). Symmetric matrices satisfy Aᵀ = A, whereas skew-symmetric matrices satisfy Aᵀ = -A with all diagonal entries strictly equal to 0.",
+        practiceProblem: "If matrix A has size 2×3 and B has size 3×4, what is the order of (AB)ᵀ? Does A + B exist? (Solution: (AB)ᵀ has dimension 4×2; A + B is undefined because dimensions 2×3 and 3×4 do not match)."
+      },
+      {
+        id: "L1.2",
+        code: "LA-F102",
+        unit: "Unit II: Determinants",
+        title: "Determinant Computation & Invertibility Fundamentals",
+        duration: "50 mins",
+        problems: "10 Step-by-Step Drills",
+        difficulty: "Beginner",
+        objectives: "Compute 2×2 and 3×3 determinants via cofactor expansion and understand why det(A) = 0 prevents matrix inversion.",
+        keyFormula: "\\det\\begin{pmatrix}a & b \\\\ c & d\\end{pmatrix} = ad - bc \\quad \\text{and} \\quad A^{-1} = \\frac{1}{\\det(A)}\\text{adj}(A)",
+        notes: "If det(A) = 0, the matrix is singular and has no inverse because division by zero is undefined. Multiplying an n×n matrix by scalar k scales the determinant by kⁿ. If any two rows are identical, det(A) = 0.",
+        practiceProblem: "Calculate det(A) for A = [[3, 4], [2, 5]], and verify if A is invertible. (Solution: det(A) = 15 - 8 = 7 ≠ 0, so A is invertible and det(A⁻¹) = 1/7 = 0.25)."
+      },
+      {
+        id: "L1.3",
+        code: "LA-F103",
+        unit: "Unit I: Echelon Forms",
+        title: "Elementary Row Operations & Row Echelon Form (REF)",
+        duration: "60 mins",
+        problems: "12 Worked Problems",
+        difficulty: "Beginner / Intermediate",
+        objectives: "Perform row switching, scaling, and addition without arithmetic errors to reduce augmented matrices to row echelon form.",
+        keyFormula: "R_i \\leftrightarrow R_j, \\quad R_i \\leftarrow k R_i, \\quad R_i \\leftarrow R_i + k R_j",
+        notes: "Row echelon form requires all non-zero rows to be placed above all-zero rows, and the leading coefficient (pivot) of each row must be strictly to the right of the row above it.",
+        practiceProblem: "Reduce the matrix [[1, 2, 3], [2, 5, 8], [3, 8, 14]] to row echelon form and determine its rank. (Solution: Rank is 2 because row 3 is a linear combination of rows 1 and 2)."
+      },
+      {
+        id: "L1.4",
+        code: "LA-F104",
+        unit: "Unit III: Linear Equations",
+        title: "Introduction to Linear Systems & Consistency Checks",
+        duration: "45 mins",
+        problems: "6 Application Problems",
+        difficulty: "Beginner",
+        objectives: "Set up the augmented matrix [A|B] and identify consistent systems versus inconsistent systems.",
+        keyFormula: "\\text{Consistent if } \\text{Rank}(A) = \\text{Rank}([A|B])",
+        notes: "If Gaussian reduction produces an impossible row like [0 0 0 | c] with c ≠ 0, the system is inconsistent and has no solution. Homogeneous systems AX = 0 are always consistent (trivial solution X = 0).",
+        practiceProblem: "State whether 2x + 3y = 5 and 4x + 6y = 12 has a solution. (Solution: Inconsistent because Rank(A) = 1 while Rank([A|B]) = 2)."
+      }
+    ]
+  },
+  category2: {
+    id: "category2",
+    name: "Core Engineering Track",
+    title: "Category 2: Core Engineering Track (Standard University Level)",
+    tag: "Category 2 (10 – 15 Marks)",
+    minMarks: 10,
+    maxMarks: 15,
+    badgeClass: "badge-cat-2",
+    themeColor: "#4338ca",
+    icon: "🥈",
+    level: "Intermediate / Standard University Pace",
+    scoreRangeLabel: "10 – 15 Marks (50% – 75%)",
+    summary: "Solid grasp of foundational matrix arithmetic. Focus is on mastering university exam problem sets, Rank-Nullity theorems, and characteristic equations.",
+    targetOutcome: "Master the standard MA25C02 syllabus to secure top university grades (A / A+) through structured problem-solving drills and theorem applications.",
+    lessons: [
+      {
+        id: "L2.1",
+        code: "LA-C201",
+        unit: "Unit III: Rank & Linear Systems",
+        title: "Rank-Nullity Theorem & Parametric Solutions",
+        duration: "55 mins",
+        problems: "10 Exam Problems",
+        difficulty: "Intermediate",
+        objectives: "Apply the Rank-Nullity theorem to linear transformations and write general parametric solutions for systems with infinite solutions.",
+        keyFormula: "\\text{Rank}(T) + \\text{Nullity}(T) = \\dim(V) = n, \\quad \\text{Free Variables} = n - r",
+        notes: "When Rank(A) = r < n in a consistent system of n unknowns, there are (n - r) linearly independent free parameters. Nullity represents the dimension of the solution space of the homogeneous system AX = 0.",
+        practiceProblem: "A linear transformation T: R⁵ -> R³ has Rank(T) = 3. What is the dimension of the null space (Nullity)? (Solution: Nullity = 5 - 3 = 2)."
+      },
+      {
+        id: "L2.2",
+        code: "LA-C202",
+        unit: "Unit IV: Eigenvalues",
+        title: "Characteristic Polynomials & Eigenvector Computation",
+        duration: "65 mins",
+        problems: "12 University Problems",
+        difficulty: "Intermediate",
+        objectives: "Solve det(A - λI) = 0 for 2×2 and 3×3 matrices, compute non-trivial eigenvectors, and verify roots using trace and determinant.",
+        keyFormula: "\\det(A - \\lambda I) = 0, \\quad \\sum \\lambda_i = \\text{Tr}(A), \\quad \\prod \\lambda_i = \\det(A)",
+        notes: "Always double-check eigenvalues using the two essential invariants: their sum must equal Trace(A), and their product must equal det(A). If λ is an eigenvalue of A, then 1/λ is an eigenvalue of A⁻¹.",
+        practiceProblem: "Find the eigenvalues of A = [[4, 1], [2, 3]]. Verify using trace and determinant. (Solution: λ = 5 and λ = 2. Trace = 7, Det = 10)."
+      },
+      {
+        id: "L2.3",
+        code: "LA-C203",
+        unit: "Unit IV: Cayley-Hamilton",
+        title: "Cayley-Hamilton Theorem & High-Power Inverses",
+        duration: "50 mins",
+        problems: "8 Exam Proofs",
+        difficulty: "Intermediate",
+        objectives: "Verify that every square matrix satisfies its own characteristic equation and compute A⁻¹ and A⁴ using polynomial identities.",
+        keyFormula: "A^n + c_{n-1} A^{n-1} + \\dots + c_0 I = 0 \\implies A^{-1} = -\\frac{1}{c_0}(A^{n-1} + \\dots + c_1 I)",
+        notes: "Cayley-Hamilton allows finding inverse matrices without calculating adjugates and determinants of large sizes. It also enables expressing high powers Aᵏ as linear combinations of lower powers.",
+        practiceProblem: "If the characteristic equation of A is A² - 5A + 6I = 0, express A⁻¹ and A³ in terms of A and I. (Solution: A⁻¹ = (5I - A)/6; A³ = 19A - 30I)."
+      },
+      {
+        id: "L2.4",
+        code: "LA-C204",
+        unit: "Unit III: Vector Spaces",
+        title: "Vector Spaces, Linear Independence & Basis Finding",
+        duration: "50 mins",
+        problems: "8 Vector Sets",
+        difficulty: "Intermediate",
+        objectives: "Test sets of vectors for linear independence and construct bases for column spaces and null spaces.",
+        keyFormula: "c_1 v_1 + c_2 v_2 + \\dots + c_k v_k = 0 \\iff c_1 = c_2 = \\dots = c_k = 0",
+        notes: "A set of vectors is a basis if it is both linearly independent and spans the vector space. The number of vectors in any basis is the unique dimension of that space.",
+        practiceProblem: "Determine whether v1 = (1, 2, 3), v2 = (2, 4, 6), v3 = (0, 1, 1) are linearly independent. (Solution: Dependent, because v2 = 2 · v1)."
+      }
+    ]
+  },
+  category3: {
+    id: "category3",
+    name: "Advanced Scholars Track",
+    title: "Category 3: Advanced Scholars Track (Honors & Applications)",
+    tag: "Category 3 (16 – 20 Marks)",
+    minMarks: 16,
+    maxMarks: 20,
+    badgeClass: "badge-cat-3",
+    themeColor: "#059669",
+    icon: "🥇",
+    level: "Advanced / Honors & Research",
+    scoreRangeLabel: "16 – 20 Marks (> 75%)",
+    summary: "Exceptional analytical proficiency and theoretical mastery. Assigned lessons emphasize rigorous proof techniques, diagonalization, SVD, and real-world engineering systems.",
+    targetOutcome: "Prepare for engineering research, graduate-level machine learning linear algebra, and top academic honors (O Grade).",
+    lessons: [
+      {
+        id: "L3.1",
+        code: "LA-A301",
+        unit: "Unit IV: Diagonalization",
+        title: "Matrix Diagonalization & Orthogonal Similarity",
+        duration: "60 mins",
+        problems: "8 Advanced Proofs",
+        difficulty: "Advanced",
+        objectives: "Determine if a matrix is diagonalizable (algebraic = geometric multiplicity) and construct modal matrix P such that P⁻¹ A P = D.",
+        keyFormula: "A = P D P^{-1} \\implies A^k = P D^k P^{-1}, \\quad \\text{where } D = \\text{diag}(\\lambda_1, \\dots, \\lambda_n)",
+        notes: "Symmetric real matrices are always orthogonally diagonalizable with real eigenvalues and orthogonal eigenvectors. Diagonalization dramatically simplifies evaluating dynamic systems and discrete differential equations.",
+        practiceProblem: "Orthogonally diagonalize the symmetric matrix A = [[3, 1], [1, 3]]. Construct the orthogonal matrix P. (Solution: D = diag(4, 2), P = [[1/√2, -1/√2], [1/√2, 1/√2]])."
+      },
+      {
+        id: "L3.2",
+        code: "LA-A302",
+        unit: "Unit V: Inner Product Spaces",
+        title: "Gram-Schmidt Orthogonalization & Projections",
+        duration: "65 mins",
+        problems: "8 Vector Computations",
+        difficulty: "Advanced",
+        objectives: "Transform an arbitrary vector basis into an orthonormal basis using the Gram-Schmidt process and compute orthogonal projection operators.",
+        keyFormula: "u_k = v_k - \\sum_{j=1}^{k-1} \\frac{\\langle v_k, u_j \\rangle}{\\langle u_j, u_j \\rangle} u_j, \\quad e_k = \\frac{u_k}{\\|u_k\\|}",
+        notes: "Orthonormal bases eliminate cross-terms in vector projections and facilitate QR decomposition (A = QR), which forms the basis for modern computer algorithms computing eigenvalues.",
+        practiceProblem: "Apply Gram-Schmidt to convert v1 = (1, 1, 0) and v2 = (1, 2, 0) into an orthonormal set in R³. (Solution: e1 = (1/√2, 1/√2, 0), e2 = (-1/√2, 1/√2, 0))."
+      },
+      {
+        id: "L3.3",
+        code: "LA-A303",
+        unit: "Unit V: SVD & Applications",
+        title: "Singular Value Decomposition (SVD) & Data Compression",
+        duration: "75 mins",
+        problems: "6 Case Studies",
+        difficulty: "Advanced",
+        objectives: "Decompose rectangular matrices into A = U Σ Vᵀ and understand low-rank approximations used in PCA and machine learning.",
+        keyFormula: "A = U \\Sigma V^T = \\sum_{i=1}^r \\sigma_i u_i v_i^T, \\quad \\sigma_i = \\sqrt{\\lambda_i(A^T A)}",
+        notes: "SVD works for ANY matrix (even non-square and singular). Singular values are the square roots of the eigenvalues of Aᵀ A. The Moore-Penrose pseudo-inverse A⁺ = V Σ⁺ Uᵀ provides optimal least-squares solutions.",
+        practiceProblem: "Compute the non-zero singular values of A = [[3, 0], [0, -4]]. (Solution: Singular values are | -4 | = 4 and 3)."
+      },
+      {
+        id: "L3.4",
+        code: "LA-A304",
+        unit: "Unit IV: Quadratic Forms",
+        title: "Quadratic Forms, Canonical Reductions & Definiteness",
+        duration: "60 mins",
+        problems: "10 Analytical Tasks",
+        difficulty: "Advanced",
+        objectives: "Represent quadratic forms as Xᵀ A X, apply orthogonal transformations to find canonical forms, and classify definiteness via eigenvalues.",
+        keyFormula: "Q(X) = X^T A X = \\lambda_1 y_1^2 + \\lambda_2 y_2^2 + \\dots + \\lambda_n y_n^2",
+        notes: "A quadratic form is positive definite if all eigenvalues are strictly positive (>0); positive semi-definite if all eigenvalues ≥ 0; and indefinite if eigenvalues have mixed signs.",
+        practiceProblem: "Classify the quadratic form Q(x1, x2) = 2x1² + 2x1 x2 + 2x2². (Solution: Symmetric matrix is [[2, 1], [1, 2]]. Eigenvalues are 3 and 1 > 0, so it is strictly Positive Definite)."
+      }
+    ]
+  }
+};
+
 function Assessment({ onNavigate, studentInfo }) {
   // Test state
   const [currentQIndex, setCurrentQIndex] = useState(0);
@@ -433,6 +646,12 @@ function Assessment({ onNavigate, studentInfo }) {
   
   // Solutions review filter: "all" | "false" | "correct"
   const [solutionFilter, setSolutionFilter] = useState("all");
+
+  // Track exploration tab state
+  const [activeCategoryTab, setActiveCategoryTab] = useState(null);
+
+  // Lesson notes modal state
+  const [activeLessonModal, setActiveLessonModal] = useState(null);
 
   // Timer countdown
   useEffect(() => {
@@ -499,6 +718,8 @@ function Assessment({ onNavigate, studentInfo }) {
     setCurrentQIndex(0);
     setIsSubmitted(false);
     setSolutionFilter("all");
+    setActiveCategoryTab(null);
+    setActiveLessonModal(null);
     setIsTimerRunning(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -530,40 +751,14 @@ function Assessment({ onNavigate, studentInfo }) {
   const incorrectCount = totalQuestions - score;
   const percentage = Math.round((score / totalQuestions) * 100);
 
-  // Capability Assessment Level
-  let capabilityTier = {
-    title: "Advanced Mastery",
-    badgeClass: "badge-advanced",
-    icon: "🌟",
-    summary: "Outstanding foundational grasp! You demonstrate high readiness for higher-level applications like SVD and Orthogonal Projections.",
-    actionRecommendation: "Directly begin Unit III (Eigenvalues) & Unit V (Inner Product Spaces) advanced practice modules in EduVerse LMS.",
-  };
+  // Group Student into 1 of 3 Categories based on score
+  const assignedCategoryId =
+    score <= 9 ? "category1" : score <= 15 ? "category2" : "category3";
+  const assignedCategory = STUDENT_CATEGORIES[assignedCategoryId];
 
-  if (percentage < 50) {
-    capabilityTier = {
-      title: "Foundational Need (Concept Remediation)",
-      badgeClass: "badge-foundational",
-      icon: "📚",
-      summary: "Needs guided conceptual support in basic matrix transformations, determinants, and linear combinations.",
-      actionRecommendation: "Recommended to review the explanations below for all false questions, then complete the 'Unit I: Matrix Algebra Bootcamp' video lessons in EduVerse.",
-    };
-  } else if (percentage < 70) {
-    capabilityTier = {
-      title: "Developing Capability",
-      badgeClass: "badge-developing",
-      icon: "📈",
-      summary: "Decent awareness of core terminology, but needs structured problem practice in Rank-Nullity and matrix invertibility.",
-      actionRecommendation: "Review the false answers below to understand the exact mathematical principles, then practice 2025 question bank problems.",
-    };
-  } else if (percentage < 85) {
-    capabilityTier = {
-      title: "Proficient / Solid Foundation",
-      badgeClass: "badge-proficient",
-      icon: "🚀",
-      summary: "Solid analytical capability! Good understanding of determinants, consistency conditions, and characteristic equations.",
-      actionRecommendation: "Ready for standard course pace. Inspect the few false answers below, then proceed to top-tier university grade modules.",
-    };
-  }
+  // Active viewed category tab defaults to assigned category
+  const currentViewedCategoryId = activeCategoryTab || assignedCategoryId;
+  const currentViewedCategory = STUDENT_CATEGORIES[currentViewedCategoryId];
 
   const currentQ = ASSESSMENT_QUESTIONS[currentQIndex];
 
@@ -630,23 +825,23 @@ function Assessment({ onNavigate, studentInfo }) {
 
       {/* ========================================================= */}
       {/* VIEW A: RESULT & CAPABILITY ANALYSIS SCREEN               */}
-      {/* (Answers and Explanations shown right after submitting)   */}
       {/* ========================================================= */}
       {isSubmitted ? (
         <main className="assessment-result-container">
           <div className="result-hero-card">
+            {/* Supertag & Assigned Category Pill */}
             <div className="result-badge-cluster">
               <span className="result-supertag">ASSESSMENT COMPLETED • CAPABILITY REPORT</span>
-              <span className={`capability-pill ${capabilityTier.badgeClass}`}>
-                {capabilityTier.icon} {capabilityTier.title}
+              <span className={`assigned-category-banner-pill ${assignedCategory.badgeClass}`}>
+                {assignedCategory.icon} ASSIGNED: {assignedCategory.name.toUpperCase()} ({assignedCategory.scoreRangeLabel})
               </span>
             </div>
 
             <h2 className="result-heading">
-              Capability Assessment & Detailed Solution Report
+              Student Capability Profiling & Assigned Curriculum
             </h2>
             <p className="result-subheading">
-              Course: <strong>Linear Algebra (MA25C02)</strong> • 20 Questions (1 Mark Each) • Detailed Explanations Below
+              Course: <strong>Linear Algebra (MA25C02)</strong> • Evaluated on 20 Questions (1 Mark Each)
             </p>
 
             {/* Score Showcase Grid */}
@@ -679,18 +874,134 @@ function Assessment({ onNavigate, studentInfo }) {
               </div>
 
               <div className="score-card">
-                <span className="card-lbl">Time Taken</span>
-                <span className="stat-value stat-blue">
-                  ⏱️ {formatTime(20 * 60 - timeLeft)}
+                <span className="card-lbl">Assigned Academic Track</span>
+                <span className="stat-value" style={{ color: assignedCategory.themeColor }}>
+                  {assignedCategory.icon} {assignedCategory.name}
                 </span>
-                <span className="stat-sub">20 min test duration</span>
+                <span className="stat-sub">{assignedCategory.level}</span>
               </div>
             </div>
+
+            {/* ========================================================= */}
+            {/* 3 STUDENT CATEGORIES & DYNAMIC LESSON ASSIGNMENT HUB      */}
+            {/* ========================================================= */}
+            <section className="category-assignment-hub">
+              <div className="category-hub-header">
+                <div className="hub-title-group">
+                  <span className="hub-badge">CURRICULUM PERSONALIZATION</span>
+                  <h3 className="hub-title">
+                    🎓 Student Grouping & Assigned Learning Pathway
+                  </h3>
+                  <p className="hub-description">
+                    Based on your score of <strong>{score} / 20 ({percentage}%)</strong>, you have been categorized into <strong>{assignedCategory.title}</strong>. Four targeted lessons have been assigned below to match your readiness.
+                  </p>
+                </div>
+              </div>
+
+              {/* Category Track Switcher Tabs */}
+              <div className="category-track-tabs">
+                {Object.values(STUDENT_CATEGORIES).map((cat) => {
+                  const isAssigned = cat.id === assignedCategoryId;
+                  const isViewing = cat.id === currentViewedCategoryId;
+
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      className={`cat-tab-btn ${cat.badgeClass} ${isViewing ? "active-tab" : ""}`}
+                      onClick={() => setActiveCategoryTab(cat.id)}
+                    >
+                      <span className="cat-tab-icon">{cat.icon}</span>
+                      <div className="cat-tab-info">
+                        <span className="cat-tab-title">{cat.name}</span>
+                        <span className="cat-tab-range">{cat.scoreRangeLabel}</span>
+                      </div>
+                      {isAssigned && (
+                        <span className="cat-assigned-marker">
+                          🎯 YOUR TRACK
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Active Category Information Card */}
+              <div className={`active-category-card ${currentViewedCategory.badgeClass}`}>
+                <div className="acc-header">
+                  <div className="acc-title-cluster">
+                    <span className="acc-icon">{currentViewedCategory.icon}</span>
+                    <div>
+                      <h4 className="acc-name">{currentViewedCategory.title}</h4>
+                      <p className="acc-summary">{currentViewedCategory.summary}</p>
+                    </div>
+                  </div>
+                  {currentViewedCategory.id === assignedCategoryId ? (
+                    <span className="acc-status-tag assigned">
+                      ✓ Assigned to You Based on Your Score
+                    </span>
+                  ) : (
+                    <span className="acc-status-tag view-only">
+                      Previewing Other Track
+                    </span>
+                  )}
+                </div>
+
+                <div className="acc-target-box">
+                  <strong>Target Academic Objective: </strong>
+                  <span>{currentViewedCategory.targetOutcome}</span>
+                </div>
+
+                {/* Assigned Lessons Grid */}
+                <h5 className="lessons-grid-heading">
+                  📚 {currentViewedCategory.id === assignedCategoryId ? "Your 4 Assigned Learning Modules & Exercises" : `Curriculum for ${currentViewedCategory.name}`}:
+                </h5>
+
+                <div className="assigned-lessons-grid">
+                  {currentViewedCategory.lessons.map((lesson, lIdx) => (
+                    <div key={lesson.id} className="lesson-card">
+                      <div className="lesson-card-top">
+                        <span className="lesson-unit-badge">{lesson.unit}</span>
+                        <span className="lesson-code-pill">{lesson.code}</span>
+                        <span className="lesson-diff-pill">{lesson.difficulty}</span>
+                      </div>
+
+                      <h4 className="lesson-title">
+                        {lIdx + 1}. {lesson.title}
+                      </h4>
+
+                      <p className="lesson-objectives">
+                        {lesson.objectives}
+                      </p>
+
+                      <div className="lesson-meta-row">
+                        <span className="l-meta">⏱️ {lesson.duration}</span>
+                        <span className="l-meta">📝 {lesson.problems}</span>
+                      </div>
+
+                      <div className="lesson-formula-callout">
+                        <span className="f-lbl">Key Formula:</span>
+                        <code className="f-code">{lesson.keyFormula}</code>
+                      </div>
+
+                      <button
+                        type="button"
+                        className="btn-open-lesson"
+                        onClick={() => setActiveLessonModal(lesson)}
+                      >
+                        <span>📖 Open Lesson Notes & Exercises</span>
+                        <span className="l-arrow">➔</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
 
             {/* Competency Breakdown across the 4 units */}
             <div className="competency-section">
               <h3 className="section-title">
-                📊 Capability Matrix by Core Mathematical Domain
+                📊 Detailed Performance by Mathematical Domain
               </h3>
               <div className="competency-grid">
                 {Object.entries(domainBreakdown).map(([code, item]) => {
@@ -719,19 +1030,6 @@ function Assessment({ onNavigate, studentInfo }) {
                     </div>
                   );
                 })}
-              </div>
-            </div>
-
-            {/* Recommendation Box */}
-            <div className="recommendation-box">
-              <div className="rec-header">
-                <span className="rec-icon">🎯</span>
-                <h4>EduVerse Personalized LMS Recommendation</h4>
-              </div>
-              <p className="rec-summary">{capabilityTier.summary}</p>
-              <div className="rec-action">
-                <strong>Recommended Next Step: </strong>
-                {capabilityTier.actionRecommendation}
               </div>
             </div>
 
@@ -1102,7 +1400,7 @@ function Assessment({ onNavigate, studentInfo }) {
             )}
 
             <p style={{ fontSize: "13px", color: "#4338ca", fontWeight: "600", marginBottom: "20px" }}>
-              💡 Detailed step-by-step explanations and mathematical reasons for all answers (including why false choices fail) will be revealed immediately upon submitting.
+              💡 Upon submission, you will be grouped into 1 of 3 academic tracks and assigned customized lessons based on your marks.
             </p>
 
             <div className="modal-actions">
@@ -1119,6 +1417,80 @@ function Assessment({ onNavigate, studentInfo }) {
                 onClick={handleFinalSubmit}
               >
                 Yes, Submit Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* INTERACTIVE LESSON READER MODAL                           */}
+      {/* ========================================================= */}
+      {activeLessonModal && (
+        <div
+          className="assessment-modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setActiveLessonModal(null);
+          }}
+        >
+          <div className="lesson-study-reader-modal">
+            <div className="reader-header">
+              <div>
+                <span className="reader-unit-pill">{activeLessonModal.unit} • {activeLessonModal.code}</span>
+                <h3 className="reader-title">{activeLessonModal.title}</h3>
+                <span className="reader-meta">⏱️ {activeLessonModal.duration} • 📝 {activeLessonModal.problems} • {activeLessonModal.difficulty}</span>
+              </div>
+              <button
+                type="button"
+                className="reader-close-btn"
+                onClick={() => setActiveLessonModal(null)}
+                aria-label="Close lesson reader"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="reader-body">
+              <div className="reader-block">
+                <h4 className="reader-sec-title">🎯 Core Learning Objectives</h4>
+                <p>{activeLessonModal.objectives}</p>
+              </div>
+
+              <div className="reader-block formula-highlight">
+                <h4 className="reader-sec-title">📐 Key Mathematical Theorem & Formula</h4>
+                <code className="reader-formula">{activeLessonModal.keyFormula}</code>
+              </div>
+
+              <div className="reader-block">
+                <h4 className="reader-sec-title">📖 Comprehensive Study Notes & Principles</h4>
+                <p className="reader-notes-text">{activeLessonModal.notes}</p>
+              </div>
+
+              <div className="reader-block practice-highlight">
+                <h4 className="reader-sec-title">✏️ Recommended University Practice Drill</h4>
+                <p className="reader-practice-text">{activeLessonModal.practiceProblem}</p>
+              </div>
+            </div>
+
+            <div className="reader-footer">
+              <button
+                type="button"
+                className="btn-mark-ready"
+                onClick={() => {
+                  alert(`Lesson "${activeLessonModal.title}" recorded as In-Progress in your EduVerse LMS Profile.`);
+                  setActiveLessonModal(null);
+                }}
+              >
+                ✓ Mark as Read & Continue
+              </button>
+              <button
+                type="button"
+                className="btn-close-reader"
+                onClick={() => setActiveLessonModal(null)}
+              >
+                Close Reader
               </button>
             </div>
           </div>
