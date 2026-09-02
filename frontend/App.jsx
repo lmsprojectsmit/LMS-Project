@@ -3,6 +3,7 @@ import Home from "./Home";
 import Login from "./Login";
 import Register from "./Register";
 import Assessment from "./Assessment";
+import Faculty from "./Faculty";
 
 function App() {
   // Default to the explanatory homepage when opening the website
@@ -41,6 +42,13 @@ function App() {
 
       {currentPage === "login" && (
         <Login onNavigate={handleNavigate} />
+      )}
+
+      {currentPage === "faculty" && (
+        <Faculty
+          onNavigate={handleNavigate}
+          registeredStudent={registeredStudent}
+        />
       )}
     </div>
   );

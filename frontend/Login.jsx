@@ -21,7 +21,13 @@ function Login({ onNavigate }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Login Data:", formData);
-    alert(`Logged in as ${formData.role.toUpperCase()}: ${formData.email}`);
+    if (formData.role === "faculty") {
+      alert(`Welcome Faculty: ${formData.email || "Dr. K. Senthil Kumar"}. Redirecting to Faculty Dashboard.`);
+      if (onNavigate) onNavigate("faculty");
+    } else {
+      alert(`Welcome Student: ${formData.email || "Student"}. Redirecting to Diagnostic Assessment.`);
+      if (onNavigate) onNavigate("assessment");
+    }
   };
 
   const handleForgotPassword = (e) => {
@@ -144,7 +150,18 @@ function Login({ onNavigate }) {
           </a>
         </p>
 
-        <div className="back-home-container">
+        <div className="back-home-container" style={{ display: "flex", justifyContent: "center", gap: "16px", marginTop: "14px" }}>
+          <a
+            href="#faculty"
+            className="back-home-link"
+            style={{ color: "#4338ca", fontWeight: "700" }}
+            onClick={(e) => {
+              e.preventDefault();
+              if (onNavigate) onNavigate("faculty");
+            }}
+          >
+            👨‍🏫 Faculty Portal →
+          </a>
           <a
             href="#home"
             className="back-home-link"
@@ -153,7 +170,7 @@ function Login({ onNavigate }) {
               if (onNavigate) onNavigate("home");
             }}
           >
-            ← Back to Platform Overview
+            ← Home
           </a>
         </div>
       </div>
