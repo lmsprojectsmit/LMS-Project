@@ -31,6 +31,20 @@ function App() {
         }
       }
     }
+
+    // Ensure diagnostic assessment only appears right after registration, never again after that
+    if (page === "assessment") {
+      const alreadyAssessed =
+        currentUser?.hasTakenAssessment ||
+        registeredStudent?.hasTakenAssessment ||
+        data?.hasTakenAssessment;
+      if (alreadyAssessed) {
+        setCurrentPage("syllabus");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+    }
+
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
