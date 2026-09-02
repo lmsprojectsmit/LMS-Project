@@ -732,7 +732,6 @@ function Faculty({ onNavigate, registeredStudent }) {
                   <th>Department & Sec</th>
                   <th>Contact Details</th>
                   <th>Diagnostic Score</th>
-                  <th>Assigned Category</th>
                   <th>Curriculum Status</th>
                   <th>Attendance</th>
                   <th style={{ textAlign: "center" }}>Actions</th>
@@ -791,13 +790,6 @@ function Faculty({ onNavigate, registeredStudent }) {
                         </div>
                       </td>
 
-                      {/* Assigned Category Badge */}
-                      <td>
-                        <span className={`category-tag-pill ${stu.categoryBadge}`}>
-                          {stu.category === "category1" ? "🥉 Cat 1 (Foundational)" : stu.category === "category2" ? "🥈 Cat 2 (Core Engg)" : "🥇 Cat 3 (Advanced)"}
-                        </span>
-                      </td>
-
                       {/* Curriculum Status */}
                       <td>
                         <div className="curriculum-status-cell">
@@ -834,7 +826,7 @@ function Faculty({ onNavigate, registeredStudent }) {
 
                 {filteredStudents.length === 0 && (
                   <tr>
-                    <td colSpan="9" className="no-students-cell">
+                    <td colSpan="8" className="no-students-cell">
                       <div className="empty-roster">
                         <span className="empty-icon">🔍</span>
                         <h4>No students found matching your criteria</h4>

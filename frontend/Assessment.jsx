@@ -829,12 +829,9 @@ function Assessment({ onNavigate, studentInfo }) {
       {isSubmitted ? (
         <main className="assessment-result-container">
           <div className="result-hero-card">
-            {/* Supertag & Assigned Category Pill */}
+            {/* Supertag */}
             <div className="result-badge-cluster">
               <span className="result-supertag">ASSESSMENT COMPLETED • CAPABILITY REPORT</span>
-              <span className={`assigned-category-banner-pill ${assignedCategory.badgeClass}`}>
-                {assignedCategory.icon} ASSIGNED: {assignedCategory.name.toUpperCase()} ({assignedCategory.scoreRangeLabel})
-              </span>
             </div>
 
             <h2 className="result-heading">
