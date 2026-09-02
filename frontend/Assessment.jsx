@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import "./Assessment.css";
 
-// 20 Questions (1 mark each, Total: 20 marks)
-// Divided across 4 core domains (5 questions per domain)
+// 30 Questions (1 mark each, Total: 30 marks)
+// Divided across 4 core domains (Unit I - Unit IV)
 export const ASSESSMENT_QUESTIONS = [
   // -------------------------------------------------------------
   // Domain 1: Matrix Algebra & Properties (Q1 - Q5)
@@ -418,6 +418,206 @@ export const ASSESSMENT_QUESTIONS = [
       C: "For λ = -2 and -3: (λ + 2)(λ + 3) = λ² + 5λ + 6 = 0, which has middle term +5λ, not -5λ.",
       D: "5 and 6 are just the coefficients from the equation, not the roots."
     }
+  },
+  {
+    id: 21,
+    domain: "Vector Spaces & Subspaces",
+    domainCode: "unit1",
+    question: "In the real vector space ℝ³, what is the dimension of the subspace W = {(x, y, z) ∈ ℝ³ | x + 2y - 3z = 0}?",
+    options: [
+      { id: "A", text: "1" },
+      { id: "B", text: "2" },
+      { id: "C", text: "3" },
+      { id: "D", text: "0" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "The subspace W is defined by a single linear homogeneous constraint in ℝ³ (which has dim(ℝ³) = 3). A single non-trivial constraint restricts one degree of freedom, leaving 3 - 1 = 2 independent parameters (e.g., x = -2y + 3z, with y and z free). Thus, dim(W) = 2.",
+    whyFalse: {
+      A: "Dimension 1 corresponds to a line through the origin, defined by two independent linear equations, not one.",
+      C: "Dimension 3 is the entire space ℝ³; having a non-trivial constraint restricts the dimension to strictly less than 3.",
+      D: "Dimension 0 is only the trivial zero subspace {0}, whereas W contains infinitely many vectors."
+    }
+  },
+  {
+    id: 22,
+    domain: "Vector Spaces & Subspaces",
+    domainCode: "unit1",
+    question: "Which of the following subsets of ℝ² forms a valid vector subspace under standard addition and scalar multiplication?",
+    options: [
+      { id: "A", text: "S₁ = {(x, y) | x + y = 1}" },
+      { id: "B", text: "S₂ = {(x, y) | xy ≥ 0}" },
+      { id: "C", text: "S₃ = {(x, y) | 2x - 5y = 0}" },
+      { id: "D", text: "S₄ = {(x, y) | x² + y² ≤ 1}" }
+    ],
+    correctAnswer: "C",
+    marks: 1,
+    explanation: "A subset W of a vector space is a subspace if it contains the zero vector and is closed under vector addition and scalar multiplication. 2x - 5y = 0 passes through (0, 0), and any linear combination of solutions satisfies 2(αx₁ + βx₂) - 5(αy₁ + βy₂) = α(2x₁ - 5y₁) + β(2x₂ - 5y₂) = 0.",
+    whyFalse: {
+      A: "S₁ does not contain the zero vector (0, 0) because 0 + 0 = 0 ≠ 1.",
+      B: "S₂ is not closed under addition: (1, 2) ∈ S₂ and (-2, -1) ∈ S₂, but (1, 2) + (-2, -1) = (-1, 1) where (-1)(1) = -1 < 0.",
+      D: "S₄ is not closed under scalar multiplication; multiplying (1, 0) by scalar c = 2 gives (2, 0), and 2² + 0² = 4 > 1."
+    }
+  },
+  {
+    id: 23,
+    domain: "Vector Spaces & Subspaces",
+    domainCode: "unit1",
+    question: "Consider the three vectors v₁ = (1, 0, 1), v₂ = (1, 1, 0), and v₃ = (0, 1, -1) in ℝ³. These vectors are:",
+    options: [
+      { id: "A", text: "Linearly independent because no vector is the zero vector" },
+      { id: "B", text: "Linearly dependent because v₁ - v₂ + v₃ = (0, 0, 0)" },
+      { id: "C", text: "An orthonormal basis for ℝ³" },
+      { id: "D", text: "Mutually orthogonal" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "Testing linear dependence: v₁ - v₂ = (1 - 1, 0 - 1, 1 - 0) = (0, -1, 1) = -v₃. Therefore, v₁ - v₂ + v₃ = (0, 0, 0). Since a non-trivial linear combination with non-zero coefficients (1, -1, 1) equals the zero vector, the vectors are linearly dependent.",
+    whyFalse: {
+      A: "Non-zero vectors can easily be linearly dependent if one is a linear combination of the others.",
+      C: "Linearly dependent vectors cannot form a basis for ℝ³ because a basis requires linear independence.",
+      D: "The dot product v₁ · v₂ = 1(1) + 0(1) + 1(0) = 1 ≠ 0, so they are not mutually orthogonal."
+    }
+  },
+  {
+    id: 24,
+    domain: "Determinants & Invertibility",
+    domainCode: "unit2",
+    question: "If A is a 3 × 3 matrix with det(A) = 5, what is the determinant of its adjugate matrix, det(adj(A))?",
+    options: [
+      { id: "A", text: "5" },
+      { id: "B", text: "15" },
+      { id: "C", text: "25" },
+      { id: "D", text: "125" }
+    ],
+    correctAnswer: "C",
+    marks: 1,
+    explanation: "For any n × n matrix A, the fundamental identity states A · adj(A) = det(A) · Iₙ. Taking determinants of both sides gives det(A) · det(adj(A)) = (det(A))ⁿ, which implies det(adj(A)) = (det(A))ⁿ⁻¹. Here n = 3 and det(A) = 5, so det(adj(A)) = 5³⁻¹ = 5² = 25.",
+    whyFalse: {
+      A: "5 is det(A), not det(adj(A)).",
+      B: "15 is 3 × det(A), confusing scalar multiplication with matrix power law.",
+      D: "125 is (det(A))³ = (det(A))ⁿ, which equals det(det(A) · I), not det(adj(A))."
+    }
+  },
+  {
+    id: 25,
+    domain: "Determinants & Invertibility",
+    domainCode: "unit2",
+    question: "If Q is a real orthogonal matrix (satisfying Qᵀ Q = I), what are the only possible real values for det(Q)?",
+    options: [
+      { id: "A", text: "0 and 1" },
+      { id: "B", text: "+1 and -1" },
+      { id: "C", text: "Any non-negative real number" },
+      { id: "D", text: "Strictly +1 only" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "Since Qᵀ Q = I, taking determinants gives det(Qᵀ Q) = det(Qᵀ) · det(Q) = (det(Q))² = det(I) = 1. Therefore, (det(Q))² = 1, which implies det(Q) = ±1. (Matrices with det = +1 represent pure rotations, while det = -1 represent reflections).",
+    whyFalse: {
+      A: "An orthogonal matrix is always invertible, so det(Q) cannot be 0.",
+      C: "det(Q) is strictly constrained to ±1, not arbitrary non-negative numbers.",
+      D: "det(Q) can also be -1 (e.g., reflection matrices like [[1, 0], [0, -1]] have det = -1)."
+    }
+  },
+  {
+    id: 26,
+    domain: "Linear Systems & Transformations",
+    domainCode: "unit3",
+    question: "A linear transformation T: ℝ⁴ → ℝ³ has a 2-dimensional kernel (null space). What is the dimension of the range (image) of T?",
+    options: [
+      { id: "A", text: "1" },
+      { id: "B", text: "2" },
+      { id: "C", text: "3" },
+      { id: "D", text: "4" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "By the Rank-Nullity Theorem: dim(Domain) = Rank(T) + Nullity(T). Here dim(Domain) = dim(ℝ⁴) = 4, and Nullity(T) = dim(ker(T)) = 2. Therefore, Rank(T) = dim(range(T)) = 4 - 2 = 2.",
+    whyFalse: {
+      A: "Rank(T) = 4 - 2 = 2, not 1.",
+      C: "Rank would be 3 only if nullity were 1 (4 - 1 = 3).",
+      D: "The codomain is ℝ³, so the range dimension cannot exceed 3, and certainly cannot be 4."
+    }
+  },
+  {
+    id: 27,
+    domain: "Linear Systems & Transformations",
+    domainCode: "unit3",
+    question: "In Cramer's Rule for solving a square non-homogeneous system AX = B, the method fails (is inapplicable) when:",
+    options: [
+      { id: "A", text: "B is the zero vector" },
+      { id: "B", text: "det(A) = 0" },
+      { id: "C", text: "All elements of A are integers" },
+      { id: "D", text: "Trace(A) = 0" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "Cramer's Rule calculates each unknown as xᵢ = det(Aᵢ) / det(A). If det(A) = 0, division by zero occurs, making Cramer's Rule inapplicable (the system is either inconsistent or possesses infinitely many solutions).",
+    whyFalse: {
+      A: "When B = 0 and det(A) ≠ 0, Cramer's Rule works perfectly and yields the unique trivial solution xᵢ = 0.",
+      C: "Integer matrices are completely valid and commonly solved with Cramer's Rule.",
+      D: "Trace(A) = 0 has no bearing on invertibility or Cramer's Rule (e.g., [[0, 1], [1, 0]] has trace 0 but det = -1 ≠ 0)."
+    }
+  },
+  {
+    id: 28,
+    domain: "Eigenvalues & Orthogonality",
+    domainCode: "unit4",
+    question: "According to the Cayley-Hamilton Theorem, every square matrix A satisfies:",
+    options: [
+      { id: "A", text: "Its own characteristic equation: det(A - λI) = 0 with λ replaced by A" },
+      { id: "B", text: "A² = I for all square matrices" },
+      { id: "C", text: "Trace(A) = det(A)" },
+      { id: "D", text: "Aᵀ = A⁻¹" }
+    ],
+    correctAnswer: "A",
+    marks: 1,
+    explanation: "The Cayley-Hamilton Theorem states that every square matrix satisfies its own characteristic polynomial. That is, if p(λ) = det(A - λI) = λⁿ + cₙ₋₁λⁿ⁻¹ + ... + c₀ = 0, then p(A) = Aⁿ + cₙ₋₁Aⁿ⁻¹ + ... + c₀I = 0 (the zero matrix). This is used to compute high matrix powers and matrix inverses.",
+    whyFalse: {
+      B: "A² = I is only true for involutory matrices, not all matrices.",
+      C: "Trace(A) = det(A) is not a general identity.",
+      D: "Aᵀ = A⁻¹ defines orthogonal matrices, not a universal property of square matrices."
+    }
+  },
+  {
+    id: 29,
+    domain: "Eigenvalues & Orthogonality",
+    domainCode: "unit4",
+    question: "In an inner product space, two vectors u and v are orthogonal if and only if:",
+    options: [
+      { id: "A", text: "⟨u, v⟩ = 1" },
+      { id: "B", text: "⟨u, v⟩ = 0" },
+      { id: "C", text: "‖u‖ = ‖v‖" },
+      { id: "D", text: "u + v = 0" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "By definition in any real or complex inner product space, two vectors u and v are orthogonal (perpendicular) if and only if their inner product vanishes, i.e., ⟨u, v⟩ = 0.",
+    whyFalse: {
+      A: "⟨u, v⟩ = 1 occurs when two unit vectors are parallel and identical, not orthogonal.",
+      C: "‖u‖ = ‖v‖ means the vectors have equal norm (length), which does not imply orthogonality.",
+      D: "u + v = 0 means u = -v (anti-parallel vectors, angle π), which is opposite of orthogonality."
+    }
+  },
+  {
+    id: 30,
+    domain: "Eigenvalues & Orthogonality",
+    domainCode: "unit4",
+    question: "A real symmetric matrix A is positive definite if and only if:",
+    options: [
+      { id: "A", text: "All of its eigenvalues are strictly positive (λᵢ > 0 for all i)" },
+      { id: "B", text: "All of its entries are positive numbers" },
+      { id: "C", text: "det(A) = 0" },
+      { id: "D", text: "Trace(A) < 0" }
+    ],
+    correctAnswer: "A",
+    marks: 1,
+    explanation: "A real symmetric matrix A is positive definite if xᵀ A x > 0 for all non-zero vectors x ∈ ℝⁿ. By spectral decomposition, this condition is equivalent to all eigenvalues of A being strictly positive (λᵢ > 0). Equivalently, by Sylvester's criterion, all leading principal minors must be strictly positive.",
+    whyFalse: {
+      B: "Having positive entries does not guarantee positive definiteness (e.g., [[1, 2], [2, 1]] has all positive entries but eigenvalues 3 and -1, so it is indefinite).",
+      C: "If det(A) = 0, at least one eigenvalue is 0, making the matrix positive semi-definite or singular, not positive definite.",
+      D: "Trace(A) is the sum of eigenvalues; if all eigenvalues are strictly positive, Trace(A) must be positive, never negative."
+    }
   }
 ];
 
@@ -429,14 +629,14 @@ export const STUDENT_CATEGORIES = {
     id: "category1",
     name: "Foundational Track",
     title: "Category 1: Foundational Track (Remediation & Core Basics)",
-    tag: "Category 1 (0 – 9 Marks)",
+    tag: "Category 1 (0 – 14 Marks)",
     minMarks: 0,
-    maxMarks: 9,
+    maxMarks: 14,
     badgeClass: "badge-cat-1",
     themeColor: "#b45309",
     icon: "🥉",
     level: "Beginner / Remedial Support",
-    scoreRangeLabel: "0 – 9 Marks (< 50%)",
+    scoreRangeLabel: "0 – 14 Marks (< 50%)",
     summary: "Diagnostic results identify foundational conceptual gaps in matrix multiplication, 2×2/3×3 determinants, and elementary row operations.",
     targetOutcome: "Rebuild core computational confidence through guided video proofs, formula sheets, and remedial row-reduction drills.",
     lessons: [
@@ -498,14 +698,14 @@ export const STUDENT_CATEGORIES = {
     id: "category2",
     name: "Core Engineering Track",
     title: "Category 2: Core Engineering Track (Standard University Level)",
-    tag: "Category 2 (10 – 15 Marks)",
-    minMarks: 10,
-    maxMarks: 15,
+    tag: "Category 2 (15 – 22 Marks)",
+    minMarks: 15,
+    maxMarks: 22,
     badgeClass: "badge-cat-2",
     themeColor: "#4338ca",
     icon: "🥈",
     level: "Intermediate / Standard University Pace",
-    scoreRangeLabel: "10 – 15 Marks (50% – 75%)",
+    scoreRangeLabel: "15 – 22 Marks (50% – 75%)",
     summary: "Solid grasp of foundational matrix arithmetic. Focus is on mastering university exam problem sets, Rank-Nullity theorems, and characteristic equations.",
     targetOutcome: "Master the standard MA25C02 syllabus to secure top university grades (A / A+) through structured problem-solving drills and theorem applications.",
     lessons: [
@@ -567,14 +767,14 @@ export const STUDENT_CATEGORIES = {
     id: "category3",
     name: "Advanced Scholars Track",
     title: "Category 3: Advanced Scholars Track (Honors & Applications)",
-    tag: "Category 3 (16 – 20 Marks)",
-    minMarks: 16,
-    maxMarks: 20,
+    tag: "Category 3 (23 – 30 Marks)",
+    minMarks: 23,
+    maxMarks: 30,
     badgeClass: "badge-cat-3",
     themeColor: "#059669",
     icon: "🥇",
     level: "Advanced / Honors & Research",
-    scoreRangeLabel: "16 – 20 Marks (> 75%)",
+    scoreRangeLabel: "23 – 30 Marks (> 75%)",
     summary: "Exceptional analytical proficiency and theoretical mastery. Assigned lessons emphasize rigorous proof techniques, diagonalization, SVD, and real-world engineering systems.",
     targetOutcome: "Prepare for engineering research, graduate-level machine learning linear algebra, and top academic honors (O Grade).",
     lessons: [
@@ -639,7 +839,7 @@ function Assessment({ onNavigate, studentInfo }) {
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({}); // { [questionId]: "A" | "B" | ... }
   const [flaggedQuestions, setFlaggedQuestions] = useState({}); // { [questionId]: boolean }
-  const [timeLeft, setTimeLeft] = useState(20 * 60); // 20 minutes countdown (1200 seconds)
+  const [timeLeft, setTimeLeft] = useState(25 * 60); // 25 minutes countdown (1500 seconds)
   const [isTimerRunning, setIsTimerRunning] = useState(true);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -714,7 +914,7 @@ function Assessment({ onNavigate, studentInfo }) {
   const handleRetake = () => {
     setSelectedAnswers({});
     setFlaggedQuestions({});
-    setTimeLeft(20 * 60);
+    setTimeLeft(25 * 60);
     setCurrentQIndex(0);
     setIsSubmitted(false);
     setSolutionFilter("all");
@@ -732,11 +932,17 @@ function Assessment({ onNavigate, studentInfo }) {
 
   let score = 0;
   const domainBreakdown = {
-    unit1: { name: "Matrix Algebra & Properties", correct: 0, total: 5 },
-    unit2: { name: "Determinants & Invertibility", correct: 0, total: 5 },
-    unit3: { name: "Linear Systems & Rank", correct: 0, total: 5 },
-    unit4: { name: "Eigenvalues & Vector Spaces", correct: 0, total: 5 },
+    unit1: { name: "Matrix Algebra & Vector Spaces", correct: 0, total: 0 },
+    unit2: { name: "Determinants & Invertibility", correct: 0, total: 0 },
+    unit3: { name: "Linear Systems & Transformations", correct: 0, total: 0 },
+    unit4: { name: "Eigenvalues & Orthogonality", correct: 0, total: 0 },
   };
+
+  ASSESSMENT_QUESTIONS.forEach((q) => {
+    if (domainBreakdown[q.domainCode]) {
+      domainBreakdown[q.domainCode].total = (domainBreakdown[q.domainCode].total || 0) + 1;
+    }
+  });
 
   ASSESSMENT_QUESTIONS.forEach((q) => {
     const isCorrect = selectedAnswers[q.id] === q.correctAnswer;
@@ -751,9 +957,9 @@ function Assessment({ onNavigate, studentInfo }) {
   const incorrectCount = totalQuestions - score;
   const percentage = Math.round((score / totalQuestions) * 100);
 
-  // Group Student into 1 of 3 Categories based on score
+  // Group Student into 1 of 3 Categories based on score (30 total marks)
   const assignedCategoryId =
-    score <= 9 ? "category1" : score <= 15 ? "category2" : "category3";
+    score <= 14 ? "category1" : score <= 22 ? "category2" : "category3";
   const assignedCategory = STUDENT_CATEGORIES[assignedCategoryId];
 
   // Active viewed category tab defaults to assigned category
@@ -838,7 +1044,7 @@ function Assessment({ onNavigate, studentInfo }) {
               Student Capability Profiling & Assigned Curriculum
             </h2>
             <p className="result-subheading">
-              Course: <strong>Linear Algebra (MA25C02)</strong> • Evaluated on 20 Questions (1 Mark Each)
+              Course: <strong>Linear Algebra (MA25C02)</strong> • Evaluated on {totalQuestions} Questions (1 Mark Each) • 25 Minutes Duration
             </p>
 
             {/* Score Showcase Grid */}
@@ -847,7 +1053,7 @@ function Assessment({ onNavigate, studentInfo }) {
                 <span className="card-lbl">Overall Score</span>
                 <div className="big-score">
                   <span className="score-num">{score}</span>
-                  <span className="score-total">/ 20</span>
+                  <span className="score-total">/ {totalQuestions}</span>
                 </div>
                 <div className="score-percentage-bar">
                   <div
@@ -1034,8 +1240,59 @@ function Assessment({ onNavigate, studentInfo }) {
 
               <button
                 type="button"
+                className="btn-proceed-syllabus"
+                style={{
+                  background: "linear-gradient(135deg, #10b981, #059669)",
+                  color: "#ffffff",
+                  border: "none",
+                  padding: "12px 22px",
+                  borderRadius: "10px",
+                  fontWeight: "700",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  boxShadow: "0 4px 14px rgba(16, 185, 129, 0.35)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+                onClick={() => {
+                  const studentPayload = {
+                    ...(studentInfo || {}),
+                    fullName: studentInfo?.fullName || "Enrolled Student",
+                    email: studentInfo?.email || "student@institution.edu",
+                    role: "student",
+                    score,
+                    maxScore: totalQuestions,
+                    category: assignedCategoryId,
+                    categoryLabel: assignedCategory.title,
+                    categoryBadge: assignedCategory.badgeClass,
+                    hasTakenAssessment: true,
+                    domainScores: domainBreakdown,
+                  };
+                  if (onNavigate) onNavigate("syllabus", studentPayload);
+                }}
+              >
+                <span>📖 Go to Unit-Wise Syllabus</span>
+                <span>➔</span>
+              </button>
+
+              <button
+                type="button"
                 className="btn-proceed-login"
-                onClick={() => onNavigate && onNavigate("login")}
+                onClick={() => {
+                  const studentPayload = {
+                    ...(studentInfo || {}),
+                    role: "student",
+                    score,
+                    maxScore: totalQuestions,
+                    category: assignedCategoryId,
+                    categoryLabel: assignedCategory.title,
+                    categoryBadge: assignedCategory.badgeClass,
+                    hasTakenAssessment: true,
+                    domainScores: domainBreakdown,
+                  };
+                  if (onNavigate) onNavigate("login", studentPayload);
+                }}
               >
                 Proceed to Student Portal Login →
               </button>
@@ -1049,7 +1306,7 @@ function Assessment({ onNavigate, studentInfo }) {
               <div className="solutions-header-cluster">
                 <div>
                   <h3 className="review-title">
-                    📝 Detailed Answers & Mathematical Explanations (Questions 1 - 20)
+                    📝 Detailed Answers & Mathematical Explanations (Questions 1 - {totalQuestions})
                   </h3>
                   <p className="review-subtitle">
                     Examine each question below. If an answer was <strong>FALSE</strong>, review the exact mathematical reason and why your choice was incorrect.
@@ -1286,7 +1543,7 @@ function Assessment({ onNavigate, studentInfo }) {
           {/* Sidebar Question Palette */}
           <aside className="question-palette-sidebar">
             <div className="palette-card">
-              <h3 className="palette-title">Question Palette (20 Qs)</h3>
+              <h3 className="palette-title">Question Palette ({totalQuestions} Qs)</h3>
 
               {/* Legend */}
               <div className="palette-legend">
@@ -1376,7 +1633,7 @@ function Assessment({ onNavigate, studentInfo }) {
 
             {unansweredCount > 0 && (
               <div className="modal-warning-box">
-                ⚠️ You have <strong>{unansweredCount}</strong> unanswered questions. Each correct question awards 1 mark (Total: 20 marks).
+                ⚠️ You have <strong>{unansweredCount}</strong> unanswered questions. Each correct question awards 1 mark (Total: {totalQuestions} marks).
               </div>
             )}
 
@@ -1459,12 +1716,32 @@ function Assessment({ onNavigate, studentInfo }) {
               <button
                 type="button"
                 className="btn-mark-ready"
+                style={{ background: "linear-gradient(135deg, #4f46e5, #4338ca)", color: "#ffffff", border: "none" }}
+                onClick={() => {
+                  setActiveLessonModal(null);
+                  if (onNavigate) {
+                    onNavigate("lesson", {
+                      code: activeLessonModal.code,
+                      name: activeLessonModal.title,
+                      unitNumber: activeLessonModal.unit ? activeLessonModal.unit.split(":")[0] : "UNIT",
+                      unitTitle: activeLessonModal.unit || "Linear Algebra",
+                      desc: activeLessonModal.notes,
+                      student: { ...(studentInfo || {}), role: "student" },
+                    });
+                  }
+                }}
+              >
+                ▶️ Open Interactive Video & Notes
+              </button>
+              <button
+                type="button"
+                className="btn-mark-ready"
                 onClick={() => {
                   alert(`Lesson "${activeLessonModal.title}" recorded as In-Progress in your EduVerse LMS Profile.`);
                   setActiveLessonModal(null);
                 }}
               >
-                ✓ Mark as Read & Continue
+                ✓ Mark as Read
               </button>
               <button
                 type="button"

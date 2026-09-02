@@ -913,6 +913,286 @@
 
   .video-player-section {
     position: static;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
+  }
+}
+
+/* Phone Screen Component Scaling */
+@media (max-width: 768px) {
+  .lesson-nav {
+    padding: 10px 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .btn-back-syllabus {
+    padding: 5px 9px;
+    font-size: 11.5px;
+    border-radius: 7px;
+  }
+
+  .ln-breadcrumb {
+    font-size: 11.5px;
+    gap: 4px;
+  }
+
+  .bc-title {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ln-course-badge {
+    display: none;
+  }
+
+  .ln-right {
+    gap: 6px;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .student-logged-pill {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+
+  .btn-home-nav,
+  .btn-logout-nav {
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 6px;
+  }
+
+  .lesson-container {
+    padding: 12px 10px 36px;
+  }
+
+  .lesson-header-strip {
+    padding: 14px 12px;
+    border-radius: 12px;
+    margin-bottom: 14px;
+  }
+
+  .lhs-meta-row {
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .lhs-unit-pill,
+  .lhs-code-pill,
+  .lhs-duration-pill,
+  .lhs-book-pill {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+
+  .lhs-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .lhs-main-title {
+    font-size: 18px;
+    line-height: 1.25;
+  }
+
+  .lhs-instructor {
+    font-size: 11.5px;
+  }
+
+  .lhs-actions {
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 6px;
+  }
+
+  .btn-mark-complete,
+  .btn-print-notes {
+    flex: 1;
+    padding: 7px 10px;
+    font-size: 11px;
+    justify-content: center;
+  }
+
+  .lesson-mode-switch {
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+  }
+
+  .mode-btn {
+    padding: 5px 8px;
+    font-size: 11px;
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .video-player-section {
+    border-radius: 12px;
+    margin-bottom: 14px;
+  }
+
+  .video-screen {
+    min-height: 190px;
+    max-height: 220px;
+    padding: 12px;
+  }
+
+  .screen-badge {
+    font-size: 10.5px;
+    padding: 2px 7px;
+  }
+
+  .screen-sub {
+    font-size: 11px;
+    max-width: 90%;
+  }
+
+  .play-btn-circle {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+  }
+
+  .video-controls-bar {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .btn-ctrl {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .time-display {
+    font-size: 10.5px;
+  }
+
+  .speed-pill {
+    font-size: 10px;
+    padding: 2px 5px;
+  }
+
+  .timestamps-drawer {
+    padding: 10px;
+  }
+
+  .ts-title {
+    font-size: 11.5px;
+  }
+
+  .ts-chip {
+    font-size: 10.5px;
+    padding: 3px 6px;
+  }
+
+  .written-notes-section {
+    padding: 14px 12px;
+    border-radius: 12px;
+  }
+
+  .wns-header {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+  }
+
+  .wns-title {
+    font-size: 15px;
+  }
+
+  .wns-sub {
+    font-size: 11px;
+  }
+
+  .block-title {
+    font-size: 13.5px;
+    margin-bottom: 8px;
+  }
+
+  .intro-text {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .axioms-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .axiom-card {
+    padding: 9px 10px;
+    border-radius: 8px;
+  }
+
+  .axiom-name {
+    font-size: 11.5px;
+  }
+
+  .axiom-formula {
+    font-size: 11.5px;
+    padding: 4px 6px;
+  }
+
+  .theorem-card {
+    padding: 10px;
+    font-size: 11.5px;
+    border-radius: 8px;
+  }
+
+  .worked-example-box {
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  .web-question {
+    font-size: 12px;
+  }
+
+  .solution-step-line {
+    font-size: 11.5px;
+    gap: 6px;
+  }
+
+  .step-num {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+
+  .tip-item {
+    font-size: 11.5px;
+    gap: 6px;
+    padding: 7px 9px;
+  }
+
+  .notes-footer-actions {
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 14px;
+  }
+
+  .btn-download-pdf,
+  .btn-next-syllabus {
+    width: 100%;
+    padding: 9px;
+    font-size: 11.5px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .lhs-main-title {
+    font-size: 16px;
+  }
+
+  .video-screen {
+    min-height: 170px;
   }
 }

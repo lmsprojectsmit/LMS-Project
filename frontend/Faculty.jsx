@@ -331,26 +331,28 @@ function Faculty({ onNavigate, registeredStudent }) {
           rollNo: registeredStudent.rollNo || "25REG999",
           name: registeredStudent.fullName,
           email: registeredStudent.email || "student@institution.edu",
-          phone: registeredStudent.mobile || "+91 98000 00000",
+          phone: registeredStudent.phone || registeredStudent.mobile || "+91 98000 00000",
           department: registeredStudent.department || "CSE",
-          year: "I Year (Sem II)",
+          year: registeredStudent.year || "I Year (Sem II)",
           section: registeredStudent.section || "A",
           attendance: 95,
-          hasTakenAssessment: false,
-          score: 15, // default or assessed
+          hasTakenAssessment: !!registeredStudent.hasTakenAssessment,
+          score: registeredStudent.score !== undefined ? registeredStudent.score : 15,
           maxScore: 20,
-          category: "category2",
-          categoryLabel: "Category 2: Core Engineering",
-          categoryBadge: "cat-badge-2",
-          domainScores: {
+          category: registeredStudent.category || "category2",
+          categoryLabel: registeredStudent.categoryLabel || "Category 2: Core Engineering",
+          categoryBadge: registeredStudent.categoryBadge || "cat-badge-2",
+          domainScores: registeredStudent.domainScores || {
             unit1: { name: "Matrix Algebra", score: 4, total: 5 },
             unit2: { name: "Determinants", score: 4, total: 5 },
             unit3: { name: "Linear Systems", score: 4, total: 5 },
             unit4: { name: "Eigenvalues", score: 3, total: 5 },
           },
-          lessonsCompleted: 2,
+          lessonsCompleted: registeredStudent.hasTakenAssessment ? 1 : 0,
           totalLessons: 4,
-          remarks: "Newly enrolled via student registration portal.",
+          remarks: registeredStudent.hasTakenAssessment
+            ? `Diagnostic Assessment completed with score ${registeredStudent.score}/20 (${registeredStudent.categoryLabel || "Assigned Pathway"}).`
+            : "Newly enrolled via student registration portal.",
         };
         list = [newStu, ...list];
       }
@@ -432,7 +434,7 @@ function Faculty({ onNavigate, registeredStudent }) {
   };
 
   const handleExportCSV = () => {
-    const headers = "Roll No,Name,Department,Section,Email,Phone,Score (out of 20),Category,Attendance,Lessons Completed,Remarks\n";
+    const headers = "Reg No,Name,Department,Section,Email,Phone,Score,Category,Attendance,Lessons Completed,Remarks\n";
     const rows = filteredStudents.map((s) =>
       `"${s.rollNo}","${s.name}","${s.department}","${s.section}","${s.email}","${s.phone}",${s.score},"${s.categoryLabel}",${s.attendance}%,"${s.lessonsCompleted}/${s.totalLessons}","${s.remarks.replace(/"/g, '""')}"`
     ).join("\n");
@@ -515,7 +517,7 @@ function Faculty({ onNavigate, registeredStudent }) {
               Linear Algebra (MA25C02) • Student Performance & Cohort Intelligence
             </h2>
             <p className="fh-desc">
-              Comprehensive student records, 1-mark diagnostic test marks (20 Marks total), performance category distribution, and personalized lesson assignment statuses.
+              Comprehensive student records, 1-mark diagnostic test marks (30 Marks total • 25 Mins), performance category distribution, and personalized lesson assignment statuses.
             </p>
           </div>
 
@@ -600,7 +602,7 @@ function Faculty({ onNavigate, registeredStudent }) {
           >
             <div className="kpi-icon-row">
               <span className="kpi-icon bg-green">🥇</span>
-              <span className="kpi-chip bg-green-chip">16 – 20 Marks</span>
+              <span className="kpi-chip bg-green-chip">23 – 30 Marks</span>
             </div>
             <span className="kpi-value text-green">{cat3Count}</span>
             <span className="kpi-label">Category 3: Advanced Scholars</span>
@@ -615,7 +617,7 @@ function Faculty({ onNavigate, registeredStudent }) {
             <input
               type="text"
               className="toolbar-search-input"
-              placeholder="Search by student name, roll number, department, or email..."
+              placeholder="Search by student name, registration number, department, or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -640,9 +642,9 @@ function Faculty({ onNavigate, registeredStudent }) {
                 onChange={(e) => setSelectedCategoryFilter(e.target.value)}
               >
                 <option value="all">All Categories ({totalCount})</option>
-                <option value="category1">🥉 Category 1: Foundational (0-9 Marks) [{cat1Count}]</option>
-                <option value="category2">🥈 Category 2: Core Engineering (10-15 Marks) [{cat2Count}]</option>
-                <option value="category3">🥇 Category 3: Advanced Scholars (16-20 Marks) [{cat3Count}]</option>
+                <option value="category1">🥉 Category 1: Foundational (0-14 Marks) [{cat1Count}]</option>
+                <option value="category2">🥈 Category 2: Core Engineering (15-22 Marks) [{cat2Count}]</option>
+                <option value="category3">🥇 Category 3: Advanced Scholars (23-30 Marks) [{cat3Count}]</option>
               </select>
             </div>
 
@@ -672,7 +674,7 @@ function Faculty({ onNavigate, registeredStudent }) {
               >
                 <option value="score-desc">Highest Marks First</option>
                 <option value="score-asc">Lowest Marks First</option>
-                <option value="roll-asc">Roll Number</option>
+                <option value="roll-asc">Registration Number</option>
                 <option value="name-asc">Student Name (A-Z)</option>
               </select>
             </div>
@@ -727,7 +729,7 @@ function Faculty({ onNavigate, registeredStudent }) {
             <table className="faculty-student-table">
               <thead>
                 <tr>
-                  <th>Roll No</th>
+                  <th>Reg No</th>
                   <th>Student Name & Info</th>
                   <th>Department & Sec</th>
                   <th>Contact Details</th>
@@ -973,10 +975,10 @@ function Faculty({ onNavigate, registeredStudent }) {
                 <div className="spm-score-banner">
                   <div className="spm-score-big">
                     <span className="num">{selectedStudent.score}</span>
-                    <span className="den">/ 20 Marks</span>
+                    <span className="den">/ {selectedStudent.maxScore || 30} Marks</span>
                   </div>
                   <div className="spm-score-details">
-                    <span className="spm-pct">{Math.round((selectedStudent.score / 20) * 100)}% Overall Proficiency</span>
+                    <span className="spm-pct">{Math.round((selectedStudent.score / (selectedStudent.maxScore || 30)) * 100)}% Overall Proficiency</span>
                     <p className="spm-score-desc">
                       Placed in <strong>{selectedStudent.categoryLabel}</strong> based on mathematical competency across the 4 syllabus units.
                     </p>

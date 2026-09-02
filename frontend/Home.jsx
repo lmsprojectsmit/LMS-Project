@@ -43,6 +43,15 @@ function Home({ onNavigate, currentUser, onLogout }) {
           <button type="button" className="nav-link-btn" onClick={() => scrollToSection("linear-algebra")}>
             Linear Algebra (MA25C02)
           </button>
+          <button
+            type="button"
+            className="nav-link-btn"
+            onClick={() => onNavigate("faculty")}
+            style={{ color: "#4f46e5", fontWeight: "700" }}
+            title="Faculty Performance & Cohort Intelligence Dashboard"
+          >
+            Faculty Portal 👨‍🏫
+          </button>
         </nav>
 
         <div className="nav-buttons">
@@ -117,14 +126,25 @@ function Home({ onNavigate, currentUser, onLogout }) {
           </p>
 
           <div className="hero-cta-group">
-            <button
-              type="button"
-              className="hero-primary-cta"
-              onClick={() => onNavigate("register")}
-            >
-              <span>Student Registration</span>
-              <span className="cta-arrow">→</span>
-            </button>
+            {currentUser ? (
+              <button
+                type="button"
+                className="hero-primary-cta"
+                onClick={() => onNavigate("syllabus", currentUser)}
+              >
+                <span>Continue to Syllabus & Lessons</span>
+                <span className="cta-arrow">→</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="hero-primary-cta"
+                onClick={() => onNavigate("register")}
+              >
+                <span>Student Registration</span>
+                <span className="cta-arrow">→</span>
+              </button>
+            )}
 
             <button
               type="button"
@@ -362,7 +382,7 @@ function Home({ onNavigate, currentUser, onLogout }) {
               className="login-sublink-btn"
               onClick={() => onNavigate("login")}
             >
-              Login to Your Student Account →
+              Login
             </button>
           </div>
         </div>
@@ -386,9 +406,11 @@ function Home({ onNavigate, currentUser, onLogout }) {
           </div>
 
           <div className="footer-nav-col">
-            <span className="col-heading">Student Portal</span>
+            <span className="col-heading">Portal Access</span>
             <button type="button" onClick={() => onNavigate("register")}>Student Registration</button>
             <button type="button" onClick={() => onNavigate("login")}>Student Login</button>
+            <button type="button" onClick={() => onNavigate("assessment")}>Diagnostic Assessment</button>
+            <button type="button" onClick={() => onNavigate("faculty")}>Faculty Dashboard (Dr. K. Senthil Kumar)</button>
             <a href="#help" onClick={(e) => { e.preventDefault(); alert("For LMS support contact: support@eduverse.ac.in"); }}>LMS Helpdesk</a>
           </div>
         </div>
