@@ -274,15 +274,6 @@ function Syllabus({ onNavigate, student, onLogout }) {
           <button
             type="button"
             className="syllabus-nav-btn secondary"
-            onClick={() => onNavigate("assessment", student)}
-            title="Open Diagnostic Assessment & Capability Profiler"
-          >
-            📝 Diagnostic Test
-          </button>
-
-          <button
-            type="button"
-            className="syllabus-nav-btn secondary"
             onClick={() => onNavigate("home")}
           >
             ← Platform Home

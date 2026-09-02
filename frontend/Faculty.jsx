@@ -487,13 +487,6 @@ function Faculty({ onNavigate, registeredStudent }) {
             </button>
             <button
               type="button"
-              className="fac-btn-outline"
-              onClick={() => onNavigate && onNavigate("assessment")}
-            >
-              Preview Assessment
-            </button>
-            <button
-              type="button"
               className="fac-btn-primary"
               onClick={() => onNavigate && onNavigate("register")}
             >

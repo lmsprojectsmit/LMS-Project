@@ -1232,14 +1232,6 @@ function Assessment({ onNavigate, studentInfo }) {
 
               <button
                 type="button"
-                className="btn-retake"
-                onClick={handleRetake}
-              >
-                🔄 Retake Assessment
-              </button>
-
-              <button
-                type="button"
                 className="btn-proceed-syllabus"
                 style={{
                   background: "linear-gradient(135deg, #10b981, #059669)",
