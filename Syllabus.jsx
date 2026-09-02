@@ -560,7 +560,7 @@ function Syllabus({ onNavigate, student, onLogout }) {
                         className="btn-practice-unit"
                         onClick={() =>
                           alert(
-                            `Opening Practice Workout & Key Formula Summary for ${unit.unitNumber}: ${unit.title}. Refer to Dr. G. Balaji textbook.`
+                            `Opening Practice Workout for ${unit.unitNumber}: ${unit.title}. Refer to Dr. G. Balaji textbook.`
                           )
                         }
                       >

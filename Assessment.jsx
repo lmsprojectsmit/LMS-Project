@@ -1166,11 +1166,6 @@ function Assessment({ onNavigate, studentInfo }) {
                         <span className="l-meta">📝 {lesson.problems}</span>
                       </div>
 
-                      <div className="lesson-formula-callout">
-                        <span className="f-lbl">Key Formula:</span>
-                        <code className="f-code">{lesson.keyFormula}</code>
-                      </div>
-
                       <button
                         type="button"
                         className="btn-open-lesson"
@@ -1686,11 +1681,6 @@ function Assessment({ onNavigate, studentInfo }) {
               <div className="reader-block">
                 <h4 className="reader-sec-title">🎯 Core Learning Objectives</h4>
                 <p>{activeLessonModal.objectives}</p>
-              </div>
-
-              <div className="reader-block formula-highlight">
-                <h4 className="reader-sec-title">📐 Key Mathematical Theorem & Formula</h4>
-                <code className="reader-formula">{activeLessonModal.keyFormula}</code>
               </div>
 
               <div className="reader-block">
