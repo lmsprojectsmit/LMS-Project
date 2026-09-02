@@ -925,108 +925,191 @@
   box-shadow: 0 6px 18px rgba(67, 56, 202, 0.35);
 }
 
-/* Solutions Review Section */
+/* Solutions Review Section - Displayed Immediately After Submitting */
 .solutions-review-section {
   margin-top: 40px;
   padding-top: 32px;
   border-top: 2px dashed #e2e8f0;
 }
 
+.solutions-header-cluster {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
 .review-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0 0 20px;
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0 0 6px;
   color: var(--color-text-main);
+}
+
+.review-subtitle {
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Filter Tabs (All / False Only / Correct Only) */
+.solution-filter-tabs {
+  display: flex;
+  gap: 8px;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  border: 1px solid #e2e8f0;
+}
+
+.filter-tab-btn {
+  background: transparent;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-tab-btn:hover {
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.filter-tab-btn.active {
+  background: #ffffff;
+  color: var(--color-primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  font-weight: 700;
+}
+
+.filter-tab-btn.tab-false.active {
+  color: #dc2626;
+}
+
+.filter-tab-btn.tab-correct.active {
+  color: #16a34a;
 }
 
 .solutions-list {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 22px;
 }
 
 .solution-card {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: var(--radius-md);
-  padding: 20px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
+}
+
+.solution-card:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .solution-card.sol-correct {
-  border-left: 4px solid #10b981;
+  border-left: 5px solid #10b981;
+  background: #fcfffd;
 }
 
 .solution-card.sol-wrong {
-  border-left: 4px solid #ef4444;
+  border-left: 5px solid #ef4444;
+  background: #fffafa;
 }
 
 .solution-card.sol-skipped {
-  border-left: 4px solid #cbd5e1;
+  border-left: 5px solid #f59e0b;
+  background: #fffdfa;
 }
 
 .sol-card-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .sol-qnum {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
-  color: #64748b;
+  color: #475569;
 }
 
 .sol-status-pill {
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .pill-correct {
   background: #ecfdf5;
   color: #065f46;
+  border: 1px solid #a7f3d0;
 }
 
 .pill-wrong {
   background: #fef2f2;
   color: #991b1b;
+  border: 1px solid #fecaca;
 }
 
 .pill-skipped {
-  background: #f1f5f9;
-  color: #475569;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
 }
 
 .sol-qtext {
-  font-size: 15px;
+  font-size: 15.5px;
   font-weight: 600;
   color: #1e293b;
-  margin: 0 0 14px;
+  margin: 0 0 16px;
+  line-height: 1.5;
 }
 
 .sol-options-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
 .sol-option {
   background: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1.5px solid #e2e8f0;
   border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  font-size: 13.5px;
+  padding: 10px 14px;
+  font-size: 14px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .opt-key {
-  font-weight: 700;
+  font-weight: 800;
   color: #64748b;
+  width: 22px;
+}
+
+.opt-body {
+  font-weight: 500;
+  color: #1e293b;
+  flex-grow: 1;
 }
 
 .sol-option.opt-correct {
@@ -1035,18 +1118,27 @@
   color: #065f46;
 }
 
+.sol-option.opt-correct .opt-key {
+  color: #059669;
+}
+
 .sol-option.opt-wrong-selected {
   background: #fef2f2;
   border-color: #ef4444;
   color: #991b1b;
 }
 
+.sol-option.opt-wrong-selected .opt-key {
+  color: #dc2626;
+}
+
 .opt-tag {
   font-size: 11px;
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 3px 8px;
   border-radius: 4px;
   margin-left: auto;
+  white-space: nowrap;
 }
 
 .tag-correct {
@@ -1059,13 +1151,83 @@
   color: #ffffff;
 }
 
-.sol-explanation-box {
-  background: #f1f5f9;
+/* ==========================================================
+   FALSE REASON CALLOUT (Explicit why incorrect / false)
+   ========================================================== */
+.false-reason-callout {
+  background: #fef2f2;
+  border: 1.5px solid #fecaca;
+  border-left: 5px solid #dc2626;
   border-radius: var(--radius-sm);
-  padding: 10px 14px;
-  font-size: 13px;
-  color: #334155;
-  line-height: 1.45;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+}
+
+.false-reason-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.false-badge-icon {
+  font-size: 16px;
+}
+
+.false-badge-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #991b1b;
+}
+
+.false-reason-text {
+  font-size: 13.5px;
+  color: #7f1d1d;
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* ==========================================================
+   MATHEMATICAL PROOF & REASON FOR CORRECT ANSWER
+   ========================================================== */
+.sol-explanation-box {
+  background: #f0fdf4;
+  border: 1.5px solid #bbf7d0;
+  border-left: 5px solid #16a34a;
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+}
+
+.explanation-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  color: #166534;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.exp-icon {
+  font-size: 16px;
+}
+
+.exp-body-text {
+  font-size: 13.5px;
+  color: #14532d;
+  margin: 0;
+  line-height: 1.55;
+  font-weight: 500;
+}
+
+.empty-solutions-notice {
+  text-align: center;
+  padding: 36px 20px;
+  background: #f8fafc;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: 14px;
 }
 
 /* ==========================================================

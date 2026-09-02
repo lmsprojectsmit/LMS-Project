@@ -20,7 +20,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "B",
     marks: 1,
-    explanation: "(A + Aᵀ)ᵀ = Aᵀ + (Aᵀ)ᵀ = Aᵀ + A = A + Aᵀ. Since the transpose equals the matrix itself, it is always symmetric."
+    explanation: "A matrix M is symmetric if Mᵀ = M. Taking the transpose of (A + Aᵀ): (A + Aᵀ)ᵀ = Aᵀ + (Aᵀ)ᵀ = Aᵀ + A = A + Aᵀ. Since its transpose is identically equal to itself, A + Aᵀ is always symmetric.",
+    whyFalse: {
+      A: "A - Aᵀ is skew-symmetric, not symmetric, because (A - Aᵀ)ᵀ = Aᵀ - A = -(A - Aᵀ).",
+      C: "A² - A is not symmetric in general unless A itself is already symmetric and commutes.",
+      D: "A A⁻¹ equals the identity matrix I. While I is symmetric, this only exists when A is invertible; A + Aᵀ is valid for ANY square matrix."
+    }
   },
   {
     id: 2,
@@ -35,7 +40,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "B",
     marks: 1,
-    explanation: "The product AB has order m × p. Taking the transpose (AB)ᵀ swaps rows and columns, giving dimension p × m."
+    explanation: "The product AB has m rows and p columns (dimension m × p). When taking the transpose (AB)ᵀ, the rows and columns are swapped, so (AB)ᵀ has dimension p × m (also equal to Bᵀ Aᵀ where Bᵀ is p × n and Aᵀ is n × m).",
+    whyFalse: {
+      A: "m × p is the dimension of AB before transposition, not (AB)ᵀ.",
+      C: "n × n is the inner matching dimension required for matrix multiplication, not the outer dimension of the result.",
+      D: "p × n is the dimension of Bᵀ alone, not the product (AB)ᵀ."
+    }
   },
   {
     id: 3,
@@ -50,7 +60,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "C",
     marks: 1,
-    explanation: "Trace is defined as the sum of elements lying along the main (principal) diagonal from top-left to bottom-right."
+    explanation: "By mathematical definition, the trace of a square matrix is the algebraic sum of the entries on its main (principal) diagonal: Tr(A) = a₁₁ + a₂₂ + ... + aₙₙ = ∑ aᵢᵢ.",
+    whyFalse: {
+      A: "The product of main diagonal elements gives the determinant only for triangular matrices, not the trace.",
+      B: "The sum of elements in a single row is just a row sum, not the trace.",
+      D: "The determinant involves permutations and products of entries, whereas the trace is simply the linear sum of diagonal entries."
+    }
   },
   {
     id: 4,
@@ -65,7 +80,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "A",
     marks: 1,
-    explanation: "For diagonal elements, aᵢᵢ = -aᵢᵢ implies 2aᵢᵢ = 0, which requires aᵢᵢ = 0 for all i."
+    explanation: "For a skew-symmetric matrix, by definition aᵢⱼ = -aⱼᵢ for all i, j. For the principal diagonal elements where i = j, this condition becomes aᵢᵢ = -aᵢᵢ ⟹ 2aᵢᵢ = 0 ⟹ aᵢᵢ = 0. Therefore, all diagonal elements of any skew-symmetric matrix must be zero.",
+    whyFalse: {
+      B: "If diagonal elements were 1, then aᵢᵢ = -aᵢᵢ would imply 1 = -1, which is a mathematical contradiction.",
+      C: "Negative numbers cannot satisfy aᵢᵢ = -aᵢᵢ since only 0 equals its own negative.",
+      D: "Arbitrary non-zero numbers violate the skew-symmetry condition along the diagonal."
+    }
   },
   {
     id: 5,
@@ -80,7 +100,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "B",
     marks: 1,
-    explanation: "By the reversal law of matrix inverses: (AB)(B⁻¹A⁻¹) = A(BB⁻¹)A⁻¹ = A I A⁻¹ = AA⁻¹ = I. Hence, (AB)⁻¹ = B⁻¹ A⁻¹."
+    explanation: "Because matrix multiplication is non-commutative in general, the reversal law applies: (AB)(B⁻¹ A⁻¹) = A(B B⁻¹)A⁻¹ = A(I)A⁻¹ = A A⁻¹ = I. Hence the inverse of AB is B⁻¹ A⁻¹ in reversed order.",
+    whyFalse: {
+      A: "Writing A⁻¹ B⁻¹ is false because (AB)(A⁻¹ B⁻¹) ≠ I unless A and B commute, which is generally not true for matrices.",
+      C: "(BA)⁻¹ is equal to A⁻¹ B⁻¹, not (AB)⁻¹.",
+      D: "A B⁻¹ does not invert A and yields an invalid product when multiplied by AB."
+    }
   },
 
   // -------------------------------------------------------------
@@ -99,7 +124,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "B",
     marks: 1,
-    explanation: "Factoring out scalar k from each of the n rows in an n × n matrix results in k · k · ... · k = kⁿ times det(A)."
+    explanation: "In an n × n matrix, multiplying the matrix by scalar k multiplies every entry in every row by k. Since factoring a constant out of a single row scales the determinant by k, doing this across all n rows scales the determinant by k · k · ... · k = kⁿ. Thus, det(kA) = kⁿ · det(A).",
+    whyFalse: {
+      A: "k · det(A) only applies if a SINGLE row or column is multiplied by k, not the entire n × n matrix.",
+      C: "nᵏ has base and exponent swapped; the scalar k is raised to matrix order n, not n to k.",
+      D: "(1/k) · det(A) would divide the determinant, which is the opposite of multiplying by scalar k."
+    }
   },
   {
     id: 7,
@@ -114,7 +144,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "B",
     marks: 1,
-    explanation: "A matrix is invertible if and only if its columns/rows are linearly independent, which is true if and only if det(A) ≠ 0."
+    explanation: "The formula for the inverse matrix is A⁻¹ = (1 / det(A)) · adj(A). Division by det(A) is mathematically defined if and only if det(A) ≠ 0. Therefore, non-zero determinant is the necessary and sufficient condition for invertibility.",
+    whyFalse: {
+      A: "If det(A) = 0, the matrix is called singular and has NO inverse because division by zero is undefined.",
+      C: "The trace can be zero for invertible matrices (for example, [[1, 0], [0, -1]] has trace = 0 and det = -1 ≠ 0, so it is invertible).",
+      D: "Many non-symmetric matrices are invertible, and many symmetric matrices (such as the zero matrix) are not invertible."
+    }
   },
   {
     id: 8,
@@ -129,7 +164,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "A",
     marks: 1,
-    explanation: "det(A) = (3)(5) - (4)(2) = 15 - 8 = 7."
+    explanation: "For any 2 × 2 matrix [[a, b], [c, d]], the determinant is given by (a·d - b·c). Here: det(A) = (3)(5) - (4)(2) = 15 - 8 = 7.",
+    whyFalse: {
+      B: "23 is obtained if you mistakenly add the products (15 + 8) instead of subtracting them (ad - bc).",
+      C: "-7 is obtained if you reverse the subtraction order (8 - 15), which is incorrect.",
+      D: "15 is only the product of the main diagonal (3 × 5) without subtracting the off-diagonal product (4 × 2)."
+    }
   },
   {
     id: 9,
@@ -144,7 +184,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "C",
     marks: 1,
-    explanation: "Swapping two identical rows gives det(A) = -det(A) ⟹ 2·det(A) = 0 ⟹ det(A) = 0."
+    explanation: "Swapping two rows of a matrix reverses the sign of the determinant: det(A') = -det(A). But if the two rows are identical, swapping them leaves the matrix unchanged: det(A) = -det(A) ⟹ 2·det(A) = 0 ⟹ det(A) = 0. Also, identical rows mean the rows are linearly dependent.",
+    whyFalse: {
+      A: "Determinant cannot be 1 when rows are linearly dependent; dependent rows collapse the volume to zero.",
+      B: "-1 is false; linear dependence always produces a zero determinant.",
+      D: "Row sum is irrelevant to whether determinant collapses to zero."
+    }
   },
   {
     id: 10,
@@ -159,7 +204,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "B",
     marks: 1,
-    explanation: "Since det(A · A⁻¹) = det(I) = 1, det(A⁻¹) = 1 / det(A) = 1/4 = 0.25."
+    explanation: "By the determinant product rule, det(A · A⁻¹) = det(A) · det(A⁻¹). Since A · A⁻¹ = I and det(I) = 1, we have 4 · det(A⁻¹) = 1 ⟹ det(A⁻¹) = 1/4 = 0.25.",
+    whyFalse: {
+      A: "-4 is the negative of the determinant, not its multiplicative reciprocal.",
+      C: "16 is 4 squared, whereas the rule requires 1/4.",
+      D: "1 is the determinant of the identity matrix I, not of A⁻¹."
+    }
   },
 
   // -------------------------------------------------------------
@@ -178,7 +228,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "B",
     marks: 1,
-    explanation: "A linear system has solutions if and only if adding the constant vector B does not increase the rank: Rank(A) = Rank([A|B])."
+    explanation: "The Rouché–Capelli theorem is the fundamental criterion for solvability: a linear system has one or more solutions (is consistent) if and only if the coefficient matrix A and the augmented matrix [A|B] have the exact same rank: Rank(A) = Rank([A|B]).",
+    whyFalse: {
+      A: "Rank(A) can never be greater than Rank([A|B]) because adding column B cannot decrease the dimension of the column space.",
+      C: "Rank(A) = 0 only holds for the zero matrix and has no bearing on general consistency.",
+      D: "det(A) = 0 is not required for consistency; in fact, for square systems, det(A) ≠ 0 guarantees a unique consistent solution."
+    }
   },
   {
     id: 12,
@@ -193,7 +248,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "C",
     marks: 1,
-    explanation: "When rank r is less than the number of unknowns n, there are (n - r) free parameters, yielding an infinite family of solutions."
+    explanation: "When a system is consistent and its rank r is strictly less than the number of variables n, exactly (n - r) variables can be assigned arbitrary real values (free parameters), yielding infinitely many solutions parameterized by (n - r) free variables.",
+    whyFalse: {
+      A: "A unique solution requires rank r to equal the number of unknowns n (r = n).",
+      B: "The question specifically specifies that the system is CONSISTENT, so it cannot have no solution.",
+      D: "Linear systems over real numbers never have a finite count of solutions greater than 1; they have either 0, 1, or infinitely many solutions."
+    }
   },
   {
     id: 13,
@@ -208,7 +268,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "B",
     marks: 1,
-    explanation: "For an m × n matrix, Rank(A) ≤ min(m, n). Thus, Rank(A) ≤ min(3, 5) = 3."
+    explanation: "For any m × n matrix, the row rank equals the column rank, and rank cannot exceed the number of rows or columns: Rank(A) ≤ min(m, n). For a 3 × 5 matrix, min(3, 5) = 3. Thus the maximum rank is 3.",
+    whyFalse: {
+      A: "5 is impossible because the matrix only has 3 rows, so at most 3 rows can be linearly independent.",
+      C: "8 is the sum of rows and columns (3 + 5), which is mathematically unrelated to rank.",
+      D: "15 is the total number of entries (3 × 5), not the rank."
+    }
   },
   {
     id: 14,
@@ -223,7 +288,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "C",
     marks: 1,
-    explanation: "The Rank-Nullity Theorem states: dim(Image(T)) + dim(Kernel(T)) = dim(Domain V), i.e., Rank + Nullity = n."
+    explanation: "The Rank-Nullity Theorem states that the dimension of the domain V equals the dimension of the image/range (Rank) plus the dimension of the kernel/null-space (Nullity): dim(V) = Rank(T) + Nullity(T) = n.",
+    whyFalse: {
+      A: "The relation is additive (sum), not subtractive (difference).",
+      B: "Rank and Nullity sum to n, they do not multiply to n.",
+      D: "The theorem relates to the dimension of the DOMAIN space V, not the codomain W."
+    }
   },
   {
     id: 15,
@@ -238,7 +308,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "B",
     marks: 1,
-    explanation: "Setting all variables to zero gives A · 0 = 0, so the zero vector (trivial solution) is guaranteed to satisfy the system."
+    explanation: "Substituting the zero vector X = [0, 0, ..., 0]ᵀ into AX gives A · 0 = 0. Therefore, X = 0 is ALWAYS a valid solution (called the trivial solution). Hence, homogeneous systems are NEVER inconsistent.",
+    whyFalse: {
+      A: "A homogeneous system is NEVER inconsistent because X = 0 is always a solution.",
+      C: "If Rank(A) < n, the system has infinitely many non-trivial solutions in addition to the trivial solution.",
+      D: "Even if det(A) = 0, solutions still exist (in fact, infinitely many non-trivial solutions exist when det(A) = 0)."
+    }
   },
 
   // -------------------------------------------------------------
@@ -257,7 +332,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "B",
     marks: 1,
-    explanation: "The sum of the roots of the characteristic polynomial det(A - λI) = 0 equals the sum of diagonal elements, which is Trace(A)."
+    explanation: "By Vieta's formulas applied to the characteristic polynomial det(A - λI) = (-1)ⁿ(λⁿ - Tr(A)λⁿ⁻¹ + ... + (-1)ⁿ det(A)), the sum of roots equals the coefficient of λⁿ⁻¹, which is the trace: ∑ λᵢ = Tr(A) = ∑ aᵢᵢ.",
+    whyFalse: {
+      A: "det(A) is the PRODUCT of all eigenvalues (λ₁ · λ₂ · ... · λₙ), not their sum.",
+      C: "Rank(A) represents the number of non-zero eigenvalues (for diagonalizable matrices), not their algebraic sum.",
+      D: "Nullity(A) is the geometric multiplicity of eigenvalue 0, not the sum of all eigenvalues."
+    }
   },
   {
     id: 17,
@@ -272,7 +352,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "B",
     marks: 1,
-    explanation: "Setting λ = 0 in the characteristic polynomial det(A - λI) shows that the constant term equals det(A) = ∏ λᵢ."
+    explanation: "Evaluating the characteristic equation det(A - λI) at λ = 0 gives det(A - 0·I) = det(A). Since the polynomial can be factored as (λ₁ - λ)(λ₂ - λ)...(λₙ - λ), setting λ = 0 yields λ₁ · λ₂ · ... · λₙ = det(A).",
+    whyFalse: {
+      A: "Trace(A) is the SUM of the eigenvalues, not the product.",
+      C: "Rank(A) is the dimension of the column space, not the eigenvalue product.",
+      D: "The product is zero only if at least one eigenvalue is 0 (i.e. if A is singular); for non-singular matrices it is non-zero."
+    }
   },
   {
     id: 18,
@@ -287,7 +372,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "C",
     marks: 1,
-    explanation: "Av = λv ⟹ A⁻¹(Av) = A⁻¹(λv) ⟹ v = λ(A⁻¹v) ⟹ A⁻¹v = (1/λ)v. Thus 1/λ is the eigenvalue."
+    explanation: "From definition, Av = λv. Multiplying both sides on the left by A⁻¹ yields: A⁻¹(Av) = A⁻¹(λv) ⟹ (A⁻¹A)v = λ(A⁻¹v) ⟹ v = λ(A⁻¹v). Dividing by scalar λ (since λ ≠ 0): A⁻¹v = (1/λ)v. Thus, 1/λ is the corresponding eigenvalue of A⁻¹.",
+    whyFalse: {
+      A: "-λ is the eigenvalue of -A, not A⁻¹.",
+      B: "λ² is the eigenvalue of A² (matrix squared), not the inverse.",
+      D: "1 - λ is the eigenvalue of (I - A), not A⁻¹."
+    }
   },
   {
     id: 19,
@@ -302,7 +392,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "B",
     marks: 1,
-    explanation: "Linear dependence requires at least one non-trivial linear combination of the vectors to equal the zero vector."
+    explanation: "By standard definition in linear algebra, a set of vectors is linearly dependent if there exists a non-trivial linear combination that equals the zero vector—meaning at least one scalar cᵢ ≠ 0 satisfies c₁v₁ + c₂v₂ + ... + cₖvₖ = 0.",
+    whyFalse: {
+      A: "Option A is the exact definition of Linear INDEPENDENCE, which is the direct opposite of linear dependence.",
+      C: "Vector magnitudes have no relation to whether vectors can be formed as linear combinations of each other.",
+      D: "Having zero dot product means vectors are orthogonal, which actually implies linear independence (if non-zero), not dependence."
+    }
   },
   {
     id: 20,
@@ -317,7 +412,12 @@ export const ASSESSMENT_QUESTIONS = [
     ],
     correctAnswer: "B",
     marks: 1,
-    explanation: "Factoring λ² - 5λ + 6 = 0 gives (λ - 2)(λ - 3) = 0, so the eigenvalues are λ = 2 and λ = 3."
+    explanation: "To find eigenvalues, solve the characteristic equation: λ² - 5λ + 6 = 0. Factoring the quadratic: (λ - 2)(λ - 3) = 0 ⟹ λ = 2 or λ = 3. Check: Sum = 2 + 3 = 5 (equals Tr(A)), Product = 2 × 3 = 6 (equals det(A)).",
+    whyFalse: {
+      A: "For λ = 1 and 6: (λ - 1)(λ - 6) = λ² - 7λ + 6 = 0, which has middle term -7λ, not -5λ.",
+      C: "For λ = -2 and -3: (λ + 2)(λ + 3) = λ² + 5λ + 6 = 0, which has middle term +5λ, not -5λ.",
+      D: "5 and 6 are just the coefficients from the equation, not the roots."
+    }
   }
 ];
 
@@ -330,7 +430,9 @@ function Assessment({ onNavigate, studentInfo }) {
   const [isTimerRunning, setIsTimerRunning] = useState(true);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [showSolutionReview, setShowSolutionReview] = useState(false);
+  
+  // Solutions review filter: "all" | "false" | "correct"
+  const [solutionFilter, setSolutionFilter] = useState("all");
 
   // Timer countdown
   useEffect(() => {
@@ -387,6 +489,7 @@ function Assessment({ onNavigate, studentInfo }) {
     setShowSubmitModal(false);
     setIsSubmitted(true);
     setIsTimerRunning(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleRetake = () => {
@@ -395,8 +498,9 @@ function Assessment({ onNavigate, studentInfo }) {
     setTimeLeft(20 * 60);
     setCurrentQIndex(0);
     setIsSubmitted(false);
-    setShowSolutionReview(false);
+    setSolutionFilter("all");
     setIsTimerRunning(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Compute Analytics
@@ -423,6 +527,7 @@ function Assessment({ onNavigate, studentInfo }) {
     }
   });
 
+  const incorrectCount = totalQuestions - score;
   const percentage = Math.round((score / totalQuestions) * 100);
 
   // Capability Assessment Level
@@ -440,7 +545,7 @@ function Assessment({ onNavigate, studentInfo }) {
       badgeClass: "badge-foundational",
       icon: "📚",
       summary: "Needs guided conceptual support in basic matrix transformations, determinants, and linear combinations.",
-      actionRecommendation: "Recommended to complete the 'Unit I: Matrix Algebra Bootcamp' video lessons before attempting university mock tests.",
+      actionRecommendation: "Recommended to review the explanations below for all false questions, then complete the 'Unit I: Matrix Algebra Bootcamp' video lessons in EduVerse.",
     };
   } else if (percentage < 70) {
     capabilityTier = {
@@ -448,7 +553,7 @@ function Assessment({ onNavigate, studentInfo }) {
       badgeClass: "badge-developing",
       icon: "📈",
       summary: "Decent awareness of core terminology, but needs structured problem practice in Rank-Nullity and matrix invertibility.",
-      actionRecommendation: "Work through step-by-step matrix row-reduction tutorials and practice 2025 question bank problems in EduVerse.",
+      actionRecommendation: "Review the false answers below to understand the exact mathematical principles, then practice 2025 question bank problems.",
     };
   } else if (percentage < 85) {
     capabilityTier = {
@@ -456,11 +561,19 @@ function Assessment({ onNavigate, studentInfo }) {
       badgeClass: "badge-proficient",
       icon: "🚀",
       summary: "Solid analytical capability! Good understanding of determinants, consistency conditions, and characteristic equations.",
-      actionRecommendation: "Ready for standard course pace. Focus on Unit IV (Diagonalization & Cayley-Hamilton) to secure top grades.",
+      actionRecommendation: "Ready for standard course pace. Inspect the few false answers below, then proceed to top-tier university grade modules.",
     };
   }
 
   const currentQ = ASSESSMENT_QUESTIONS[currentQIndex];
+
+  // Filter solutions list
+  const filteredSolutions = ASSESSMENT_QUESTIONS.filter((q) => {
+    const isCorrect = selectedAnswers[q.id] === q.correctAnswer;
+    if (solutionFilter === "false") return !isCorrect;
+    if (solutionFilter === "correct") return isCorrect;
+    return true; // "all"
+  });
 
   return (
     <div className="assessment-page">
@@ -517,22 +630,23 @@ function Assessment({ onNavigate, studentInfo }) {
 
       {/* ========================================================= */}
       {/* VIEW A: RESULT & CAPABILITY ANALYSIS SCREEN               */}
+      {/* (Answers and Explanations shown right after submitting)   */}
       {/* ========================================================= */}
       {isSubmitted ? (
         <main className="assessment-result-container">
           <div className="result-hero-card">
             <div className="result-badge-cluster">
-              <span className="result-supertag">CAPABILITY ANALYSIS REPORT</span>
+              <span className="result-supertag">ASSESSMENT COMPLETED • CAPABILITY REPORT</span>
               <span className={`capability-pill ${capabilityTier.badgeClass}`}>
                 {capabilityTier.icon} {capabilityTier.title}
               </span>
             </div>
 
             <h2 className="result-heading">
-              Student Capability Diagnostic Result
+              Capability Assessment & Detailed Solution Report
             </h2>
             <p className="result-subheading">
-              Course: <strong>Linear Algebra (MA25C02)</strong> • Regulation 2025 Syllabus Diagnostic
+              Course: <strong>Linear Algebra (MA25C02)</strong> • 20 Questions (1 Mark Each) • Detailed Explanations Below
             </p>
 
             {/* Score Showcase Grid */}
@@ -549,27 +663,27 @@ function Assessment({ onNavigate, studentInfo }) {
                     style={{ width: `${percentage}%` }}
                   ></div>
                 </div>
-                <span className="score-pct-text">{percentage}% Marks Scored</span>
+                <span className="score-pct-text">{percentage}% Total Marks</span>
               </div>
 
               <div className="score-card">
                 <span className="card-lbl">Correct Answers</span>
-                <span className="stat-value stat-green">{score}</span>
-                <span className="stat-sub">1 mark per question</span>
+                <span className="stat-value stat-green">✅ {score}</span>
+                <span className="stat-sub">{score} marks earned</span>
               </div>
 
               <div className="score-card">
-                <span className="card-lbl">Incorrect / Unanswered</span>
-                <span className="stat-value stat-red">{totalQuestions - score}</span>
-                <span className="stat-sub">{unansweredCount} skipped</span>
+                <span className="card-lbl">False / Incorrect Answers</span>
+                <span className="stat-value stat-red">❌ {incorrectCount}</span>
+                <span className="stat-sub">{unansweredCount} skipped, {answeredCount - score} wrong</span>
               </div>
 
               <div className="score-card">
                 <span className="card-lbl">Time Taken</span>
                 <span className="stat-value stat-blue">
-                  {formatTime(20 * 60 - timeLeft)}
+                  ⏱️ {formatTime(20 * 60 - timeLeft)}
                 </span>
-                <span className="stat-sub">20 min duration</span>
+                <span className="stat-sub">20 min test duration</span>
               </div>
             </div>
 
@@ -616,7 +730,7 @@ function Assessment({ onNavigate, studentInfo }) {
               </div>
               <p className="rec-summary">{capabilityTier.summary}</p>
               <div className="rec-action">
-                <strong>Recommended Next Action: </strong>
+                <strong>Recommended Next Step: </strong>
                 {capabilityTier.actionRecommendation}
               </div>
             </div>
@@ -625,18 +739,10 @@ function Assessment({ onNavigate, studentInfo }) {
             <div className="result-actions-toolbar">
               <button
                 type="button"
-                className="btn-review-answers"
-                onClick={() => setShowSolutionReview(!showSolutionReview)}
-              >
-                {showSolutionReview ? "▲ Hide Detailed Solutions" : "▼ Review All 20 Questions & Explanations"}
-              </button>
-
-              <button
-                type="button"
                 className="btn-print-report"
                 onClick={() => window.print()}
               >
-                🖨️ Print / Save Diagnostic Slip
+                🖨️ Print / Save Diagnostic Report
               </button>
 
               <button
@@ -656,62 +762,143 @@ function Assessment({ onNavigate, studentInfo }) {
               </button>
             </div>
 
-            {/* Detailed Question Review Section */}
-            {showSolutionReview && (
-              <div className="solutions-review-section">
-                <h3 className="review-title">
-                  Detailed Solutions & Mathematical Rationales (Questions 1 - 20)
-                </h3>
-                <div className="solutions-list">
-                  {ASSESSMENT_QUESTIONS.map((q, idx) => {
-                    const studentAns = selectedAnswers[q.id];
-                    const isCorrect = studentAns === q.correctAnswer;
-                    const isSkipped = !studentAns;
+            {/* ========================================================= */}
+            {/* DETAILED ANSWER KEY & EXPLANATIONS FOR ALL QUESTIONS      */}
+            {/* ALWAYS VISIBLE DIRECTLY AFTER SUBMITTING                  */}
+            {/* ========================================================= */}
+            <div className="solutions-review-section">
+              <div className="solutions-header-cluster">
+                <div>
+                  <h3 className="review-title">
+                    📝 Detailed Answers & Mathematical Explanations (Questions 1 - 20)
+                  </h3>
+                  <p className="review-subtitle">
+                    Examine each question below. If an answer was <strong>FALSE</strong>, review the exact mathematical reason and why your choice was incorrect.
+                  </p>
+                </div>
 
-                    return (
-                      <div
-                        key={q.id}
-                        className={`solution-card ${isCorrect ? "sol-correct" : isSkipped ? "sol-skipped" : "sol-wrong"}`}
-                      >
-                        <div className="sol-card-top">
-                          <span className="sol-qnum">Question {idx + 1} • {q.domain}</span>
-                          <span className={`sol-status-pill ${isCorrect ? "pill-correct" : isSkipped ? "pill-skipped" : "pill-wrong"}`}>
-                            {isCorrect ? "✓ Correct (+1 Mark)" : isSkipped ? "○ Skipped (0 Marks)" : "✕ Incorrect (0 Marks)"}
-                          </span>
-                        </div>
-
-                        <p className="sol-qtext">{q.question}</p>
-
-                        <div className="sol-options-grid">
-                          {q.options.map((opt) => {
-                            const isSelected = studentAns === opt.id;
-                            const isTheCorrectOne = q.correctAnswer === opt.id;
-
-                            let optClass = "sol-option";
-                            if (isTheCorrectOne) optClass += " opt-correct";
-                            if (isSelected && !isTheCorrectOne) optClass += " opt-wrong-selected";
-
-                            return (
-                              <div key={opt.id} className={optClass}>
-                                <span className="opt-key">{opt.id}</span>
-                                <span className="opt-body">{opt.text}</span>
-                                {isTheCorrectOne && <span className="opt-tag tag-correct">Correct Answer</span>}
-                                {isSelected && !isTheCorrectOne && <span className="opt-tag tag-wrong">Your Choice</span>}
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        <div className="sol-explanation-box">
-                          <strong>Step-by-Step Explanation: </strong>
-                          <span>{q.explanation}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
+                {/* Filter Tabs */}
+                <div className="solution-filter-tabs" role="tablist">
+                  <button
+                    type="button"
+                    className={`filter-tab-btn ${solutionFilter === "all" ? "active" : ""}`}
+                    onClick={() => setSolutionFilter("all")}
+                  >
+                    All Questions ({totalQuestions})
+                  </button>
+                  <button
+                    type="button"
+                    className={`filter-tab-btn tab-false ${solutionFilter === "false" ? "active" : ""}`}
+                    onClick={() => setSolutionFilter("false")}
+                  >
+                    ❌ False / Incorrect Only ({incorrectCount})
+                  </button>
+                  <button
+                    type="button"
+                    className={`filter-tab-btn tab-correct ${solutionFilter === "correct" ? "active" : ""}`}
+                    onClick={() => setSolutionFilter("correct")}
+                  >
+                    ✅ Correct Only ({score})
+                  </button>
                 </div>
               </div>
-            )}
+
+              {/* Question list */}
+              <div className="solutions-list">
+                {filteredSolutions.map((q) => {
+                  const studentAns = selectedAnswers[q.id];
+                  const isCorrect = studentAns === q.correctAnswer;
+                  const isSkipped = !studentAns;
+                  const questionIndex = ASSESSMENT_QUESTIONS.findIndex((item) => item.id === q.id);
+
+                  return (
+                    <div
+                      key={q.id}
+                      className={`solution-card ${isCorrect ? "sol-correct" : isSkipped ? "sol-skipped" : "sol-wrong"}`}
+                    >
+                      {/* Top Bar */}
+                      <div className="sol-card-top">
+                        <span className="sol-qnum">
+                          Question {questionIndex + 1} • {q.domain} • 1 Mark
+                        </span>
+                        <span className={`sol-status-pill ${isCorrect ? "pill-correct" : isSkipped ? "pill-skipped" : "pill-wrong"}`}>
+                          {isCorrect ? "✅ TRUE / Correct (+1 Mark)" : isSkipped ? "○ FALSE: Skipped / Unanswered (0 Marks)" : "❌ FALSE: Incorrect (0 Marks)"}
+                        </span>
+                      </div>
+
+                      {/* Question Text */}
+                      <p className="sol-qtext">{q.question}</p>
+
+                      {/* Options Grid */}
+                      <div className="sol-options-grid">
+                        {q.options.map((opt) => {
+                          const isSelected = studentAns === opt.id;
+                          const isTheCorrectOne = q.correctAnswer === opt.id;
+
+                          let optClass = "sol-option";
+                          if (isTheCorrectOne) optClass += " opt-correct";
+                          if (isSelected && !isTheCorrectOne) optClass += " opt-wrong-selected";
+
+                          return (
+                            <div key={opt.id} className={optClass}>
+                              <span className="opt-key">{opt.id}</span>
+                              <span className="opt-body">{opt.text}</span>
+                              {isTheCorrectOne && (
+                                <span className="opt-tag tag-correct">
+                                  ✓ Correct Answer
+                                </span>
+                              )}
+                              {isSelected && !isTheCorrectOne && (
+                                <span className="opt-tag tag-wrong">
+                                  ✗ Your Choice (FALSE)
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* FALSE REASON CALLOUT IF INCORRECT */}
+                      {!isCorrect && (
+                        <div className="false-reason-callout">
+                          <div className="false-reason-header">
+                            <span className="false-badge-icon">❌</span>
+                            <span className="false-badge-title">
+                              {isSkipped
+                                ? "Why this was marked FALSE (Skipped with No Answer):"
+                                : `Why Your Selection (${studentAns}) is FALSE:`}
+                            </span>
+                          </div>
+                          
+                          <p className="false-reason-text">
+                            {isSkipped
+                              ? "You did not select an option for this question. The correct choice is Option " + q.correctAnswer + "."
+                              : (q.whyFalse && q.whyFalse[studentAns])
+                              ? q.whyFalse[studentAns]
+                              : `Option ${studentAns} is mathematically incorrect. Option ${q.correctAnswer} is the only valid answer.`}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* DETAILED MATHEMATICAL PROOF & REASON */}
+                      <div className="sol-explanation-box">
+                        <div className="explanation-title-row">
+                          <span className="exp-icon">💡</span>
+                          <strong>Mathematical Principle & Reason for Correct Answer ({q.correctAnswer}):</strong>
+                        </div>
+                        <p className="exp-body-text">{q.explanation}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {filteredSolutions.length === 0 && (
+                  <div className="empty-solutions-notice">
+                    <p>No questions match the selected filter.</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </main>
       ) : (
@@ -883,7 +1070,7 @@ function Assessment({ onNavigate, studentInfo }) {
                   className="sidebar-submit-btn"
                   onClick={() => setShowSubmitModal(true)}
                 >
-                  Submit & Analyze Capability
+                  Submit & View Explanations
                 </button>
               </div>
             </div>
@@ -913,6 +1100,10 @@ function Assessment({ onNavigate, studentInfo }) {
                 ⚠️ You have <strong>{unansweredCount}</strong> unanswered questions. Each correct question awards 1 mark (Total: 20 marks).
               </div>
             )}
+
+            <p style={{ fontSize: "13px", color: "#4338ca", fontWeight: "600", marginBottom: "20px" }}>
+              💡 Detailed step-by-step explanations and mathematical reasons for all answers (including why false choices fail) will be revealed immediately upon submitting.
+            </p>
 
             <div className="modal-actions">
               <button
