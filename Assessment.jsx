@@ -1227,6 +1227,45 @@ function Assessment({ onNavigate, studentInfo }) {
 
               <button
                 type="button"
+                className="btn-proceed-home"
+                style={{
+                  background: "linear-gradient(135deg, #4f46e5, #4338ca)",
+                  color: "#ffffff",
+                  border: "none",
+                  padding: "12px 24px",
+                  borderRadius: "10px",
+                  fontWeight: "700",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  boxShadow: "0 4px 14px rgba(79, 70, 229, 0.35)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+                onClick={() => {
+                  const studentPayload = {
+                    ...(studentInfo || {}),
+                    fullName: studentInfo?.fullName || "Enrolled Student",
+                    email: studentInfo?.email || "student@institution.edu",
+                    role: "student",
+                    score,
+                    maxScore: totalQuestions,
+                    category: assignedCategoryId,
+                    categoryLabel: assignedCategory.title,
+                    categoryBadge: assignedCategory.badgeClass,
+                    hasTakenAssessment: true,
+                    domainScores: domainBreakdown,
+                    scrollTo: "linear-algebra",
+                  };
+                  if (onNavigate) onNavigate("home", studentPayload);
+                }}
+              >
+                <span>🏠 Go to Home Page</span>
+                <span>➔</span>
+              </button>
+
+              <button
+                type="button"
                 className="btn-proceed-syllabus"
                 style={{
                   background: "linear-gradient(135deg, #10b981, #059669)",

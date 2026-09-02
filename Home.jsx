@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import "./Home.css";
 
 function Home({ onNavigate, currentUser, onLogout }) {
@@ -7,6 +8,15 @@ function Home({ onNavigate, currentUser, onLogout }) {
       el.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  useEffect(() => {
+    if (currentUser?.scrollTo) {
+      const timer = setTimeout(() => {
+        scrollToSection(currentUser.scrollTo);
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [currentUser]);
 
   return (
     <div className="home-page">
