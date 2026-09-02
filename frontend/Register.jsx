@@ -763,7 +763,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
               <strong>⚠️ Mandatory Enrolment Requirement:</strong> To complete course registration and calibrate your assigned syllabus modules, all registering students must take the 30-Question Diagnostic Assessment test (1 Mark each • 25 Mins).
             </div>
 
-            <div className="ticket-actions" style={{ flexWrap: "wrap" }}>
+            <div className="ticket-actions">
               <button
                 type="button"
                 className="ticket-assessment-btn"
@@ -781,8 +781,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
                   alignItems: "center",
                   gap: "8px",
                   width: "100%",
-                  justifyContent: "center",
-                  marginBottom: "8px"
+                  justifyContent: "center"
                 }}
                 onClick={() => {
                   setShowEnrolmentModal(false);
@@ -791,20 +790,6 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
               >
                 <span>📝 Start Mandatory Capability Assessment (30 Qs • 30 Marks • 25 Mins)</span>
                 <span>➔</span>
-              </button>
-              <button
-                type="button"
-                className="ticket-print-btn"
-                onClick={() => window.print()}
-              >
-                🖨️ Print Slip
-              </button>
-              <button
-                type="button"
-                className="ticket-secondary-btn"
-                onClick={() => setShowEnrolmentModal(false)}
-              >
-                Edit Details
               </button>
             </div>
           </div>
