@@ -886,18 +886,6 @@ function Assessment({ onNavigate, studentInfo }) {
             {/* 3 STUDENT CATEGORIES & DYNAMIC LESSON ASSIGNMENT HUB      */}
             {/* ========================================================= */}
             <section className="category-assignment-hub">
-              <div className="category-hub-header">
-                <div className="hub-title-group">
-                  <span className="hub-badge">CURRICULUM PERSONALIZATION</span>
-                  <h3 className="hub-title">
-                    🎓 Student Grouping & Assigned Learning Pathway
-                  </h3>
-                  <p className="hub-description">
-                    Based on your score of <strong>{score} / 20 ({percentage}%)</strong>, you have been categorized into <strong>{assignedCategory.title}</strong>. Four targeted lessons have been assigned below to match your readiness.
-                  </p>
-                </div>
-              </div>
-
               {/* Category Track Switcher Tabs */}
               <div className="category-track-tabs">
                 {Object.values(STUDENT_CATEGORIES).map((cat) => {
@@ -953,10 +941,6 @@ function Assessment({ onNavigate, studentInfo }) {
                 </div>
 
                 {/* Assigned Lessons Grid */}
-                <h5 className="lessons-grid-heading">
-                  📚 {currentViewedCategory.id === assignedCategoryId ? "Your 4 Assigned Learning Modules & Exercises" : `Curriculum for ${currentViewedCategory.name}`}:
-                </h5>
-
                 <div className="assigned-lessons-grid">
                   {currentViewedCategory.lessons.map((lesson, lIdx) => (
                     <div key={lesson.id} className="lesson-card">
