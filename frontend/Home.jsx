@@ -49,14 +49,6 @@ function Home({ onNavigate }) {
           <button
             type="button"
             className="nav-btn-secondary"
-            onClick={() => onNavigate("assessment")}
-            style={{ borderColor: "#818cf8", color: "#4338ca", fontWeight: "700" }}
-          >
-            📝 Diagnostic Test (20 Qs)
-          </button>
-          <button
-            type="button"
-            className="nav-btn-secondary"
             onClick={() => onNavigate("login")}
           >
             Login
