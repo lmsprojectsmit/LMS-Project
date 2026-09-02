@@ -467,10 +467,10 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
                       value={formData.year}
                       onChange={handleChange}
                     >
-                      <option value="1st Year">1st Year (Freshman)</option>
-                      <option value="2nd Year">2nd Year (Sophomore)</option>
-                      <option value="3rd Year">3rd Year (Junior)</option>
-                      <option value="4th Year">4th Year (Senior)</option>
+                      <option value="1st Year">1st Year</option>
+                      <option value="2nd Year">2nd Year</option>
+                      <option value="3rd Year">3rd Year</option>
+                      <option value="4th Year">4th Year</option>
                     </select>
                   </div>
 
@@ -727,8 +727,12 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
                 <strong>{formData.department}</strong>
               </div>
               <div className="ticket-row">
-                <span>Year / Sem / Section:</span>
-                <strong>{formData.year} • {formData.sem} • {formData.section}</strong>
+                <span>Year:</span>
+                <strong>{formData.year}</strong>
+              </div>
+              <div className="ticket-row">
+                <span>Semester / Section:</span>
+                <strong>{formData.sem} • {formData.section}</strong>
               </div>
               <div className="ticket-row">
                 <span>Mail ID:</span>
