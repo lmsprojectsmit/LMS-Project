@@ -265,9 +265,20 @@ function Syllabus({ onNavigate, student, onLogout }) {
             <span className="user-icon">👤</span>
             <div className="student-logged-info">
               <span className="student-display-name">{studentName}</span>
-              <span className="student-display-role">Enrolled Student</span>
+              <span className="student-display-role">
+                {student?.categoryLabel ? student.categoryLabel.split(":")[0] : "Enrolled Student"}
+              </span>
             </div>
           </div>
+
+          <button
+            type="button"
+            className="syllabus-nav-btn secondary"
+            onClick={() => onNavigate("assessment", student)}
+            title="Open Diagnostic Assessment & Capability Profiler"
+          >
+            📝 Diagnostic Test
+          </button>
 
           <button
             type="button"
@@ -306,6 +317,30 @@ function Syllabus({ onNavigate, student, onLogout }) {
               Here is your official <strong>Unit-Wise Syllabus</strong> for <strong>Linear Algebra (MA25C02)</strong>.
               Review core learning outcomes, chapter breakdowns, and university exam questions aligned with the prescribed <strong>Dr. G. Balaji</strong> textbook.
             </p>
+
+            {student?.hasTakenAssessment && (
+              <div style={{
+                marginTop: "10px",
+                marginBottom: "14px",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "10px",
+                background: "#f0fdf4",
+                border: "1.5px solid #86efac",
+                borderRadius: "8px",
+                padding: "8px 14px",
+                fontSize: "13.5px",
+                color: "#166534",
+                fontWeight: "600",
+                boxShadow: "0 2px 6px rgba(22, 101, 52, 0.08)"
+              }}>
+                <span>🎯 Assessed Pathway:</span>
+                <span style={{ color: "#047857", fontWeight: "700" }}>{student.categoryLabel || "Assigned Track"}</span>
+                <span style={{ background: "#dcfce7", color: "#15803d", padding: "2px 8px", borderRadius: "12px", fontWeight: "700" }}>
+                  Score: {student.score} / {student.maxScore || 30} Marks
+                </span>
+              </div>
+            )}
 
             <div className="banner-chips-row">
               <span className="b-chip">📚 4 Comprehensive Units</span>

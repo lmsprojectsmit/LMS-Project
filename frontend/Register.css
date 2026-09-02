@@ -1317,7 +1317,7 @@
 
   .ticket-actions {
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     width: 100%;
   }
 
@@ -1325,24 +1325,83 @@
   .ticket-secondary-btn,
   .ticket-login-btn {
     width: 100%;
-    padding: 10px;
-    font-size: 13px;
+    padding: 9px;
+    font-size: 12px;
   }
 }
 
-@media (max-width: 460px) {
+@media (max-width: 480px) {
+  .register-nav {
+    padding: 8px 10px;
+  }
+
+  .brand-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+
+  .brand-title {
+    font-size: 14.5px;
+  }
+
   .nav-actions {
-    flex-direction: column;
+    flex-direction: row;
     gap: 4px;
+    flex-wrap: wrap;
+    width: 100%;
   }
 
   .nav-overview-btn,
   .nav-login-btn {
-    padding: 5px 8px;
+    padding: 4px 8px;
     font-size: 11px;
+    flex: 1;
     text-align: center;
     justify-content: center;
-    width: 100%;
+  }
+
+  .course-hub-card {
+    padding: 12px 10px;
+    border-radius: 12px;
+  }
+
+  .course-name-title {
+    font-size: 17px;
+  }
+
+  .form-card {
+    padding: 16px 12px;
+    border-radius: 12px;
+  }
+
+  .form-header h2 {
+    font-size: 18px;
+  }
+
+  .form-intro {
+    font-size: 12px;
+  }
+
+  .section-label {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .input-field label {
+    font-size: 11.5px;
+  }
+
+  .input-field input,
+  .input-field select {
+    padding: 8px 10px;
+    font-size: 12.5px;
+  }
+
+  .register-submit-btn {
+    padding: 11px 16px;
+    font-size: 14px;
+    border-radius: 8px;
   }
 }
 

@@ -1249,7 +1249,7 @@
   }
 
   .faculty-hero-banner {
-    padding: 24px 20px;
+    padding: 20px 16px;
   }
 
   .faculty-kpi-grid {
@@ -1266,5 +1266,221 @@
 
   .student-cards-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Phone Screen Component Scaling */
+@media (max-width: 600px) {
+  .faculty-nav {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .fac-logo {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+
+  .fac-nav-title {
+    font-size: 14.5px;
+  }
+
+  .fac-nav-sub {
+    display: none;
+  }
+
+  .fac-nav-buttons {
+    width: 100%;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .fac-btn-outline,
+  .fac-btn-primary {
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 6px;
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .faculty-container {
+    padding: 10px 8px 30px;
+  }
+
+  .faculty-hero-banner {
+    padding: 14px 12px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+
+  .fh-badge-cluster {
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+
+  .fh-badge,
+  .fh-badge-sec,
+  .fh-badge-live {
+    font-size: 9.5px;
+    padding: 2px 6px;
+  }
+
+  .fh-title {
+    font-size: 16px;
+    line-height: 1.25;
+    margin-bottom: 4px;
+  }
+
+  .fh-desc {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .faculty-kpi-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .kpi-card {
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .kpi-icon {
+    font-size: 16px;
+  }
+
+  .kpi-label {
+    font-size: 10px;
+  }
+
+  .kpi-number {
+    font-size: 18px;
+    margin: 2px 0;
+  }
+
+  .kpi-sub {
+    font-size: 9.5px;
+  }
+
+  .faculty-controls-bar {
+    padding: 10px;
+    border-radius: 10px;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .search-input-box input {
+    padding: 6px 10px 6px 28px;
+    font-size: 11.5px;
+  }
+
+  .filter-cluster {
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .fc-select {
+    padding: 5px 8px;
+    font-size: 11px;
+    flex: 1;
+  }
+
+  .btn-export-csv {
+    width: 100%;
+    justify-content: center;
+    padding: 7px;
+    font-size: 11.5px;
+  }
+
+  .faculty-table {
+    min-width: 680px;
+  }
+
+  .faculty-table th,
+  .faculty-table td {
+    padding: 7px 8px;
+    font-size: 11px;
+  }
+
+  .student-grid-card {
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .sgc-name {
+    font-size: 13px;
+  }
+
+  .sgc-score {
+    font-size: 15px;
+  }
+
+  .btn-open-student {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .student-profile-modal {
+    padding: 14px 10px;
+    border-radius: 12px;
+    max-width: 96vw;
+    max-height: 92vh;
+  }
+
+  .spm-name {
+    font-size: 16px;
+  }
+
+  .spm-meta {
+    font-size: 10.5px;
+  }
+
+  .spm-info-strip {
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    padding: 8px;
+  }
+
+  .spm-item .spm-lbl {
+    font-size: 9.5px;
+  }
+
+  .spm-item .spm-val {
+    font-size: 11px;
+  }
+
+  .spm-domains-grid {
+    gap: 6px;
+  }
+
+  .spm-dom-card {
+    padding: 8px 10px;
+  }
+
+  .dom-name {
+    font-size: 11px;
+  }
+
+  .dom-score {
+    font-size: 11px;
+  }
+
+  .spm-footer {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .spm-btn-secondary,
+  .spm-btn-primary {
+    width: 100%;
+    padding: 8px;
+    font-size: 11.5px;
   }
 }

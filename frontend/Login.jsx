@@ -1,10 +1,10 @@
 import { useState } from "react";
 import "./Login.css";
 
-function Login({ onNavigate }) {
+function Login({ onNavigate, registeredStudent }) {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: "",
+    email: registeredStudent?.email || "",
     password: "",
     role: "student",
     rememberMe: false,
@@ -26,16 +26,37 @@ function Login({ onNavigate }) {
       if (onNavigate) onNavigate("faculty");
     } else {
       // Directs logged-in student directly to their Unit-Wise Course Syllabus
-      const studentDisplayName = formData.email
+      let studentDisplayName = formData.email
         ? formData.email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
         : "Student";
-      alert(`Welcome back, ${studentDisplayName}! Directing to your Unit-Wise Syllabus.`);
-      if (onNavigate) onNavigate("syllabus", {
+
+      let studentData = {
         fullName: studentDisplayName,
         email: formData.email,
         role: "student",
         isExistingStudent: true,
-      });
+      };
+
+      if (registeredStudent) {
+        const emailMatches =
+          !formData.email ||
+          (registeredStudent.email &&
+            registeredStudent.email.toLowerCase() === formData.email.toLowerCase()) ||
+          (registeredStudent.rollNo &&
+            formData.email.toLowerCase().includes(registeredStudent.rollNo.toLowerCase()));
+
+        if (emailMatches) {
+          studentData = {
+            ...registeredStudent,
+            role: "student",
+            isExistingStudent: true,
+          };
+          studentDisplayName = registeredStudent.fullName || studentDisplayName;
+        }
+      }
+
+      alert(`Welcome back, ${studentDisplayName}! Directing to your Unit-Wise Syllabus.`);
+      if (onNavigate) onNavigate("syllabus", studentData);
     }
   };
 
@@ -72,7 +93,7 @@ function Login({ onNavigate }) {
               id="login-email"
               type="text"
               name="email"
-              placeholder="e.g. rollno@institution.edu"
+              placeholder="e.g. regno@institution.edu or student@institution.edu"
               value={formData.email}
               onChange={handleChange}
               required

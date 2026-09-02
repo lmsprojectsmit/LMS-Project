@@ -27,6 +27,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
     password: "",
     confirmPassword: "",
     agreeTerms: false,
+    role: "student",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -143,7 +144,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
     }
 
     if (!formData.rollNo.trim()) {
-      newErrors.rollNo = "Roll number / Student ID is required.";
+      newErrors.rollNo = "Registration number is required.";
     }
 
     if (!formData.password) {
@@ -419,7 +420,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
                   {/* Roll No / Reg ID */}
                   <div className="input-field">
                     <label htmlFor={rollNoId}>
-                      Roll Number / Student ID <span className="req">*</span>
+                      Registration Number <span className="req">*</span>
                     </label>
                     <input
                       id={rollNoId}
@@ -466,10 +467,10 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
                       value={formData.year}
                       onChange={handleChange}
                     >
-                      <option value="1st Year">1st Year (Freshman)</option>
-                      <option value="2nd Year">2nd Year (Sophomore)</option>
-                      <option value="3rd Year">3rd Year (Junior)</option>
-                      <option value="4th Year">4th Year (Senior)</option>
+                      <option value="1st Year">1st Year</option>
+                      <option value="2nd Year">2nd Year</option>
+                      <option value="3rd Year">3rd Year</option>
+                      <option value="4th Year">4th Year</option>
                     </select>
                   </div>
 
@@ -718,7 +719,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
                 <strong>{formData.fullName}</strong>
               </div>
               <div className="ticket-row">
-                <span>Roll Number:</span>
+                <span>Registration Number:</span>
                 <strong>{formData.rollNo}</strong>
               </div>
               <div className="ticket-row">
@@ -726,8 +727,12 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
                 <strong>{formData.department}</strong>
               </div>
               <div className="ticket-row">
-                <span>Year / Sem / Section:</span>
-                <strong>{formData.year} • {formData.sem} • {formData.section}</strong>
+                <span>Year:</span>
+                <strong>{formData.year}</strong>
+              </div>
+              <div className="ticket-row">
+                <span>Semester / Section:</span>
+                <strong>{formData.sem} • {formData.section}</strong>
               </div>
               <div className="ticket-row">
                 <span>Mail ID:</span>
@@ -755,7 +760,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
               marginBottom: "16px",
               textAlign: "left"
             }}>
-              <strong>⚠️ Mandatory Enrolment Requirement:</strong> To complete course registration and calibrate your assigned syllabus modules, all registering students must take the 20-Question Diagnostic Assessment test (1 Mark each).
+              <strong>⚠️ Mandatory Enrolment Requirement:</strong> To complete course registration and calibrate your assigned syllabus modules, all registering students must take the 30-Question Diagnostic Assessment test (1 Mark each • 25 Mins).
             </div>
 
             <div className="ticket-actions" style={{ flexWrap: "wrap" }}>
@@ -784,7 +789,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
                   if (onNavigate) onNavigate("assessment", formData);
                 }}
               >
-                <span>📝 Start Mandatory Capability Assessment (20 Qs • 20 Marks)</span>
+                <span>📝 Start Mandatory Capability Assessment (30 Qs • 30 Marks • 25 Mins)</span>
                 <span>➔</span>
               </button>
               <button

@@ -15,16 +15,21 @@ function App() {
   const [currentLesson, setCurrentLesson] = useState(null);
 
   const handleNavigate = (page, data = null) => {
-    if ((page === "home" || page === "syllabus" || page === "lesson") && data && data.role) {
-      setCurrentUser(data);
-    } else if (data && data.student && data.student.role) {
-      setCurrentUser(data.student);
-    }
-    if (page === "lesson" && data) {
-      setCurrentLesson(data);
-    }
-    if (data && !data.isExistingStudent && !data.student) {
-      setRegisteredStudent(data);
+    if (data) {
+      if ((page === "home" || page === "syllabus" || page === "lesson") && data.role) {
+        setCurrentUser(data);
+      } else if (data.student && data.student.role) {
+        setCurrentUser(data.student);
+      }
+      if (page === "lesson") {
+        setCurrentLesson(data);
+      }
+      if (!data.isExistingStudent && !data.student) {
+        setRegisteredStudent((prev) => ({ ...(prev || {}), ...data }));
+        if (data.role) {
+          setCurrentUser((prev) => ({ ...(prev || {}), ...data }));
+        }
+      }
     }
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -63,13 +68,16 @@ function App() {
       )}
 
       {currentPage === "login" && (
-        <Login onNavigate={handleNavigate} />
+        <Login
+          onNavigate={handleNavigate}
+          registeredStudent={registeredStudent}
+        />
       )}
 
       {currentPage === "syllabus" && (
         <Syllabus
           onNavigate={handleNavigate}
-          student={currentUser}
+          student={currentUser || registeredStudent}
           onLogout={handleLogout}
         />
       )}
@@ -77,7 +85,7 @@ function App() {
       {currentPage === "lesson" && (
         <LessonView
           onNavigate={handleNavigate}
-          student={currentUser}
+          student={currentUser || registeredStudent}
           lessonInfo={currentLesson}
           onLogout={handleLogout}
         />

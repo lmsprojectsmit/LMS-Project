@@ -412,7 +412,9 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout }) {
   };
 
   const handleCopyFormula = (formula, index) => {
-    navigator.clipboard.writeText(formula);
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(formula).catch(() => {});
+    }
     setCopiedFormula(index);
     setTimeout(() => setCopiedFormula(null), 2000);
   };
