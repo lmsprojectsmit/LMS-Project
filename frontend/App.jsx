@@ -4,6 +4,7 @@ import Login from "./Login";
 import Register from "./Register";
 import Assessment from "./Assessment";
 import Faculty from "./Faculty";
+import Syllabus from "./Syllabus";
 
 function App() {
   // Default to the explanatory homepage when opening the website
@@ -12,7 +13,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
 
   const handleNavigate = (page, data = null) => {
-    if (page === "home" && data && data.role) {
+    if ((page === "home" || page === "syllabus") && data && data.role) {
       setCurrentUser(data);
     }
     if (data && !data.isExistingStudent) {
@@ -56,6 +57,14 @@ function App() {
 
       {currentPage === "login" && (
         <Login onNavigate={handleNavigate} />
+      )}
+
+      {currentPage === "syllabus" && (
+        <Syllabus
+          onNavigate={handleNavigate}
+          student={currentUser}
+          onLogout={handleLogout}
+        />
       )}
 
       {currentPage === "faculty" && (

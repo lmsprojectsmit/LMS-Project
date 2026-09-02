@@ -25,10 +25,13 @@ function Login({ onNavigate }) {
       alert(`Welcome Faculty: ${formData.email || "Dr. K. Senthil Kumar"}. Redirecting to Faculty Dashboard.`);
       if (onNavigate) onNavigate("faculty");
     } else {
-      // Diagnostic test is NOT required for already registered students logging in
-      alert(`Welcome back, Student (${formData.email || "Student"})! Logged in successfully.`);
-      if (onNavigate) onNavigate("home", {
-        fullName: formData.email ? formData.email.split("@")[0] : "Student",
+      // Directs logged-in student directly to their Unit-Wise Course Syllabus
+      const studentDisplayName = formData.email
+        ? formData.email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+        : "Student";
+      alert(`Welcome back, ${studentDisplayName}! Directing to your Unit-Wise Syllabus.`);
+      if (onNavigate) onNavigate("syllabus", {
+        fullName: studentDisplayName,
         email: formData.email,
         role: "student",
         isExistingStudent: true,

@@ -48,6 +48,14 @@ function Home({ onNavigate, currentUser, onLogout }) {
         <div className="nav-buttons">
           {currentUser ? (
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <button
+                type="button"
+                className="nav-btn-secondary"
+                style={{ borderColor: "#6366f1", color: "#4338ca", fontWeight: "700", background: "#f5f3ff" }}
+                onClick={() => onNavigate("syllabus", currentUser)}
+              >
+                📖 Unit-Wise Syllabus
+              </button>
               <span style={{
                 background: "#ecfdf5",
                 color: "#065f46",
@@ -61,7 +69,7 @@ function Home({ onNavigate, currentUser, onLogout }) {
                 gap: "6px"
               }}>
                 <span>👤</span>
-                <span>Welcome, {currentUser.fullName || "Student"}</span>
+                <span>{currentUser.fullName || "Student"}</span>
               </span>
               <button
                 type="button"
