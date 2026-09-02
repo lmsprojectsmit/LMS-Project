@@ -49,14 +49,6 @@ function Home({ onNavigate }) {
           <button
             type="button"
             className="nav-btn-secondary"
-            onClick={() => onNavigate("faculty")}
-            style={{ borderColor: "#6366f1", color: "#3730a3", fontWeight: "700", background: "#f5f3ff" }}
-          >
-            👨‍🏫 Faculty Portal
-          </button>
-          <button
-            type="button"
-            className="nav-btn-secondary"
             onClick={() => onNavigate("assessment")}
             style={{ borderColor: "#818cf8", color: "#4338ca", fontWeight: "700" }}
           >
