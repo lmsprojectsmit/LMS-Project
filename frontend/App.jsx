@@ -5,18 +5,25 @@ import Register from "./Register";
 import Assessment from "./Assessment";
 import Faculty from "./Faculty";
 import Syllabus from "./Syllabus";
+import LessonView from "./LessonView";
 
 function App() {
   // Default to the explanatory homepage when opening the website
   const [currentPage, setCurrentPage] = useState("home");
   const [registeredStudent, setRegisteredStudent] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [currentLesson, setCurrentLesson] = useState(null);
 
   const handleNavigate = (page, data = null) => {
-    if ((page === "home" || page === "syllabus") && data && data.role) {
+    if ((page === "home" || page === "syllabus" || page === "lesson") && data && data.role) {
       setCurrentUser(data);
+    } else if (data && data.student && data.student.role) {
+      setCurrentUser(data.student);
     }
-    if (data && !data.isExistingStudent) {
+    if (page === "lesson" && data) {
+      setCurrentLesson(data);
+    }
+    if (data && !data.isExistingStudent && !data.student) {
       setRegisteredStudent(data);
     }
     setCurrentPage(page);
@@ -63,6 +70,15 @@ function App() {
         <Syllabus
           onNavigate={handleNavigate}
           student={currentUser}
+          onLogout={handleLogout}
+        />
+      )}
+
+      {currentPage === "lesson" && (
+        <LessonView
+          onNavigate={handleNavigate}
+          student={currentUser}
+          lessonInfo={currentLesson}
           onLogout={handleLogout}
         />
       )}

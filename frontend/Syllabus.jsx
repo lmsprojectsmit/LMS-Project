@@ -459,6 +459,25 @@ function Syllabus({ onNavigate, student, onLogout }) {
                                 <h5 className="topic-name">{t.name}</h5>
                               </div>
                               <p className="topic-desc">{t.desc}</p>
+                              <div className="topic-card-actions">
+                                <button
+                                  type="button"
+                                  className="btn-open-topic-lesson"
+                                  onClick={() =>
+                                    onNavigate("lesson", {
+                                      code: t.code,
+                                      name: t.name,
+                                      unitNumber: unit.unitNumber,
+                                      unitTitle: unit.title,
+                                      desc: t.desc,
+                                      student,
+                                    })
+                                  }
+                                >
+                                  <span>▶️ Watch Video & Written Notes</span>
+                                  <span>➔</span>
+                                </button>
+                              </div>
                             </div>
                           ))}
                         </div>
