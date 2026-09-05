@@ -1,0 +1,711 @@
+/* ==========================================================
+   EDUVERSE LMS - GLOBAL THEME SYSTEM (LIGHT & DARK MODE)
+   ========================================================== */
+
+/* ----------------------------------------------------------
+   1. ROOT VARIABLES & THEME TOKENS
+   ---------------------------------------------------------- */
+:root,
+[data-theme="light"] {
+  --color-scheme: light;
+
+  /* Universal Surface & Text Tokens */
+  --theme-bg-canvas: #f8fafc;
+  --theme-bg-surface: #ffffff;
+  --theme-bg-surface-elevated: #ffffff;
+  --theme-bg-subtle: #f1f5f9;
+  --theme-border-subtle: #e2e8f0;
+  --theme-border-strong: #cbd5e1;
+  --theme-text-primary: #0f172a;
+  --theme-text-secondary: #475569;
+  --theme-text-muted: #64748b;
+  --theme-shadow-card: 0 4px 16px -2px rgba(15, 23, 42, 0.06), 0 2px 4px -1px rgba(15, 23, 42, 0.04);
+  --theme-nav-glass: rgba(255, 255, 255, 0.92);
+
+  /* Primary Brand Accents */
+  --theme-primary: #4338ca;
+  --theme-primary-hover: #3730a3;
+  --theme-primary-subtle: #eef2ff;
+  --theme-accent: #f59e0b;
+  --theme-accent-subtle: #fef3c7;
+}
+
+[data-theme="dark"],
+body.theme-dark,
+.app-root.theme-dark {
+  --color-scheme: dark;
+
+  /* Universal Surface & Text Tokens */
+  --theme-bg-canvas: #090d16;
+  --theme-bg-surface: #111827;
+  --theme-bg-surface-elevated: #1a2234;
+  --theme-bg-subtle: #161f32;
+  --theme-border-subtle: #243048;
+  --theme-border-strong: #334155;
+  --theme-text-primary: #f8fafc;
+  --theme-text-secondary: #cbd5e1;
+  --theme-text-muted: #94a3b8;
+  --theme-shadow-card: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.4);
+  --theme-nav-glass: rgba(15, 23, 42, 0.92);
+
+  /* Primary Brand Accents */
+  --theme-primary: #6366f1;
+  --theme-primary-hover: #818cf8;
+  --theme-primary-subtle: rgba(99, 102, 241, 0.15);
+  --theme-accent: #fbbf24;
+  --theme-accent-subtle: rgba(245, 158, 11, 0.15);
+
+  /* Home.css Overrides */
+  --home-bg: #090d16;
+  --home-text-main: #f8fafc;
+  --home-text-muted: #94a3b8;
+  --home-border: #243048;
+  --home-primary: #6366f1;
+  --home-primary-light: rgba(99, 102, 241, 0.16);
+  --home-accent-light: rgba(245, 158, 11, 0.16);
+  --home-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.4);
+  --home-shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.5);
+  --home-shadow-lg: 0 16px 36px -6px rgba(0, 0, 0, 0.65);
+
+  /* Faculty.css Overrides */
+  --fac-bg: #090d16;
+  --fac-card-bg: #111827;
+  --fac-border: #243048;
+  --fac-text-main: #f8fafc;
+  --fac-text-muted: #94a3b8;
+  --fac-primary: #6366f1;
+  --fac-primary-light: rgba(99, 102, 241, 0.16);
+  --fac-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.3);
+  --fac-shadow-md: 0 8px 20px -4px rgba(0, 0, 0, 0.5);
+  --fac-shadow-lg: 0 16px 32px -6px rgba(0, 0, 0, 0.6);
+
+  /* Admin.css Overrides */
+  --admin-bg: #070a12;
+  --admin-card-bg: #0f172a;
+  --admin-border: #1e293b;
+  --admin-border-dark: #334155;
+  --admin-text-main: #f8fafc;
+  --admin-text-muted: #94a3b8;
+  --admin-primary-dark: #020617;
+  --admin-emerald-light: rgba(5, 150, 105, 0.18);
+  --admin-indigo-light: rgba(99, 102, 241, 0.18);
+  --admin-amber-light: rgba(217, 119, 6, 0.18);
+  --admin-rose-light: rgba(225, 29, 72, 0.18);
+  --admin-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+  --admin-shadow-md: 0 8px 20px -2px rgba(0, 0, 0, 0.5);
+  --admin-shadow-lg: 0 16px 36px -4px rgba(0, 0, 0, 0.65);
+
+  /* Assessment / Register / Login Overrides */
+  --color-bg: #090d16;
+  --color-paper: #111827;
+  --color-text-main: #f8fafc;
+  --color-text-muted: #94a3b8;
+  --color-border: #243048;
+  --color-primary: #6366f1;
+  --color-primary-light: rgba(99, 102, 241, 0.16);
+  --color-accent-light: rgba(245, 158, 11, 0.16);
+  --color-bg-gradient-start: #090d16;
+  --color-bg-gradient-end: #111827;
+}
+
+/* ----------------------------------------------------------
+   2. THEME TRANSITIONS & BASE RESETS
+   ---------------------------------------------------------- */
+body {
+  margin: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.app-root {
+  min-height: 100vh;
+  background-color: var(--theme-bg-canvas);
+  color: var(--theme-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ----------------------------------------------------------
+   3. THEME TOGGLE BUTTON STYLES (INLINE & FLOATING)
+   ---------------------------------------------------------- */
+
+/* Inline Navbar Theme Toggle Button */
+.theme-nav-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--theme-bg-surface-elevated, #ffffff);
+  border: 1px solid var(--theme-border-strong, #cbd5e1);
+  color: var(--theme-text-primary, #0f172a);
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.theme-nav-toggle-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--theme-primary, #6366f1);
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+}
+
+.theme-toggle-track {
+  width: 32px;
+  height: 18px;
+  background: #cbd5e1;
+  border-radius: 20px;
+  position: relative;
+  transition: background 0.25s ease;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+}
+
+[data-theme="dark"] .theme-toggle-track {
+  background: #4f46e5;
+}
+
+.theme-toggle-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .theme-toggle-thumb {
+  transform: translateX(14px);
+  background: #0f172a;
+}
+
+.theme-nav-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* Persistent Floating Theme Switcher Widget */
+.floating-theme-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 99999;
+  animation: floatWidgetPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes floatWidgetPop {
+  0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.floating-theme-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(226, 232, 240, 0.9);
+  color: #0f172a;
+  border-radius: 9999px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 13.5px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.06);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] .floating-theme-btn {
+  background: rgba(17, 24, 39, 0.88);
+  border-color: rgba(51, 65, 85, 0.9);
+  color: #f8fafc;
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.6), 0 0 16px rgba(99, 102, 241, 0.25);
+}
+
+.floating-theme-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 16px 36px -4px rgba(99, 102, 241, 0.3), 0 4px 12px rgba(0, 0, 0, 0.12);
+  border-color: #6366f1;
+}
+
+.theme-toggle-icon {
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.floating-theme-btn:hover .theme-toggle-icon {
+  transform: rotate(25deg) scale(1.15);
+}
+
+.theme-shortcut-hint {
+  font-size: 10.5px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(100, 116, 139, 0.15);
+  color: var(--theme-text-muted, #64748b);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+[data-theme="dark"] .theme-shortcut-hint {
+  background: rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+}
+
+/* Floating Theme Switcher Mobile Adjustments */
+@media (max-width: 768px) {
+  .floating-theme-widget {
+    bottom: 16px;
+    right: 16px;
+  }
+  .floating-theme-btn {
+    padding: 8px 12px;
+    gap: 6px;
+    font-size: 12px;
+  }
+  .theme-shortcut-hint {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-theme-widget {
+    bottom: 12px;
+    right: 12px;
+  }
+  .floating-theme-btn {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  .floating-theme-label {
+    display: none;
+  }
+  .theme-toggle-icon {
+    font-size: 20px;
+  }
+}
+
+/* ----------------------------------------------------------
+   4. COMPREHENSIVE DARK MODE PAGE-SPECIFIC OVERRIDES
+   ---------------------------------------------------------- */
+
+[data-theme="dark"] {
+  /* Common Navigation Bars across all pages */
+  .syllabus-nav,
+  .lesson-nav,
+  .home-header,
+  .faculty-nav,
+  .admin-header,
+  .assessment-nav {
+    background: rgba(15, 23, 42, 0.92) !important;
+    backdrop-filter: blur(14px) !important;
+    border-bottom: 1px solid #1e293b !important;
+    color: #f8fafc !important;
+  }
+
+  .syllabus-platform-name,
+  .course-title-txt,
+  .admin-header-title,
+  .fac-title,
+  .home-brand-title {
+    color: #f8fafc !important;
+  }
+
+  .syllabus-nav-tag,
+  .admin-header-sub,
+  .fac-subtitle {
+    color: #94a3b8 !important;
+  }
+
+  /* SYLLABUS PORTAL PAGE */
+  .syllabus-portal-page {
+    background-color: #090d16 !important;
+    color: #f8fafc !important;
+  }
+
+  .syllabus-header-card,
+  .syllabus-summary-box,
+  .unit-card,
+  .syllabus-sidebar,
+  .unit-exam-card,
+  .syllabus-info-box {
+    background: #111827 !important;
+    border-color: #243048 !important;
+    color: #f8fafc !important;
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .topic-item {
+    background: #161f32 !important;
+    border-color: #243048 !important;
+    color: #f8fafc !important;
+  }
+
+  .topic-item:hover {
+    background: #1e2a44 !important;
+    border-color: #6366f1 !important;
+  }
+
+  .topic-title,
+  .unit-title-txt,
+  .unit-hours-badge,
+  .unit-ref-text {
+    color: #f8fafc !important;
+  }
+
+  .topic-desc,
+  .unit-overview-p {
+    color: #cbd5e1 !important;
+  }
+
+  .syllabus-nav-btn.secondary,
+  .btn-filter-unit,
+  .btn-back-syllabus,
+  .btn-home-nav {
+    background: #161f32 !important;
+    border-color: #334155 !important;
+    color: #e2e8f0 !important;
+  }
+
+  .syllabus-nav-btn.secondary:hover,
+  .btn-filter-unit:hover,
+  .btn-back-syllabus:hover,
+  .btn-home-nav:hover {
+    background: #4f46e5 !important;
+    color: #ffffff !important;
+    border-color: #6366f1 !important;
+  }
+
+  /* LESSON VIEW PAGE */
+  .lesson-page-root {
+    background-color: #090d16 !important;
+    color: #f8fafc !important;
+  }
+
+  .lesson-header-strip,
+  .lhs-banner,
+  .notes-card,
+  .notes-section,
+  .video-card,
+  .video-chapters-box,
+  .takeaway-box,
+  .dr-balaji-profile,
+  .worked-problem-box {
+    background: #111827 !important;
+    border-color: #243048 !important;
+    color: #f8fafc !important;
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  .axiom-card,
+  .step-item,
+  .chapter-item-btn {
+    background: #161f32 !important;
+    border-color: #243048 !important;
+    color: #f8fafc !important;
+  }
+
+  .chapter-item-btn:hover {
+    background: #1e2a44 !important;
+    border-color: #6366f1 !important;
+  }
+
+  .lhs-main-title,
+  .notes-h2,
+  .axiom-name,
+  .vcb-title,
+  .wp-problem-title {
+    color: #f8fafc !important;
+  }
+
+  .lhs-instructor,
+  .axiom-desc,
+  .wp-text,
+  .notes-intro-p {
+    color: #cbd5e1 !important;
+  }
+
+  .mode-btn {
+    background: #161f32 !important;
+    color: #cbd5e1 !important;
+    border-color: #243048 !important;
+  }
+
+  .mode-btn.active {
+    background: #4f46e5 !important;
+    color: #ffffff !important;
+    border-color: #6366f1 !important;
+  }
+
+  .player-controls-bar {
+    background: #0f172a !important;
+    border-top: 1px solid #1e293b !important;
+  }
+
+  /* HOME PAGE */
+  .home-page {
+    background-color: #090d16 !important;
+    background-image: 
+      radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.14) 0%, transparent 40%),
+      radial-gradient(circle at 85% 65%, rgba(245, 158, 11, 0.1) 0%, transparent 40%),
+      linear-gradient(#161f32 1px, transparent 1px),
+      linear-gradient(to right, #161f32 1px, transparent 1px) !important;
+    color: #f8fafc !important;
+  }
+
+  .floating-sym {
+    color: rgba(99, 102, 241, 0.22) !important;
+  }
+
+  .hero-card,
+  .feature-card,
+  .benefit-card,
+  .stat-card,
+  .syllabus-preview-card,
+  .home-section-card,
+  .course-unit-pill-card,
+  .faculty-spotlight-card,
+  .home-footer {
+    background: #111827 !important;
+    border-color: #243048 !important;
+    color: #f8fafc !important;
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  .hero-headline,
+  .section-heading,
+  .card-heading,
+  .stat-number {
+    color: #f8fafc !important;
+  }
+
+  .hero-subhead,
+  .section-subtext,
+  .card-p,
+  .stat-label {
+    color: #cbd5e1 !important;
+  }
+
+  .nav-link-btn {
+    color: #cbd5e1 !important;
+  }
+
+  .nav-link-btn:hover {
+    color: #818cf8 !important;
+  }
+
+  /* FACULTY PORTAL */
+  .faculty-portal-page {
+    background: #090d16 !important;
+    color: #f8fafc !important;
+  }
+
+  .fac-stat-card,
+  .fac-filter-bar,
+  .student-table,
+  .fac-chart-card,
+  .fac-modal-card {
+    background: #111827 !important;
+    border-color: #243048 !important;
+    color: #f8fafc !important;
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  .student-table th {
+    background: #161f32 !important;
+    color: #94a3b8 !important;
+    border-bottom: 1px solid #243048 !important;
+  }
+
+  .student-table td {
+    border-bottom: 1px solid #1e293b !important;
+    color: #e2e8f0 !important;
+  }
+
+  .student-table tr:hover td {
+    background: #182236 !important;
+  }
+
+  .fac-input,
+  .fac-select {
+    background: #161f32 !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+  }
+
+  /* ADMIN PORTAL */
+  .admin-portal-root {
+    background-color: #070a12 !important;
+    color: #f8fafc !important;
+  }
+
+  .adm-card,
+  .adm-table-wrap,
+  .adm-metric-card,
+  .adm-sub-card,
+  .adm-filter-bar {
+    background: #0f172a !important;
+    border-color: #1e293b !important;
+    color: #f8fafc !important;
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .admin-table th {
+    background: #161f32 !important;
+    color: #94a3b8 !important;
+    border-bottom: 1px solid #1e293b !important;
+  }
+
+  .admin-table td {
+    border-bottom: 1px solid #1a2333 !important;
+    color: #e2e8f0 !important;
+  }
+
+  .admin-table tr:hover td {
+    background: #131d31 !important;
+  }
+
+  /* ASSESSMENT PAGE */
+  .assessment-page {
+    background-color: #090d16 !important;
+    color: #f8fafc !important;
+    background-image: 
+      radial-gradient(circle at 10% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 30%),
+      radial-gradient(circle at 90% 85%, rgba(245, 158, 11, 0.08) 0%, transparent 35%),
+      linear-gradient(#161f32 1px, transparent 1px),
+      linear-gradient(to right, #161f32 1px, transparent 1px) !important;
+  }
+
+  .asmt-container,
+  .asmt-paper,
+  .asmt-sidebar,
+  .asmt-question-card,
+  .asmt-results-card {
+    background: #111827 !important;
+    border-color: #243048 !important;
+    color: #f8fafc !important;
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .asmt-option {
+    background: #161f32 !important;
+    border-color: #243048 !important;
+    color: #f8fafc !important;
+  }
+
+  .asmt-option:hover {
+    background: #1e2a44 !important;
+    border-color: #6366f1 !important;
+  }
+
+  .asmt-option.selected {
+    background: rgba(99, 102, 241, 0.22) !important;
+    border-color: #818cf8 !important;
+    color: #ffffff !important;
+  }
+
+  /* LOGIN & REGISTER PAGES */
+  .login-container,
+  .register-page {
+    background: #090d16 !important;
+    color: #f8fafc !important;
+  }
+
+  .login-card,
+  .reg-form-card,
+  .reg-sidebar,
+  .reg-card {
+    background: #111827 !important;
+    border-color: #243048 !important;
+    color: #f8fafc !important;
+    box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  .login-input,
+  .reg-input,
+  .reg-select {
+    background: #161f32 !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+  }
+
+  .login-input:focus,
+  .reg-input:focus,
+  .reg-select:focus {
+    border-color: #818cf8 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.28) !important;
+  }
+
+  /* MICRO TOPIC TEST MODAL */
+  .mtt-container {
+    background: #111827 !important;
+    border-color: #243048 !important;
+    color: #f8fafc !important;
+  }
+
+  .mtt-header {
+    background: #0b1120 !important;
+    border-color: #1e293b !important;
+  }
+
+  .mtt-body,
+  .mtt-question-box,
+  .mtt-footer {
+    background: #111827 !important;
+    border-color: #243048 !important;
+    color: #f8fafc !important;
+  }
+
+  .mtt-option {
+    background: #161f32 !important;
+    border-color: #243048 !important;
+    color: #f8fafc !important;
+  }
+
+  .mtt-option:hover {
+    background: #1e2a44 !important;
+    border-color: #6366f1 !important;
+  }
+
+  .mtt-option.selected {
+    background: rgba(99, 102, 241, 0.25) !important;
+    border-color: #818cf8 !important;
+    color: #ffffff !important;
+  }
+
+  /* General Form Inputs, Selects & Buttons in Dark Mode */
+  input, select, textarea {
+    color-scheme: dark;
+  }
+
+  /* Custom Scrollbars in Dark Mode */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #090d16;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #243048;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+  }
+}

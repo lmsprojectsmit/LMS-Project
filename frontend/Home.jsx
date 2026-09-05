@@ -1,11 +1,51 @@
 import { useEffect } from "react";
 import "./Home.css";
+import ThemeToggle from "./ThemeToggle";
 
-function Home({ onNavigate, currentUser, onLogout }) {
+function Home({ onNavigate, currentUser, onLogout, theme, onToggleTheme }) {
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const scrollToRegistrationButton = (e) => {
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
+    const btn =
+      document.getElementById("dedicated-student-register-btn") ||
+      document.getElementById("register-now");
+
+    if (btn) {
+      // 1. Center the button in view smoothly
+      btn.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      // 2. Fallback window-level smooth scroll calculation to guarantee exact center landing
+      const rect = btn.getBoundingClientRect();
+      const absoluteTop = window.pageYOffset + rect.top;
+      const targetY = absoluteTop - window.innerHeight / 2 + rect.height / 2;
+      window.scrollTo({
+        top: Math.max(0, targetY),
+        behavior: "smooth",
+      });
+
+      // 3. Highlight pulse effect so the student's eyes are immediately drawn to the button
+      btn.classList.remove("btn-highlight-pulse");
+      void btn.offsetWidth;
+      btn.classList.add("btn-highlight-pulse");
+
+      // 4. Safely apply focus after scroll completes without disrupting smooth scroll
+      setTimeout(() => {
+        try {
+          btn.focus({ preventScroll: true });
+        } catch {}
+      }, 700);
+
+      setTimeout(() => {
+        btn.classList.remove("btn-highlight-pulse");
+      }, 3000);
     }
   };
 
@@ -33,7 +73,6 @@ function Home({ onNavigate, currentUser, onLogout }) {
       {/* Navigation Bar */}
       <header className="home-nav">
         <div className="nav-brand-container">
-          <span className="brand-logo-icon">📐</span>
           <div className="brand-titles">
             <span className="brand-name">EduVerse LMS</span>
             <span className="brand-tagline">Academic Learning Management System</span>
@@ -53,18 +92,11 @@ function Home({ onNavigate, currentUser, onLogout }) {
           <button type="button" className="nav-link-btn" onClick={() => scrollToSection("linear-algebra")}>
             Linear Algebra (MA25C02)
           </button>
-          <button
-            type="button"
-            className="nav-link-btn"
-            onClick={() => onNavigate("faculty")}
-            style={{ color: "#4f46e5", fontWeight: "700" }}
-            title="Faculty Performance & Cohort Intelligence Dashboard"
-          >
-            Faculty Portal 👨‍🏫
-          </button>
         </nav>
 
         <div className="nav-buttons">
+          <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+
           {currentUser ? (
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <button
@@ -73,7 +105,7 @@ function Home({ onNavigate, currentUser, onLogout }) {
                 style={{ borderColor: "#6366f1", color: "#4338ca", fontWeight: "700", background: "#f5f3ff" }}
                 onClick={() => onNavigate("syllabus", currentUser)}
               >
-                📖 Unit-Wise Syllabus
+                Unit-Wise Syllabus
               </button>
               <span style={{
                 background: "#ecfdf5",
@@ -99,11 +131,12 @@ function Home({ onNavigate, currentUser, onLogout }) {
               </button>
             </div>
           ) : (
-            <>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <button
                 type="button"
                 className="nav-btn-secondary"
                 onClick={() => onNavigate("login")}
+                style={{ fontWeight: "700", color: "#4338ca", borderColor: "#c7d2fe" }}
               >
                 Login
               </button>
@@ -114,7 +147,7 @@ function Home({ onNavigate, currentUser, onLogout }) {
               >
                 Student Registration
               </button>
-            </>
+            </div>
           )}
         </div>
       </header>
@@ -131,10 +164,6 @@ function Home({ onNavigate, currentUser, onLogout }) {
             Master Engineering Science & <span className="highlight-text">Linear Algebra (MA25C02)</span> With Guided Interactive Learning
           </h1>
 
-          <p className="hero-description">
-            EduVerse LMS is an academic portal designed for engineering students, offering structured concept training, step-by-step matrix problem solving, and self-paced progress tracking.
-          </p>
-
           <div className="hero-cta-group">
             {currentUser ? (
               <button
@@ -146,14 +175,14 @@ function Home({ onNavigate, currentUser, onLogout }) {
                 <span className="cta-arrow">→</span>
               </button>
             ) : (
-              <button
-                type="button"
+              <a
+                href="#dedicated-student-register-btn"
                 className="hero-primary-cta"
-                onClick={() => onNavigate("register")}
+                onClick={scrollToRegistrationButton}
               >
                 <span>Student Registration</span>
-                <span className="cta-arrow">→</span>
-              </button>
+                <span className="cta-arrow">↓</span>
+              </a>
             )}
 
             <button
@@ -181,33 +210,23 @@ function Home({ onNavigate, currentUser, onLogout }) {
         <div className="training-grid">
           {/* Pillar 1 */}
           <div className="training-card">
-            <div className="card-icon-bubble icon-quiz">
-              <span>📊</span>
-            </div>
             <h3 className="card-heading">1. Diagnostic Quizzes & Weak-Spot Detection</h3>
             <p className="card-body">
               Automated assessments identify your weak areas and generate targeted practice questions before midterms and semester finals.
             </p>
             <ul className="card-feature-list">
-              <li>Timed university-pattern practice papers</li>
               <li>Unit-wise accuracy breakdown & error analysis</li>
-              <li>Targeted review for difficult theorems & proofs</li>
             </ul>
           </div>
 
           {/* Pillar 2 */}
           <div className="training-card">
-            <div className="card-icon-bubble icon-video">
-              <span>🎥</span>
-            </div>
             <h3 className="card-heading">2. HD Video Archives & Micro-Lectures</h3>
             <p className="card-body">
               Recorded classroom lectures and 10-minute micro-videos focusing on key proofs and university exam problem patterns.
             </p>
             <ul className="card-feature-list">
-              <li>Direct chapter jumps to SVD, eigenvalues & proofs</li>
               <li>Downloadable digital handwritten PDF notes</li>
-              <li>Adjustable playback speeds for rapid revision</li>
             </ul>
           </div>
         </div>
@@ -290,7 +309,7 @@ function Home({ onNavigate, currentUser, onLogout }) {
 
           {/* 4 Units Syllabus for MA25C02 */}
           <div className="syllabus-section-header">
-            <h3>📖 Course Syllabus Units (MA25C02)</h3>
+            <h3>Course Syllabus Units (MA25C02)</h3>
             <p>4-unit curriculum aligned with university standards and engineering applications.</p>
           </div>
 
@@ -344,7 +363,7 @@ function Home({ onNavigate, currentUser, onLogout }) {
               {/* G. Balaji Publishers Book */}
               <div className="book-card primary-book featured-book">
                 <div className="book-badge">REFERRED BOOK</div>
-                <div className="book-icon">📖</div>
+                <div className="book-icon">📚</div>
                 <div className="book-info">
                   <h4>Linear Algebra</h4>
                   <span className="book-authors">Dr. G. Balaji</span>
@@ -362,10 +381,6 @@ function Home({ onNavigate, currentUser, onLogout }) {
       {/* DEDICATED SEPARATE REGISTRATION BUTTON & CALL TO ACTION */}
       <section className="registration-callout-section" id="register-now">
         <div className="callout-card">
-          <div className="callout-sparkles" aria-hidden="true">
-            📐 🎓 🌟 🚀 📖 🏆
-          </div>
-
           <span className="callout-badge">JOIN EDUVERSE TODAY</span>
           <h2 className="callout-headline">
             Ready to Master Linear Algebra (MA25C02)?
@@ -377,6 +392,7 @@ function Home({ onNavigate, currentUser, onLogout }) {
           {/* THE SEPARATE DEDICATED BUTTON: STUDENT REGISTRATION ONLY */}
           <div className="callout-action-row">
             <button
+              id="dedicated-student-register-btn"
               type="button"
               className="dedicated-register-btn"
               onClick={() => onNavigate("register")}
@@ -402,7 +418,6 @@ function Home({ onNavigate, currentUser, onLogout }) {
       <footer className="home-footer">
         <div className="footer-top">
           <div className="footer-brand">
-            <span className="footer-icon">📐</span>
             <span className="footer-title">EduVerse LMS</span>
             <p className="footer-tag">Department of Engineering Mathematics • Academic Portal</p>
           </div>

@@ -1,6 +1,626 @@
 import { useState, useEffect } from "react";
-import { API_BASE_URL, getStudentId } from "./api";
 import "./Assessment.css";
+import ThemeToggle from "./ThemeToggle";
+
+// 30 Questions (1 mark each, Total: 30 marks)
+// Divided across 4 core domains (Unit I - Unit IV)
+export const ASSESSMENT_QUESTIONS = [
+  // -------------------------------------------------------------
+  // Domain 1: Matrix Algebra & Properties (Q1 - Q5)
+  // -------------------------------------------------------------
+  {
+    id: 1,
+    domain: "Matrix Algebra",
+    domainCode: "unit1",
+    question: "If A is any square matrix of order n, which of the following expressions is always guaranteed to be a symmetric matrix?",
+    options: [
+      { id: "A", text: "A - Aᵀ" },
+      { id: "B", text: "A + Aᵀ" },
+      { id: "C", text: "A² - A" },
+      { id: "D", text: "A A⁻¹" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "A matrix M is symmetric if Mᵀ = M. Taking the transpose of (A + Aᵀ): (A + Aᵀ)ᵀ = Aᵀ + (Aᵀ)ᵀ = Aᵀ + A = A + Aᵀ. Since its transpose is identically equal to itself, A + Aᵀ is always symmetric.",
+    whyFalse: {
+      A: "A - Aᵀ is skew-symmetric, not symmetric, because (A - Aᵀ)ᵀ = Aᵀ - A = -(A - Aᵀ).",
+      C: "A² - A is not symmetric in general unless A itself is already symmetric and commutes.",
+      D: "A A⁻¹ equals the identity matrix I. While I is symmetric, this only exists when A is invertible; A + Aᵀ is valid for ANY square matrix."
+    }
+  },
+  {
+    id: 2,
+    domain: "Matrix Algebra",
+    domainCode: "unit1",
+    question: "If A is an m × n matrix and B is an n × p matrix, what is the order (dimension) of the product matrix (AB)ᵀ?",
+    options: [
+      { id: "A", text: "m × p" },
+      { id: "B", text: "p × m" },
+      { id: "C", text: "n × n" },
+      { id: "D", text: "p × n" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "The product AB has m rows and p columns (dimension m × p). When taking the transpose (AB)ᵀ, the rows and columns are swapped, so (AB)ᵀ has dimension p × m (also equal to Bᵀ Aᵀ where Bᵀ is p × n and Aᵀ is n × m).",
+    whyFalse: {
+      A: "m × p is the dimension of AB before transposition, not (AB)ᵀ.",
+      C: "n × n is the inner matching dimension required for matrix multiplication, not the outer dimension of the result.",
+      D: "p × n is the dimension of Bᵀ alone, not the product (AB)ᵀ."
+    }
+  },
+  {
+    id: 3,
+    domain: "Matrix Algebra",
+    domainCode: "unit1",
+    question: "The trace of an n × n square matrix A, denoted as Tr(A), is defined as:",
+    options: [
+      { id: "A", text: "The product of its main diagonal elements" },
+      { id: "B", text: "The sum of all elements in the first row" },
+      { id: "C", text: "The sum of its principal diagonal elements: ∑ aᵢᵢ" },
+      { id: "D", text: "The determinant of the matrix" }
+    ],
+    correctAnswer: "C",
+    marks: 1,
+    explanation: "By mathematical definition, the trace of a square matrix is the algebraic sum of the entries on its main (principal) diagonal: Tr(A) = a₁₁ + a₂₂ + ... + aₙₙ = ∑ aᵢᵢ.",
+    whyFalse: {
+      A: "The product of main diagonal elements gives the determinant only for triangular matrices, not the trace.",
+      B: "The sum of elements in a single row is just a row sum, not the trace.",
+      D: "The determinant involves permutations and products of entries, whereas the trace is simply the linear sum of diagonal entries."
+    }
+  },
+  {
+    id: 4,
+    domain: "Matrix Algebra",
+    domainCode: "unit1",
+    question: "If A is a real skew-symmetric matrix (Aᵀ = -A), what can always be concluded about its principal diagonal elements?",
+    options: [
+      { id: "A", text: "All diagonal elements must be strictly 0" },
+      { id: "B", text: "All diagonal elements must be equal to 1" },
+      { id: "C", text: "All diagonal elements must be strictly negative" },
+      { id: "D", text: "They can be any arbitrary non-zero real numbers" }
+    ],
+    correctAnswer: "A",
+    marks: 1,
+    explanation: "For a skew-symmetric matrix, by definition aᵢⱼ = -aⱼᵢ for all i, j. For the principal diagonal elements where i = j, this condition becomes aᵢᵢ = -aᵢᵢ ⟹ 2aᵢᵢ = 0 ⟹ aᵢᵢ = 0. Therefore, all diagonal elements of any skew-symmetric matrix must be zero.",
+    whyFalse: {
+      B: "If diagonal elements were 1, then aᵢᵢ = -aᵢᵢ would imply 1 = -1, which is a mathematical contradiction.",
+      C: "Negative numbers cannot satisfy aᵢᵢ = -aᵢᵢ since only 0 equals its own negative.",
+      D: "Arbitrary non-zero numbers violate the skew-symmetry condition along the diagonal."
+    }
+  },
+  {
+    id: 5,
+    domain: "Matrix Algebra",
+    domainCode: "unit1",
+    question: "If A and B are invertible square matrices of the same order, what does the reversal law state for (AB)⁻¹?",
+    options: [
+      { id: "A", text: "(AB)⁻¹ = A⁻¹ B⁻¹" },
+      { id: "B", text: "(AB)⁻¹ = B⁻¹ A⁻¹" },
+      { id: "C", text: "(AB)⁻¹ = (BA)⁻¹" },
+      { id: "D", text: "(AB)⁻¹ = A B⁻¹" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "Because matrix multiplication is non-commutative in general, the reversal law applies: (AB)(B⁻¹ A⁻¹) = A(B B⁻¹)A⁻¹ = A(I)A⁻¹ = A A⁻¹ = I. Hence the inverse of AB is B⁻¹ A⁻¹ in reversed order.",
+    whyFalse: {
+      A: "Writing A⁻¹ B⁻¹ is false because (AB)(A⁻¹ B⁻¹) ≠ I unless A and B commute, which is generally not true for matrices.",
+      C: "(BA)⁻¹ is equal to A⁻¹ B⁻¹, not (AB)⁻¹.",
+      D: "A B⁻¹ does not invert A and yields an invalid product when multiplied by AB."
+    }
+  },
+
+  // -------------------------------------------------------------
+  // Domain 2: Determinants & Invertibility (Q6 - Q10)
+  // -------------------------------------------------------------
+  {
+    id: 6,
+    domain: "Determinants & Inverses",
+    domainCode: "unit2",
+    question: "If A is an n × n square matrix and k is any scalar, what is the determinant of kA?",
+    options: [
+      { id: "A", text: "k · det(A)" },
+      { id: "B", text: "kⁿ · det(A)" },
+      { id: "C", text: "nᵏ · det(A)" },
+      { id: "D", text: "(1/k) · det(A)" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "In an n × n matrix, multiplying the matrix by scalar k multiplies every entry in every row by k. Since factoring a constant out of a single row scales the determinant by k, doing this across all n rows scales the determinant by k · k · ... · k = kⁿ. Thus, det(kA) = kⁿ · det(A).",
+    whyFalse: {
+      A: "k · det(A) only applies if a SINGLE row or column is multiplied by k, not the entire n × n matrix.",
+      C: "nᵏ has base and exponent swapped; the scalar k is raised to matrix order n, not n to k.",
+      D: "(1/k) · det(A) would divide the determinant, which is the opposite of multiplying by scalar k."
+    }
+  },
+  {
+    id: 7,
+    domain: "Determinants & Inverses",
+    domainCode: "unit2",
+    question: "A square matrix A is invertible (non-singular) if and only if:",
+    options: [
+      { id: "A", text: "det(A) = 0" },
+      { id: "B", text: "det(A) ≠ 0" },
+      { id: "C", text: "Trace(A) ≠ 0" },
+      { id: "D", text: "A is a symmetric matrix" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "The formula for the inverse matrix is A⁻¹ = (1 / det(A)) · adj(A). Division by det(A) is mathematically defined if and only if det(A) ≠ 0. Therefore, non-zero determinant is the necessary and sufficient condition for invertibility.",
+    whyFalse: {
+      A: "If det(A) = 0, the matrix is called singular and has NO inverse because division by zero is undefined.",
+      C: "The trace can be zero for invertible matrices (for example, [[1, 0], [0, -1]] has trace = 0 and det = -1 ≠ 0, so it is invertible).",
+      D: "Many non-symmetric matrices are invertible, and many symmetric matrices (such as the zero matrix) are not invertible."
+    }
+  },
+  {
+    id: 8,
+    domain: "Determinants & Inverses",
+    domainCode: "unit2",
+    question: "Evaluate the determinant of the 2 × 2 matrix A = [[3, 4], [2, 5]]:",
+    options: [
+      { id: "A", text: "7" },
+      { id: "B", text: "23" },
+      { id: "C", text: "-7" },
+      { id: "D", text: "15" }
+    ],
+    correctAnswer: "A",
+    marks: 1,
+    explanation: "For any 2 × 2 matrix [[a, b], [c, d]], the determinant is given by (a·d - b·c). Here: det(A) = (3)(5) - (4)(2) = 15 - 8 = 7.",
+    whyFalse: {
+      B: "23 is obtained if you mistakenly add the products (15 + 8) instead of subtracting them (ad - bc).",
+      C: "-7 is obtained if you reverse the subtraction order (8 - 15), which is incorrect.",
+      D: "15 is only the product of the main diagonal (3 × 5) without subtracting the off-diagonal product (4 × 2)."
+    }
+  },
+  {
+    id: 9,
+    domain: "Determinants & Inverses",
+    domainCode: "unit2",
+    question: "If any two identical rows (or columns) exist in a square matrix A, what is det(A)?",
+    options: [
+      { id: "A", text: "1" },
+      { id: "B", text: "-1" },
+      { id: "C", text: "0" },
+      { id: "D", text: "Equal to the sum of the elements in that row" }
+    ],
+    correctAnswer: "C",
+    marks: 1,
+    explanation: "Swapping two rows of a matrix reverses the sign of the determinant: det(A') = -det(A). But if the two rows are identical, swapping them leaves the matrix unchanged: det(A) = -det(A) ⟹ 2·det(A) = 0 ⟹ det(A) = 0. Also, identical rows mean the rows are linearly dependent.",
+    whyFalse: {
+      A: "Determinant cannot be 1 when rows are linearly dependent; dependent rows collapse the volume to zero.",
+      B: "-1 is false; linear dependence always produces a zero determinant.",
+      D: "Row sum is irrelevant to whether determinant collapses to zero."
+    }
+  },
+  {
+    id: 10,
+    domain: "Determinants & Inverses",
+    domainCode: "unit2",
+    question: "For an invertible matrix A with det(A) = 4, what is the determinant of its inverse A⁻¹?",
+    options: [
+      { id: "A", text: "-4" },
+      { id: "B", text: "0.25 (1/4)" },
+      { id: "C", text: "16" },
+      { id: "D", text: "1" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "By the determinant product rule, det(A · A⁻¹) = det(A) · det(A⁻¹). Since A · A⁻¹ = I and det(I) = 1, we have 4 · det(A⁻¹) = 1 ⟹ det(A⁻¹) = 1/4 = 0.25.",
+    whyFalse: {
+      A: "-4 is the negative of the determinant, not its multiplicative reciprocal.",
+      C: "16 is 4 squared, whereas the rule requires 1/4.",
+      D: "1 is the determinant of the identity matrix I, not of A⁻¹."
+    }
+  },
+
+  // -------------------------------------------------------------
+  // Domain 3: Systems of Linear Equations & Rank (Q11 - Q15)
+  // -------------------------------------------------------------
+  {
+    id: 11,
+    domain: "Linear Systems & Rank",
+    domainCode: "unit3",
+    question: "By the Rouché–Capelli theorem, a non-homogeneous system AX = B is consistent if and only if:",
+    options: [
+      { id: "A", text: "Rank(A) > Rank([A|B])" },
+      { id: "B", text: "Rank(A) = Rank([A|B])" },
+      { id: "C", text: "Rank(A) = 0" },
+      { id: "D", text: "det(A) = 0" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "The Rouché–Capelli theorem is the fundamental criterion for solvability: a linear system has one or more solutions (is consistent) if and only if the coefficient matrix A and the augmented matrix [A|B] have the exact same rank: Rank(A) = Rank([A|B]).",
+    whyFalse: {
+      A: "Rank(A) can never be greater than Rank([A|B]) because adding column B cannot decrease the dimension of the column space.",
+      C: "Rank(A) = 0 only holds for the zero matrix and has no bearing on general consistency.",
+      D: "det(A) = 0 is not required for consistency; in fact, for square systems, det(A) ≠ 0 guarantees a unique consistent solution."
+    }
+  },
+  {
+    id: 12,
+    domain: "Linear Systems & Rank",
+    domainCode: "unit3",
+    question: "If a consistent system of m equations in n unknowns has Rank(A) = r, with r < n, then the system has:",
+    options: [
+      { id: "A", text: "A unique solution" },
+      { id: "B", text: "No solution" },
+      { id: "C", text: "Infinitely many solutions with (n - r) free variables" },
+      { id: "D", text: "Exactly (n - r) solutions" }
+    ],
+    correctAnswer: "C",
+    marks: 1,
+    explanation: "When a system is consistent and its rank r is strictly less than the number of variables n, exactly (n - r) variables can be assigned arbitrary real values (free parameters), yielding infinitely many solutions parameterized by (n - r) free variables.",
+    whyFalse: {
+      A: "A unique solution requires rank r to equal the number of unknowns n (r = n).",
+      B: "The question specifically specifies that the system is CONSISTENT, so it cannot have no solution.",
+      D: "Linear systems over real numbers never have a finite count of solutions greater than 1; they have either 0, 1, or infinitely many solutions."
+    }
+  },
+  {
+    id: 13,
+    domain: "Linear Systems & Rank",
+    domainCode: "unit3",
+    question: "What is the maximum possible rank of a real matrix of size 3 × 5?",
+    options: [
+      { id: "A", text: "5" },
+      { id: "B", text: "3" },
+      { id: "C", text: "8" },
+      { id: "D", text: "15" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "For any m × n matrix, the row rank equals the column rank, and rank cannot exceed the number of rows or columns: Rank(A) ≤ min(m, n). For a 3 × 5 matrix, min(3, 5) = 3. Thus the maximum rank is 3.",
+    whyFalse: {
+      A: "5 is impossible because the matrix only has 3 rows, so at most 3 rows can be linearly independent.",
+      C: "8 is the sum of rows and columns (3 + 5), which is mathematically unrelated to rank.",
+      D: "15 is the total number of entries (3 × 5), not the rank."
+    }
+  },
+  {
+    id: 14,
+    domain: "Linear Systems & Rank",
+    domainCode: "unit3",
+    question: "According to the fundamental Rank-Nullity Theorem for an n-dimensional vector space V (T: V → W):",
+    options: [
+      { id: "A", text: "Rank(T) - Nullity(T) = n" },
+      { id: "B", text: "Rank(T) · Nullity(T) = n" },
+      { id: "C", text: "Rank(T) + Nullity(T) = n = dim(Domain)" },
+      { id: "D", text: "Rank(T) + Nullity(T) = dim(Codomain W)" }
+    ],
+    correctAnswer: "C",
+    marks: 1,
+    explanation: "The Rank-Nullity Theorem states that the dimension of the domain V equals the dimension of the image/range (Rank) plus the dimension of the kernel/null-space (Nullity): dim(V) = Rank(T) + Nullity(T) = n.",
+    whyFalse: {
+      A: "The relation is additive (sum), not subtractive (difference).",
+      B: "Rank and Nullity sum to n, they do not multiply to n.",
+      D: "The theorem relates to the dimension of the DOMAIN space V, not the codomain W."
+    }
+  },
+  {
+    id: 15,
+    domain: "Linear Systems & Rank",
+    domainCode: "unit3",
+    question: "A homogeneous system of linear equations AX = 0:",
+    options: [
+      { id: "A", text: "Is always inconsistent" },
+      { id: "B", text: "Always has at least the trivial solution X = 0" },
+      { id: "C", text: "Never possesses non-trivial solutions" },
+      { id: "D", text: "Can only have solutions if det(A) ≠ 0" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "Substituting the zero vector X = [0, 0, ..., 0]ᵀ into AX gives A · 0 = 0. Therefore, X = 0 is ALWAYS a valid solution (called the trivial solution). Hence, homogeneous systems are NEVER inconsistent.",
+    whyFalse: {
+      A: "A homogeneous system is NEVER inconsistent because X = 0 is always a solution.",
+      C: "If Rank(A) < n, the system has infinitely many non-trivial solutions in addition to the trivial solution.",
+      D: "Even if det(A) = 0, solutions still exist (in fact, infinitely many non-trivial solutions exist when det(A) = 0)."
+    }
+  },
+
+  // -------------------------------------------------------------
+  // Domain 4: Vector Spaces, Eigenvalues & Eigenvectors (Q16 - Q20)
+  // -------------------------------------------------------------
+  {
+    id: 16,
+    domain: "Eigenvalues & Vector Spaces",
+    domainCode: "unit4",
+    question: "The sum of all eigenvalues (λ₁ + λ₂ + ... + λₙ) of an n × n square matrix A is always equal to:",
+    options: [
+      { id: "A", text: "det(A)" },
+      { id: "B", text: "Trace(A)" },
+      { id: "C", text: "Rank(A)" },
+      { id: "D", text: "Nullity(A)" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "By Vieta's formulas applied to the characteristic polynomial det(A - λI) = (-1)ⁿ(λⁿ - Tr(A)λⁿ⁻¹ + ... + (-1)ⁿ det(A)), the sum of roots equals the coefficient of λⁿ⁻¹, which is the trace: ∑ λᵢ = Tr(A) = ∑ aᵢᵢ.",
+    whyFalse: {
+      A: "det(A) is the PRODUCT of all eigenvalues (λ₁ · λ₂ · ... · λₙ), not their sum.",
+      C: "Rank(A) represents the number of non-zero eigenvalues (for diagonalizable matrices), not their algebraic sum.",
+      D: "Nullity(A) is the geometric multiplicity of eigenvalue 0, not the sum of all eigenvalues."
+    }
+  },
+  {
+    id: 17,
+    domain: "Eigenvalues & Vector Spaces",
+    domainCode: "unit4",
+    question: "The product of all eigenvalues (λ₁ · λ₂ · ... · λₙ) of a square matrix A is equal to:",
+    options: [
+      { id: "A", text: "Trace(A)" },
+      { id: "B", text: "det(A)" },
+      { id: "C", text: "Rank(A)" },
+      { id: "D", text: "Zero" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "Evaluating the characteristic equation det(A - λI) at λ = 0 gives det(A - 0·I) = det(A). Since the polynomial can be factored as (λ₁ - λ)(λ₂ - λ)...(λₙ - λ), setting λ = 0 yields λ₁ · λ₂ · ... · λₙ = det(A).",
+    whyFalse: {
+      A: "Trace(A) is the SUM of the eigenvalues, not the product.",
+      C: "Rank(A) is the dimension of the column space, not the eigenvalue product.",
+      D: "The product is zero only if at least one eigenvalue is 0 (i.e. if A is singular); for non-singular matrices it is non-zero."
+    }
+  },
+  {
+    id: 18,
+    domain: "Eigenvalues & Vector Spaces",
+    domainCode: "unit4",
+    question: "If λ is a non-zero eigenvalue of an invertible matrix A with eigenvector v, what is the eigenvalue of A⁻¹ corresponding to v?",
+    options: [
+      { id: "A", text: "-λ" },
+      { id: "B", text: "λ²" },
+      { id: "C", text: "1 / λ" },
+      { id: "D", text: "1 - λ" }
+    ],
+    correctAnswer: "C",
+    marks: 1,
+    explanation: "From definition, Av = λv. Multiplying both sides on the left by A⁻¹ yields: A⁻¹(Av) = A⁻¹(λv) ⟹ (A⁻¹A)v = λ(A⁻¹v) ⟹ v = λ(A⁻¹v). Dividing by scalar λ (since λ ≠ 0): A⁻¹v = (1/λ)v. Thus, 1/λ is the corresponding eigenvalue of A⁻¹.",
+    whyFalse: {
+      A: "-λ is the eigenvalue of -A, not A⁻¹.",
+      B: "λ² is the eigenvalue of A² (matrix squared), not the inverse.",
+      D: "1 - λ is the eigenvalue of (I - A), not A⁻¹."
+    }
+  },
+  {
+    id: 19,
+    domain: "Eigenvalues & Vector Spaces",
+    domainCode: "unit4",
+    question: "A set of vectors {v₁, v₂, ..., vₖ} in vector space V is defined as linearly dependent if:",
+    options: [
+      { id: "A", text: "c₁v₁ + c₂v₂ + ... + cₖvₖ = 0 only when every cᵢ = 0" },
+      { id: "B", text: "There exist scalars cᵢ not all zero such that c₁v₁ + ... + cₖvₖ = 0" },
+      { id: "C", text: "All vectors have identical magnitude" },
+      { id: "D", text: "The dot product between any two vectors is strictly zero" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "By standard definition in linear algebra, a set of vectors is linearly dependent if there exists a non-trivial linear combination that equals the zero vector—meaning at least one scalar cᵢ ≠ 0 satisfies c₁v₁ + c₂v₂ + ... + cₖvₖ = 0.",
+    whyFalse: {
+      A: "Option A is the exact definition of Linear INDEPENDENCE, which is the direct opposite of linear dependence.",
+      C: "Vector magnitudes have no relation to whether vectors can be formed as linear combinations of each other.",
+      D: "Having zero dot product means vectors are orthogonal, which actually implies linear independence (if non-zero), not dependence."
+    }
+  },
+  {
+    id: 20,
+    domain: "Eigenvalues & Vector Spaces",
+    domainCode: "unit4",
+    question: "The characteristic equation of a 2 × 2 matrix A is λ² - 5λ + 6 = 0. What are its eigenvalues?",
+    options: [
+      { id: "A", text: "λ = 1 and λ = 6" },
+      { id: "B", text: "λ = 2 and λ = 3" },
+      { id: "C", text: "λ = -2 and λ = -3" },
+      { id: "D", text: "λ = 5 and λ = 6" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "To find eigenvalues, solve the characteristic equation: λ² - 5λ + 6 = 0. Factoring the quadratic: (λ - 2)(λ - 3) = 0 ⟹ λ = 2 or λ = 3. Check: Sum = 2 + 3 = 5 (equals Tr(A)), Product = 2 × 3 = 6 (equals det(A)).",
+    whyFalse: {
+      A: "For λ = 1 and 6: (λ - 1)(λ - 6) = λ² - 7λ + 6 = 0, which has middle term -7λ, not -5λ.",
+      C: "For λ = -2 and -3: (λ + 2)(λ + 3) = λ² + 5λ + 6 = 0, which has middle term +5λ, not -5λ.",
+      D: "5 and 6 are just the coefficients from the equation, not the roots."
+    }
+  },
+  {
+    id: 21,
+    domain: "Vector Spaces & Subspaces",
+    domainCode: "unit1",
+    question: "In the real vector space ℝ³, what is the dimension of the subspace W = {(x, y, z) ∈ ℝ³ | x + 2y - 3z = 0}?",
+    options: [
+      { id: "A", text: "1" },
+      { id: "B", text: "2" },
+      { id: "C", text: "3" },
+      { id: "D", text: "0" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "The subspace W is defined by a single linear homogeneous constraint in ℝ³ (which has dim(ℝ³) = 3). A single non-trivial constraint restricts one degree of freedom, leaving 3 - 1 = 2 independent parameters (e.g., x = -2y + 3z, with y and z free). Thus, dim(W) = 2.",
+    whyFalse: {
+      A: "Dimension 1 corresponds to a line through the origin, defined by two independent linear equations, not one.",
+      C: "Dimension 3 is the entire space ℝ³; having a non-trivial constraint restricts the dimension to strictly less than 3.",
+      D: "Dimension 0 is only the trivial zero subspace {0}, whereas W contains infinitely many vectors."
+    }
+  },
+  {
+    id: 22,
+    domain: "Vector Spaces & Subspaces",
+    domainCode: "unit1",
+    question: "Which of the following subsets of ℝ² forms a valid vector subspace under standard addition and scalar multiplication?",
+    options: [
+      { id: "A", text: "S₁ = {(x, y) | x + y = 1}" },
+      { id: "B", text: "S₂ = {(x, y) | xy ≥ 0}" },
+      { id: "C", text: "S₃ = {(x, y) | 2x - 5y = 0}" },
+      { id: "D", text: "S₄ = {(x, y) | x² + y² ≤ 1}" }
+    ],
+    correctAnswer: "C",
+    marks: 1,
+    explanation: "A subset W of a vector space is a subspace if it contains the zero vector and is closed under vector addition and scalar multiplication. 2x - 5y = 0 passes through (0, 0), and any linear combination of solutions satisfies 2(αx₁ + βx₂) - 5(αy₁ + βy₂) = α(2x₁ - 5y₁) + β(2x₂ - 5y₂) = 0.",
+    whyFalse: {
+      A: "S₁ does not contain the zero vector (0, 0) because 0 + 0 = 0 ≠ 1.",
+      B: "S₂ is not closed under addition: (1, 2) ∈ S₂ and (-2, -1) ∈ S₂, but (1, 2) + (-2, -1) = (-1, 1) where (-1)(1) = -1 < 0.",
+      D: "S₄ is not closed under scalar multiplication; multiplying (1, 0) by scalar c = 2 gives (2, 0), and 2² + 0² = 4 > 1."
+    }
+  },
+  {
+    id: 23,
+    domain: "Vector Spaces & Subspaces",
+    domainCode: "unit1",
+    question: "Consider the three vectors v₁ = (1, 0, 1), v₂ = (1, 1, 0), and v₃ = (0, 1, -1) in ℝ³. These vectors are:",
+    options: [
+      { id: "A", text: "Linearly independent because no vector is the zero vector" },
+      { id: "B", text: "Linearly dependent because v₁ - v₂ + v₃ = (0, 0, 0)" },
+      { id: "C", text: "An orthonormal basis for ℝ³" },
+      { id: "D", text: "Mutually orthogonal" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "Testing linear dependence: v₁ - v₂ = (1 - 1, 0 - 1, 1 - 0) = (0, -1, 1) = -v₃. Therefore, v₁ - v₂ + v₃ = (0, 0, 0). Since a non-trivial linear combination with non-zero coefficients (1, -1, 1) equals the zero vector, the vectors are linearly dependent.",
+    whyFalse: {
+      A: "Non-zero vectors can easily be linearly dependent if one is a linear combination of the others.",
+      C: "Linearly dependent vectors cannot form a basis for ℝ³ because a basis requires linear independence.",
+      D: "The dot product v₁ · v₂ = 1(1) + 0(1) + 1(0) = 1 ≠ 0, so they are not mutually orthogonal."
+    }
+  },
+  {
+    id: 24,
+    domain: "Determinants & Invertibility",
+    domainCode: "unit2",
+    question: "If A is a 3 × 3 matrix with det(A) = 5, what is the determinant of its adjugate matrix, det(adj(A))?",
+    options: [
+      { id: "A", text: "5" },
+      { id: "B", text: "15" },
+      { id: "C", text: "25" },
+      { id: "D", text: "125" }
+    ],
+    correctAnswer: "C",
+    marks: 1,
+    explanation: "For any n × n matrix A, the fundamental identity states A · adj(A) = det(A) · Iₙ. Taking determinants of both sides gives det(A) · det(adj(A)) = (det(A))ⁿ, which implies det(adj(A)) = (det(A))ⁿ⁻¹. Here n = 3 and det(A) = 5, so det(adj(A)) = 5³⁻¹ = 5² = 25.",
+    whyFalse: {
+      A: "5 is det(A), not det(adj(A)).",
+      B: "15 is 3 × det(A), confusing scalar multiplication with matrix power law.",
+      D: "125 is (det(A))³ = (det(A))ⁿ, which equals det(det(A) · I), not det(adj(A))."
+    }
+  },
+  {
+    id: 25,
+    domain: "Determinants & Invertibility",
+    domainCode: "unit2",
+    question: "If Q is a real orthogonal matrix (satisfying Qᵀ Q = I), what are the only possible real values for det(Q)?",
+    options: [
+      { id: "A", text: "0 and 1" },
+      { id: "B", text: "+1 and -1" },
+      { id: "C", text: "Any non-negative real number" },
+      { id: "D", text: "Strictly +1 only" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "Since Qᵀ Q = I, taking determinants gives det(Qᵀ Q) = det(Qᵀ) · det(Q) = (det(Q))² = det(I) = 1. Therefore, (det(Q))² = 1, which implies det(Q) = ±1. (Matrices with det = +1 represent pure rotations, while det = -1 represent reflections).",
+    whyFalse: {
+      A: "An orthogonal matrix is always invertible, so det(Q) cannot be 0.",
+      C: "det(Q) is strictly constrained to ±1, not arbitrary non-negative numbers.",
+      D: "det(Q) can also be -1 (e.g., reflection matrices like [[1, 0], [0, -1]] have det = -1)."
+    }
+  },
+  {
+    id: 26,
+    domain: "Linear Systems & Transformations",
+    domainCode: "unit3",
+    question: "A linear transformation T: ℝ⁴ → ℝ³ has a 2-dimensional kernel (null space). What is the dimension of the range (image) of T?",
+    options: [
+      { id: "A", text: "1" },
+      { id: "B", text: "2" },
+      { id: "C", text: "3" },
+      { id: "D", text: "4" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "By the Rank-Nullity Theorem: dim(Domain) = Rank(T) + Nullity(T). Here dim(Domain) = dim(ℝ⁴) = 4, and Nullity(T) = dim(ker(T)) = 2. Therefore, Rank(T) = dim(range(T)) = 4 - 2 = 2.",
+    whyFalse: {
+      A: "Rank(T) = 4 - 2 = 2, not 1.",
+      C: "Rank would be 3 only if nullity were 1 (4 - 1 = 3).",
+      D: "The codomain is ℝ³, so the range dimension cannot exceed 3, and certainly cannot be 4."
+    }
+  },
+  {
+    id: 27,
+    domain: "Linear Systems & Transformations",
+    domainCode: "unit3",
+    question: "In Cramer's Rule for solving a square non-homogeneous system AX = B, the method fails (is inapplicable) when:",
+    options: [
+      { id: "A", text: "B is the zero vector" },
+      { id: "B", text: "det(A) = 0" },
+      { id: "C", text: "All elements of A are integers" },
+      { id: "D", text: "Trace(A) = 0" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "Cramer's Rule calculates each unknown as xᵢ = det(Aᵢ) / det(A). If det(A) = 0, division by zero occurs, making Cramer's Rule inapplicable (the system is either inconsistent or possesses infinitely many solutions).",
+    whyFalse: {
+      A: "When B = 0 and det(A) ≠ 0, Cramer's Rule works perfectly and yields the unique trivial solution xᵢ = 0.",
+      C: "Integer matrices are completely valid and commonly solved with Cramer's Rule.",
+      D: "Trace(A) = 0 has no bearing on invertibility or Cramer's Rule (e.g., [[0, 1], [1, 0]] has trace 0 but det = -1 ≠ 0)."
+    }
+  },
+  {
+    id: 28,
+    domain: "Eigenvalues & Orthogonality",
+    domainCode: "unit4",
+    question: "According to the Cayley-Hamilton Theorem, every square matrix A satisfies:",
+    options: [
+      { id: "A", text: "Its own characteristic equation: det(A - λI) = 0 with λ replaced by A" },
+      { id: "B", text: "A² = I for all square matrices" },
+      { id: "C", text: "Trace(A) = det(A)" },
+      { id: "D", text: "Aᵀ = A⁻¹" }
+    ],
+    correctAnswer: "A",
+    marks: 1,
+    explanation: "The Cayley-Hamilton Theorem states that every square matrix satisfies its own characteristic polynomial. That is, if p(λ) = det(A - λI) = λⁿ + cₙ₋₁λⁿ⁻¹ + ... + c₀ = 0, then p(A) = Aⁿ + cₙ₋₁Aⁿ⁻¹ + ... + c₀I = 0 (the zero matrix). This is used to compute high matrix powers and matrix inverses.",
+    whyFalse: {
+      B: "A² = I is only true for involutory matrices, not all matrices.",
+      C: "Trace(A) = det(A) is not a general identity.",
+      D: "Aᵀ = A⁻¹ defines orthogonal matrices, not a universal property of square matrices."
+    }
+  },
+  {
+    id: 29,
+    domain: "Eigenvalues & Orthogonality",
+    domainCode: "unit4",
+    question: "In an inner product space, two vectors u and v are orthogonal if and only if:",
+    options: [
+      { id: "A", text: "⟨u, v⟩ = 1" },
+      { id: "B", text: "⟨u, v⟩ = 0" },
+      { id: "C", text: "‖u‖ = ‖v‖" },
+      { id: "D", text: "u + v = 0" }
+    ],
+    correctAnswer: "B",
+    marks: 1,
+    explanation: "By definition in any real or complex inner product space, two vectors u and v are orthogonal (perpendicular) if and only if their inner product vanishes, i.e., ⟨u, v⟩ = 0.",
+    whyFalse: {
+      A: "⟨u, v⟩ = 1 occurs when two unit vectors are parallel and identical, not orthogonal.",
+      C: "‖u‖ = ‖v‖ means the vectors have equal norm (length), which does not imply orthogonality.",
+      D: "u + v = 0 means u = -v (anti-parallel vectors, angle π), which is opposite of orthogonality."
+    }
+  },
+  {
+    id: 30,
+    domain: "Eigenvalues & Orthogonality",
+    domainCode: "unit4",
+    question: "A real symmetric matrix A is positive definite if and only if:",
+    options: [
+      { id: "A", text: "All of its eigenvalues are strictly positive (λᵢ > 0 for all i)" },
+      { id: "B", text: "All of its entries are positive numbers" },
+      { id: "C", text: "det(A) = 0" },
+      { id: "D", text: "Trace(A) < 0" }
+    ],
+    correctAnswer: "A",
+    marks: 1,
+    explanation: "A real symmetric matrix A is positive definite if xᵀ A x > 0 for all non-zero vectors x ∈ ℝⁿ. By spectral decomposition, this condition is equivalent to all eigenvalues of A being strictly positive (λᵢ > 0). Equivalently, by Sylvester's criterion, all leading principal minors must be strictly positive.",
+    whyFalse: {
+      B: "Having positive entries does not guarantee positive definiteness (e.g., [[1, 2], [2, 1]] has all positive entries but eigenvalues 3 and -1, so it is indefinite).",
+      C: "If det(A) = 0, at least one eigenvalue is 0, making the matrix positive semi-definite or singular, not positive definite.",
+      D: "Trace(A) is the sum of eigenvalues; if all eigenvalues are strictly positive, Trace(A) must be positive, never negative."
+    }
+  }
+];
 
 // =============================================================
 // THREE STUDENT ACADEMIC CATEGORIES & ASSIGNED LESSONS
@@ -8,17 +628,21 @@ import "./Assessment.css";
 export const STUDENT_CATEGORIES = {
   category1: {
     id: "category1",
-    name: "Foundational Track",
-    title: "Category 1: Foundational Track (Remediation & Core Basics)",
-    tag: "Category 1 (0 – 14 Marks)",
+    tier: "bronze",
+    name: "Bronze Category (≤ 39%)",
+    shortName: "Bronze",
+    title: "Bronze Category: Foundational Support (Score ≤ 39%)",
+    tag: "🥉 Bronze (≤ 39%)",
     minMarks: 0,
-    maxMarks: 14,
+    maxMarks: 11,
+    minPct: 0,
+    maxPct: 39,
     badgeClass: "badge-cat-1",
     themeColor: "#b45309",
     icon: "🥉",
-    level: "Beginner / Remedial Support",
-    scoreRangeLabel: "0 – 14 Marks (< 50%)",
-    summary: "This track is designed for students requiring foundational support and remediation in core Linear Algebra concepts.",
+    level: "Bronze • Foundational Remediation (Score ≤ 39%)",
+    scoreRangeLabel: "Score ≤ 39% (0 – 11 Marks)",
+    summary: "Diagnostic results identify foundational conceptual gaps in matrix multiplication, 2×2/3×3 determinants, and elementary row operations.",
     targetOutcome: "Rebuild core computational confidence through guided video proofs, formula sheets, and remedial row-reduction drills.",
     lessons: [
       {
@@ -77,17 +701,21 @@ export const STUDENT_CATEGORIES = {
   },
   category2: {
     id: "category2",
-    name: "Core Engineering Track",
-    title: "Category 2: Core Engineering Track (Standard University Level)",
-    tag: "Category 2 (15 – 22 Marks)",
-    minMarks: 15,
-    maxMarks: 22,
+    tier: "silver",
+    name: "Silver Category (40% – 79%)",
+    shortName: "Silver",
+    title: "Silver Category: Core Engineering Track (Score 40% – 79%)",
+    tag: "🥈 Silver (40% – 79%)",
+    minMarks: 12,
+    maxMarks: 23,
+    minPct: 40,
+    maxPct: 79,
     badgeClass: "badge-cat-2",
     themeColor: "#4338ca",
     icon: "🥈",
-    level: "Intermediate / Standard University Pace",
-    scoreRangeLabel: "15 – 22 Marks (50% – 75%)",
-    summary: "This track focuses on mastering standard university exam problem sets and core linear algebra theorems.",
+    level: "Silver • Standard University Level (Score 40% – 79%)",
+    scoreRangeLabel: "Score 40% – 79% (12 – 23 Marks)",
+    summary: "Solid grasp of foundational matrix arithmetic. Focus is on mastering university exam problem sets, Rank-Nullity theorems, and characteristic equations.",
     targetOutcome: "Master the standard MA25C02 syllabus to secure top university grades (A / A+) through structured problem-solving drills and theorem applications.",
     lessons: [
       {
@@ -146,17 +774,21 @@ export const STUDENT_CATEGORIES = {
   },
   category3: {
     id: "category3",
-    name: "Advanced Scholars Track",
-    title: "Category 3: Advanced Scholars Track (Honors & Applications)",
-    tag: "Category 3 (23 – 30 Marks)",
-    minMarks: 23,
+    tier: "gold",
+    name: "Gold Category (≥ 80%)",
+    shortName: "Gold",
+    title: "Gold Category: Advanced Scholars Track (Score ≥ 80%)",
+    tag: "🥇 Gold (≥ 80%)",
+    minMarks: 24,
     maxMarks: 30,
+    minPct: 80,
+    maxPct: 100,
     badgeClass: "badge-cat-3",
     themeColor: "#059669",
     icon: "🥇",
-    level: "Advanced / Honors & Research",
-    scoreRangeLabel: "23 – 30 Marks (> 75%)",
-    summary: "This track is designed for students with exceptional analytical proficiency, focusing on advanced applications and rigorous proofs.",
+    level: "Gold • Honors & Research Track (Score ≥ 80%)",
+    scoreRangeLabel: "Score ≥ 80% (24 – 30 Marks)",
+    summary: "Exceptional analytical proficiency and theoretical mastery. Assigned lessons emphasize rigorous proof techniques, diagonalization, SVD, and real-world engineering systems.",
     targetOutcome: "Prepare for engineering research, graduate-level machine learning linear algebra, and top academic honors (O Grade).",
     lessons: [
       {
@@ -215,45 +847,7 @@ export const STUDENT_CATEGORIES = {
   }
 };
 
-function Assessment({ onNavigate, studentInfo }) {
-  // Data state
-  const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [submitError, setSubmitError] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [diagnosticResult, setDiagnosticResult] = useState(null);
-
-  // Fetch questions from backend
-  useEffect(() => {
-    fetch(`${API_BASE_URL}/api/diagnostic/questions`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch questions");
-        return res.json();
-      })
-      .then((data) => {
-        const mapped = data.map((q) => ({
-          id: q.question_number,
-          domain: q.topic,
-          domainCode: q.topic,
-          question: q.question_text,
-          options: [
-            { id: "A", text: q.options.A },
-            { id: "B", text: q.options.B },
-            { id: "C", text: q.options.C },
-            { id: "D", text: q.options.D },
-          ],
-          difficulty: q.difficulty,
-        }));
-        setQuestions(mapped);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError("Unable to connect to the learning server. Please try again.");
-        setLoading(false);
-      });
-  }, []);
-
+function Assessment({ onNavigate, studentInfo, theme, onToggleTheme }) {
   // Test state
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({}); // { [questionId]: "A" | "B" | ... }
@@ -293,7 +887,7 @@ function Assessment({ onNavigate, studentInfo }) {
 
   const handleSelectOption = (optionId) => {
     if (isSubmitted) return;
-    const currentQ = questions[currentQIndex];
+    const currentQ = ASSESSMENT_QUESTIONS[currentQIndex];
     setSelectedAnswers((prev) => ({
       ...prev,
       [currentQ.id]: optionId,
@@ -301,7 +895,7 @@ function Assessment({ onNavigate, studentInfo }) {
   };
 
   const handleToggleFlag = () => {
-    const currentQ = questions[currentQIndex];
+    const currentQ = ASSESSMENT_QUESTIONS[currentQIndex];
     setFlaggedQuestions((prev) => ({
       ...prev,
       [currentQ.id]: !prev[currentQ.id],
@@ -309,7 +903,7 @@ function Assessment({ onNavigate, studentInfo }) {
   };
 
   const handleClearAnswer = () => {
-    const currentQ = questions[currentQIndex];
+    const currentQ = ASSESSMENT_QUESTIONS[currentQIndex];
     setSelectedAnswers((prev) => {
       const copy = { ...prev };
       delete copy[currentQ.id];
@@ -323,48 +917,11 @@ function Assessment({ onNavigate, studentInfo }) {
     setIsTimerRunning(false);
   };
 
-  const handleFinalSubmit = async () => {
-    const answeredCount = Object.keys(selectedAnswers).length;
-    if (answeredCount < questions.length) {
-      alert("Please answer all questions before submitting.");
-      return;
-    }
-
-    setIsSubmitting(true);
-    setSubmitError(null);
-
-    try {
-      const payload = {
-        student_id: getStudentId(studentInfo),
-        answers: Object.entries(selectedAnswers).map(([qNum, ans]) => ({
-          question_number: parseInt(qNum, 10),
-          selected_answer: ans,
-        })),
-      };
-
-      const res = await fetch(`${API_BASE_URL}/api/diagnostic/submit`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.detail || errData.message || "Submission failed");
-      }
-
-      const result = await res.json();
-      setDiagnosticResult(result);
-
-      setShowSubmitModal(false);
-      setIsSubmitted(true);
-      setIsTimerRunning(false);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch (err) {
-      setSubmitError(err.message);
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handleFinalSubmit = () => {
+    setShowSubmitModal(false);
+    setIsSubmitted(true);
+    setIsTimerRunning(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleRetake = () => {
@@ -377,56 +934,61 @@ function Assessment({ onNavigate, studentInfo }) {
     setActiveCategoryTab(null);
     setActiveLessonModal(null);
     setIsTimerRunning(true);
-    setDiagnosticResult(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Compute Analytics
-  const totalQuestions = questions.length;
+  const totalQuestions = ASSESSMENT_QUESTIONS.length;
   const answeredCount = Object.keys(selectedAnswers).length;
   const unansweredCount = totalQuestions - answeredCount;
   const flaggedCount = Object.values(flaggedQuestions).filter(Boolean).length;
 
   let score = 0;
-  let percentage = 0;
-  let assignedCategoryId = "category1";
-  let domainBreakdown = {};
-  let weakTopics = [];
-  
-  if (diagnosticResult) {
-    score = diagnosticResult.score;
-    percentage = diagnosticResult.percentage;
-    const band = diagnosticResult.diagnostic_band;
-    if (band === "Green") assignedCategoryId = "category3";
-    else if (band === "Amber") assignedCategoryId = "category2";
-    else assignedCategoryId = "category1";
+  const domainBreakdown = {
+    unit1: { name: "Matrix Algebra & Vector Spaces", correct: 0, total: 0 },
+    unit2: { name: "Determinants & Invertibility", correct: 0, total: 0 },
+    unit3: { name: "Linear Systems & Transformations", correct: 0, total: 0 },
+    unit4: { name: "Eigenvalues & Orthogonality", correct: 0, total: 0 },
+  };
 
-    Object.entries(diagnosticResult.topic_analysis).forEach(([topic, data]) => {
-      domainBreakdown[topic] = {
-        name: topic,
-        correct: data.correct_answers,
-        total: data.total_questions,
-      };
-      
-      // Data-Driven Weak Topic Identification (< 60%)
-      if (data.percentage < 60) {
-        weakTopics.push(topic);
+  ASSESSMENT_QUESTIONS.forEach((q) => {
+    if (domainBreakdown[q.domainCode]) {
+      domainBreakdown[q.domainCode].total = (domainBreakdown[q.domainCode].total || 0) + 1;
+    }
+  });
+
+  ASSESSMENT_QUESTIONS.forEach((q) => {
+    const isCorrect = selectedAnswers[q.id] === q.correctAnswer;
+    if (isCorrect) {
+      score += 1;
+      if (domainBreakdown[q.domainCode]) {
+        domainBreakdown[q.domainCode].correct += 1;
       }
-    });
-  }
+    }
+  });
 
   const incorrectCount = totalQuestions - score;
-  const assignedCategory = STUDENT_CATEGORIES[assignedCategoryId] || STUDENT_CATEGORIES.category1;
+  const percentage = Math.round((score / totalQuestions) * 100);
+
+  // Group Student into 3 Categories based on diagnosis test score:
+  // Bronze (less than or equal to 39), Silver (40 to 79), Gold (above or equal to 80)
+  const assignedCategoryId =
+    percentage <= 39 ? "category1" : percentage <= 79 ? "category2" : "category3";
+  const assignedCategory = STUDENT_CATEGORIES[assignedCategoryId];
 
   // Active viewed category tab defaults to assigned category
   const currentViewedCategoryId = activeCategoryTab || assignedCategoryId;
-  const currentViewedCategory = STUDENT_CATEGORIES[currentViewedCategoryId] || STUDENT_CATEGORIES.category1;
+  const currentViewedCategory = STUDENT_CATEGORIES[currentViewedCategoryId];
 
-  const currentQ = questions[currentQIndex];
+  const currentQ = ASSESSMENT_QUESTIONS[currentQIndex];
 
-  if (loading) return <div className="assessment-page" style={{padding: '50px', color: 'white', textAlign: 'center'}}><h2>Loading diagnostic questions...</h2></div>;
-  if (error) return <div className="assessment-page" style={{padding: '50px', color: 'red', textAlign: 'center'}}><h2>{error}</h2></div>;
-  if (questions.length === 0) return <div className="assessment-page" style={{padding: '50px', color: 'white', textAlign: 'center'}}><h2>No questions found.</h2></div>;
+  // Filter solutions list
+  const filteredSolutions = ASSESSMENT_QUESTIONS.filter((q) => {
+    const isCorrect = selectedAnswers[q.id] === q.correctAnswer;
+    if (solutionFilter === "false") return !isCorrect;
+    if (solutionFilter === "correct") return isCorrect;
+    return true; // "all"
+  });
 
   return (
     <div className="assessment-page">
@@ -442,7 +1004,6 @@ function Assessment({ onNavigate, studentInfo }) {
       {/* Top Header Bar */}
       <header className="assessment-header">
         <div className="assessment-brand" onClick={() => onNavigate && onNavigate("home")}>
-          <span className="brand-icon">📐</span>
           <div>
             <h1 className="brand-title">EduVerse LMS • Diagnostic Assessment</h1>
             <p className="brand-subtitle">Linear Algebra (MA25C02) • Student Capability Profiler</p>
@@ -466,6 +1027,8 @@ function Assessment({ onNavigate, studentInfo }) {
           )}
 
           <div className="header-actions">
+            <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+
             <button
               type="button"
               className="exit-btn"
@@ -595,25 +1158,6 @@ function Assessment({ onNavigate, studentInfo }) {
                   <span>{currentViewedCategory.targetOutcome}</span>
                 </div>
 
-                {currentViewedCategory.id === assignedCategoryId && (
-                  <div className="acc-weak-topics-box" style={{ marginTop: '15px', padding: '15px', background: 'rgba(0,0,0,0.2)', borderRadius: '8px', borderLeft: '4px solid #f87171' }}>
-                    <h5 style={{ margin: '0 0 8px 0', color: '#fca5a5', fontSize: '15px' }}>
-                      ⚠️ Identified Focus Areas (Data-Driven)
-                    </h5>
-                    {weakTopics.length > 0 ? (
-                      <ul style={{ margin: 0, paddingLeft: '22px', color: '#e5e7eb', fontSize: '14px', lineHeight: '1.5' }}>
-                        {weakTopics.map((topic, i) => (
-                          <li key={i}><strong>{topic}</strong> — Recommended for remediation</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p style={{ margin: 0, color: '#6ee7b7', fontSize: '14px' }}>
-                        🌟 Great job! No critical weak topics identified. Keep up the good work.
-                      </p>
-                    )}
-                  </div>
-                )}
-
                 {/* Assigned Lessons Grid */}
                 <div className="assigned-lessons-grid">
                   {currentViewedCategory.lessons.map((lesson, lIdx) => (
@@ -642,7 +1186,7 @@ function Assessment({ onNavigate, studentInfo }) {
                         className="btn-open-lesson"
                         onClick={() => setActiveLessonModal(lesson)}
                       >
-                        <span>📖 Open Lesson Notes & Exercises</span>
+                        <span>Open Lesson Notes & Exercises</span>
                         <span className="l-arrow">➔</span>
                       </button>
                     </div>
@@ -769,7 +1313,7 @@ function Assessment({ onNavigate, studentInfo }) {
                   if (onNavigate) onNavigate("syllabus", studentPayload);
                 }}
               >
-                <span>📖 Go to Unit-Wise Syllabus</span>
+                <span>Go to Unit-Wise Syllabus</span>
                 <span>➔</span>
               </button>
 
@@ -795,6 +1339,143 @@ function Assessment({ onNavigate, studentInfo }) {
               </button>
             </div>
 
+            {/* ========================================================= */}
+            {/* DETAILED ANSWER KEY & EXPLANATIONS FOR ALL QUESTIONS      */}
+            {/* ALWAYS VISIBLE DIRECTLY AFTER SUBMITTING                  */}
+            {/* ========================================================= */}
+            <div className="solutions-review-section">
+              <div className="solutions-header-cluster">
+                <div>
+                  <h3 className="review-title">
+                    📝 Detailed Answers & Mathematical Explanations (Questions 1 - {totalQuestions})
+                  </h3>
+                  <p className="review-subtitle">
+                    Examine each question below. If an answer was <strong>FALSE</strong>, review the exact mathematical reason and why your choice was incorrect.
+                  </p>
+                </div>
+
+                {/* Filter Tabs */}
+                <div className="solution-filter-tabs" role="tablist">
+                  <button
+                    type="button"
+                    className={`filter-tab-btn ${solutionFilter === "all" ? "active" : ""}`}
+                    onClick={() => setSolutionFilter("all")}
+                  >
+                    All Questions ({totalQuestions})
+                  </button>
+                  <button
+                    type="button"
+                    className={`filter-tab-btn tab-false ${solutionFilter === "false" ? "active" : ""}`}
+                    onClick={() => setSolutionFilter("false")}
+                  >
+                    ❌ False / Incorrect Only ({incorrectCount})
+                  </button>
+                  <button
+                    type="button"
+                    className={`filter-tab-btn tab-correct ${solutionFilter === "correct" ? "active" : ""}`}
+                    onClick={() => setSolutionFilter("correct")}
+                  >
+                    ✅ Correct Only ({score})
+                  </button>
+                </div>
+              </div>
+
+              {/* Question list */}
+              <div className="solutions-list">
+                {filteredSolutions.map((q) => {
+                  const studentAns = selectedAnswers[q.id];
+                  const isCorrect = studentAns === q.correctAnswer;
+                  const isSkipped = !studentAns;
+                  const questionIndex = ASSESSMENT_QUESTIONS.findIndex((item) => item.id === q.id);
+
+                  return (
+                    <div
+                      key={q.id}
+                      className={`solution-card ${isCorrect ? "sol-correct" : isSkipped ? "sol-skipped" : "sol-wrong"}`}
+                    >
+                      {/* Top Bar */}
+                      <div className="sol-card-top">
+                        <span className="sol-qnum">
+                          Question {questionIndex + 1} • {q.domain} • 1 Mark
+                        </span>
+                        <span className={`sol-status-pill ${isCorrect ? "pill-correct" : isSkipped ? "pill-skipped" : "pill-wrong"}`}>
+                          {isCorrect ? "✅ TRUE / Correct (+1 Mark)" : isSkipped ? "○ FALSE: Skipped / Unanswered (0 Marks)" : "❌ FALSE: Incorrect (0 Marks)"}
+                        </span>
+                      </div>
+
+                      {/* Question Text */}
+                      <p className="sol-qtext">{q.question}</p>
+
+                      {/* Options Grid */}
+                      <div className="sol-options-grid">
+                        {q.options.map((opt) => {
+                          const isSelected = studentAns === opt.id;
+                          const isTheCorrectOne = q.correctAnswer === opt.id;
+
+                          let optClass = "sol-option";
+                          if (isTheCorrectOne) optClass += " opt-correct";
+                          if (isSelected && !isTheCorrectOne) optClass += " opt-wrong-selected";
+
+                          return (
+                            <div key={opt.id} className={optClass}>
+                              <span className="opt-key">{opt.id}</span>
+                              <span className="opt-body">{opt.text}</span>
+                              {isTheCorrectOne && (
+                                <span className="opt-tag tag-correct">
+                                  ✓ Correct Answer
+                                </span>
+                              )}
+                              {isSelected && !isTheCorrectOne && (
+                                <span className="opt-tag tag-wrong">
+                                  ✗ Your Choice (FALSE)
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* FALSE REASON CALLOUT IF INCORRECT */}
+                      {!isCorrect && (
+                        <div className="false-reason-callout">
+                          <div className="false-reason-header">
+                            <span className="false-badge-icon">❌</span>
+                            <span className="false-badge-title">
+                              {isSkipped
+                                ? "Why this was marked FALSE (Skipped with No Answer):"
+                                : `Why Your Selection (${studentAns}) is FALSE:`}
+                            </span>
+                          </div>
+                          
+                          <p className="false-reason-text">
+                            {isSkipped
+                              ? "You did not select an option for this question. The correct choice is Option " + q.correctAnswer + "."
+                              : (q.whyFalse && q.whyFalse[studentAns])
+                              ? q.whyFalse[studentAns]
+                              : `Option ${studentAns} is mathematically incorrect. Option ${q.correctAnswer} is the only valid answer.`}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* DETAILED MATHEMATICAL PROOF & REASON */}
+                      <div className="sol-explanation-box">
+                        <div className="explanation-title-row">
+                          <span className="exp-icon">💡</span>
+                          <strong>Mathematical Principle & Reason for Correct Answer ({q.correctAnswer}):</strong>
+                        </div>
+                        <p className="exp-body-text">{q.explanation}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {filteredSolutions.length === 0 && (
+                  <div className="empty-solutions-notice">
+                    <p>No questions match the selected filter.</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </main>
       ) : (
@@ -923,7 +1604,7 @@ function Assessment({ onNavigate, studentInfo }) {
 
               {/* Numbers Grid (1 - 20) */}
               <div className="numbers-grid" role="navigation" aria-label="Question Navigation">
-                {questions.map((q, idx) => {
+                {ASSESSMENT_QUESTIONS.map((q, idx) => {
                   const isCurrent = currentQIndex === idx;
                   const isAns = !!selectedAnswers[q.id];
                   const isFlag = !!flaggedQuestions[q.id];
@@ -1002,7 +1683,6 @@ function Assessment({ onNavigate, studentInfo }) {
             </p>
 
             <div className="modal-actions">
-              {submitError && <div style={{color: 'red', width: '100%', marginBottom: '10px'}}>{submitError}</div>}
               <button
                 type="button"
                 className="modal-btn-cancel"
@@ -1014,9 +1694,8 @@ function Assessment({ onNavigate, studentInfo }) {
                 type="button"
                 className="modal-btn-confirm"
                 onClick={handleFinalSubmit}
-                disabled={isSubmitting}
               >
-                {isSubmitting ? "Submitting..." : "Yes, Submit Now"}
+                Yes, Submit Now
               </button>
             </div>
           </div>
@@ -1059,7 +1738,7 @@ function Assessment({ onNavigate, studentInfo }) {
               </div>
 
               <div className="reader-block">
-                <h4 className="reader-sec-title">📖 Comprehensive Study Notes & Principles</h4>
+                <h4 className="reader-sec-title">Comprehensive Study Notes & Principles</h4>
                 <p className="reader-notes-text">{activeLessonModal.notes}</p>
               </div>
 

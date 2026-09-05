@@ -1,5 +1,6 @@
 import { useState, useId, useEffect } from "react";
 import "./Register.css";
+import ThemeToggle from "./ThemeToggle";
 
 const DEPARTMENTS = [
   "Computer Science & Engineering (CSE)",
@@ -11,7 +12,7 @@ const DEPARTMENTS = [
   "Civil Engineering (CE)",
 ];
 
-function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
+function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme, onToggleTheme }) {
   // Form State containing all requested properties
   const [formData, setFormData] = useState({
     fullName: "",
@@ -44,8 +45,6 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
   const dobId = useId();
   const rollNoId = useId();
   const deptId = useId();
-  const yearId = useId();
-  const semId = useId();
   const secId = useId();
   const phoneId = useId();
   const genderId = useId();
@@ -204,7 +203,6 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
             onClick={() => onNavigate && onNavigate("home")}
             title="Back to EduVerse Home"
           >
-            <span className="brand-icon">📐</span>
             <div className="brand-text">
               <span className="brand-title">EduVerse LMS</span>
               <span className="brand-tag">Academic Portal • Course Enrolment</span>
@@ -212,6 +210,8 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
           </div>
 
           <div className="nav-actions">
+            <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+
             <button
               type="button"
               className="nav-overview-btn"
@@ -219,71 +219,11 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
             >
               ← Back to Platform Overview
             </button>
-            <button
-              type="button"
-              className="nav-login-btn"
-              onClick={() => onNavigate && onNavigate("login")}
-            >
-              Go to Login →
-            </button>
           </div>
         </header>
       )}
 
       <main className="register-layout centered">
-        {/* ============================================================ */}
-        {/* BASIC COURSE DETAILS: LINEAR ALGEBRA (MA25C02)               */}
-        {/* ============================================================ */}
-        <section className="course-hub-card" aria-label="Course Overview: Linear Algebra MA25C02">
-          <div className="course-header-row">
-            <div className="course-badge-cluster">
-              <span className="badge badge-primary">Course Code: MA25C02</span>
-              <span className="badge badge-accent">Linear Algebra (Regulation 2025)</span>
-              <span className="badge badge-success">4.0 Credits (3-1-0)</span>
-            </div>
-
-            <div className="course-status-pill">
-              <span className="pulse-dot"></span>
-              Enrolment Open
-            </div>
-          </div>
-
-          <div className="course-main-info">
-            <div className="course-title-group">
-              <div className="math-icon-badge">
-                <span>[ A ]</span>
-              </div>
-              <div>
-                <h1 className="course-title">Linear Algebra (MA25C02)</h1>
-                <p className="course-subtitle">
-                  Vector Spaces, Linear Transformations, Dimension Theorem, Diagonalization,
-                  Inner Product Spaces, QR Decomposition & SVD
-                </p>
-              </div>
-            </div>
-
-            <div className="course-quick-stats">
-              <div className="stat-card highlight">
-                <span className="stat-label">Course Type</span>
-                <span className="stat-value">Core Engineering Mathematics</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="course-book-strip">
-            <span className="strip-title">📚 Referred Book:</span>
-            <span className="strip-book">
-              <strong>Linear Algebra</strong> – Dr. G. Balaji (G. Balaji Publishers, Chennai) • Anna University Regulation 2025
-            </span>
-          </div>
-
-          <div className="course-footer-strip">
-            <span className="strip-note">
-              ✍️ Complete student registration below to enrol directly into <strong>Linear Algebra (MA25C02)</strong>.
-            </span>
-          </div>
-        </section>
-
         {/* ============================================================ */}
         {/* REGISTRATION PROCESS FORM                                    */}
         {/* ============================================================ */}
@@ -455,47 +395,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
                   </div>
                 </div>
 
-                <div className="field-group three-col">
-                  {/* Year */}
-                  <div className="input-field">
-                    <label htmlFor={yearId}>
-                      Year <span className="req">*</span>
-                    </label>
-                    <select
-                      id={yearId}
-                      name="year"
-                      value={formData.year}
-                      onChange={handleChange}
-                    >
-                      <option value="1st Year">1st Year</option>
-                      <option value="2nd Year">2nd Year</option>
-                      <option value="3rd Year">3rd Year</option>
-                      <option value="4th Year">4th Year</option>
-                    </select>
-                  </div>
-
-                  {/* Semester */}
-                  <div className="input-field">
-                    <label htmlFor={semId}>
-                      Semester (Sem) <span className="req">*</span>
-                    </label>
-                    <select
-                      id={semId}
-                      name="sem"
-                      value={formData.sem}
-                      onChange={handleChange}
-                    >
-                      <option value="Sem 1">Sem 1</option>
-                      <option value="Sem 2">Sem 2</option>
-                      <option value="Sem 3">Sem 3</option>
-                      <option value="Sem 4">Sem 4</option>
-                      <option value="Sem 5">Sem 5</option>
-                      <option value="Sem 6">Sem 6</option>
-                      <option value="Sem 7">Sem 7</option>
-                      <option value="Sem 8">Sem 8</option>
-                    </select>
-                  </div>
-
+                <div className="field-group two-col">
                   {/* Section */}
                   <div className="input-field">
                     <label htmlFor={secId}>
@@ -704,7 +604,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
             </button>
 
             <div className="modal-confetti" aria-hidden="true">
-              🎉 📐 🎓 🌟 📖 🏆
+              🎉
             </div>
 
             <div className="ticket-header">
@@ -727,12 +627,8 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false }) {
                 <strong>{formData.department}</strong>
               </div>
               <div className="ticket-row">
-                <span>Year:</span>
-                <strong>{formData.year}</strong>
-              </div>
-              <div className="ticket-row">
-                <span>Semester / Section:</span>
-                <strong>{formData.sem} • {formData.section}</strong>
+                <span>Section:</span>
+                <strong>{formData.section}</strong>
               </div>
               <div className="ticket-row">
                 <span>Mail ID:</span>

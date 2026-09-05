@@ -1,5 +1,12 @@
 import React, { useState } from "react";
 import "./Syllabus.css";
+import {
+  getStoredMicroTestScores,
+  isMicroUnitUnlocked,
+  isMicroUnitCompleted,
+  getPreviousMicroTopic
+} from "./microTopicTests";
+import ThemeToggle from "./ThemeToggle";
 
 const SYLLABUS_UNITS = [
   {
@@ -11,7 +18,7 @@ const SYLLABUS_UNITS = [
     lectureWeight: "25%",
     themeColor: "#4f46e5",
     badgeClass: "badge-unit1",
-    icon: "📐",
+    icon: "∑",
     bookReference: "Dr. G. Balaji, Chapter 1 (Pages 1.1 – 1.84)",
     overview:
       "Foundations of modern linear algebra covering abstract vector spaces, subspace verification, linear combinations, spanning sets, independence testing, basis construction, dimension theorems, and coordinate transformations.",
@@ -25,7 +32,7 @@ const SYLLABUS_UNITS = [
     topics: [
       {
         code: "1.1",
-        name: "Understanding Vectors",
+        name: "Vector Spaces & Axioms",
         desc: "Definition of vector spaces over ℝ, 10 fundamental axioms (addition & scalar multiplication closures, commutativity, associativity, zero element, additive inverse, distributive laws), standard examples ℝⁿ, Pₙ(t), Mₘ×ₙ(ℝ)."
       },
       {
@@ -227,12 +234,15 @@ const SYLLABUS_UNITS = [
   }
 ];
 
-function Syllabus({ onNavigate, student, onLogout }) {
+function Syllabus({ onNavigate, student, onLogout, theme, onToggleTheme }) {
   const [selectedUnit, setSelectedUnit] = useState("all");
   const [expandedUnit, setExpandedUnit] = useState("unit1");
   const [activeTab, setActiveTab] = useState("topics"); // "topics" | "outcomes" | "questions"
+  const [microScores, setMicroScores] = useState(() => getStoredMicroTestScores());
 
   const studentName = student?.fullName || student?.name || "Student";
+  const passedMicroTestsCount = Object.values(microScores).filter((s) => s.passed).length;
+  const attemptedMicroTestsCount = Object.keys(microScores).length;
 
   const displayUnits =
     selectedUnit === "all"
@@ -248,7 +258,7 @@ function Syllabus({ onNavigate, student, onLogout }) {
       {/* Top Header Navbar */}
       <header className="syllabus-nav">
         <div className="syllabus-nav-left">
-          <div className="syllabus-logo-badge">📐</div>
+          <div className="syllabus-logo-badge">∑</div>
           <div>
             <span className="syllabus-platform-name">EduVerse LMS</span>
             <span className="syllabus-nav-tag">Student Course Portal</span>
@@ -261,6 +271,8 @@ function Syllabus({ onNavigate, student, onLogout }) {
         </div>
 
         <div className="syllabus-nav-right">
+          <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+
           <div className="student-logged-pill">
             <span className="user-icon">👤</span>
             <div className="student-logged-info">
@@ -337,14 +349,17 @@ function Syllabus({ onNavigate, student, onLogout }) {
               <span className="b-chip">📚 4 Comprehensive Units</span>
               <span className="b-chip">⏱️ 45 Contact Hours</span>
               <span className="b-chip">⭐ 4.0 Credits (3-1-0)</span>
-              <span className="b-chip">📖 Ref: Dr. G. Balaji (G. Balaji Publishers)</span>
+              <span className="b-chip">Ref: Dr. G. Balaji</span>
+              <span className="b-chip micro-test-metric-chip">
+                ⚡ 10-Min Micro Tests: <strong>{passedMicroTestsCount} / 22 Passed</strong>
+              </span>
             </div>
           </div>
 
           <div className="banner-right-card">
             <div className="quick-book-card">
               <div className="qbc-header">
-                <span className="qbc-icon">📖</span>
+                <span className="qbc-icon">📚</span>
                 <div>
                   <h4>Prescribed Course Textbook</h4>
                   <span className="qbc-sub">Anna University Regulation 2025</span>
@@ -399,7 +414,7 @@ function Syllabus({ onNavigate, student, onLogout }) {
               className={`vmt-btn ${activeTab === "topics" ? "active" : ""}`}
               onClick={() => setActiveTab("topics")}
             >
-              📖 Detailed Topics
+              Detailed Topics
             </button>
             <button
               type="button"
@@ -478,34 +493,102 @@ function Syllabus({ onNavigate, student, onLogout }) {
                           📋 Detailed Syllabus Breakdown ({unit.topics.length} Sections)
                         </h4>
                         <div className="topics-grid">
-                          {unit.topics.map((t) => (
-                            <div key={t.code} className="topic-card">
-                              <div className="topic-header">
-                                <span className="topic-code">{t.code}</span>
-                                <h5 className="topic-name">{t.name}</h5>
+                          {unit.topics.map((t) => {
+                            const tScore = microScores[t.code];
+                            const isUnlocked = isMicroUnitUnlocked(t.code, microScores);
+                            const isCompleted = isMicroUnitCompleted(t.code, microScores);
+                            const prevTopic = getPreviousMicroTopic(t.code);
+
+                            return (
+                              <div key={t.code} className={`topic-card ${!isUnlocked ? "locked-unit" : ""}`}>
+                                <div className="topic-header">
+                                  <div className="th-code-group">
+                                    <span className="topic-code">{t.code}</span>
+                                    <h5 className="topic-name">{t.name}</h5>
+                                  </div>
+
+                                  {isCompleted ? (
+                                    <span className="topic-score-badge passed">
+                                      {tScore?.score !== undefined ? `✓ ${tScore.score}/10 Passed (Qualified)` : "✓ Qualified"}
+                                    </span>
+                                  ) : !isUnlocked ? (
+                                    <span
+                                      className="topic-score-badge locked"
+                                      title={`Locked: Complete and pass Section ${prevTopic?.code} assessment first to qualify`}
+                                    >
+                                      🔒 Locked
+                                    </span>
+                                  ) : tScore ? (
+                                    <span className="topic-score-badge pending">
+                                      ⚡ {tScore.score}/10 (Pass to Qualify)
+                                    </span>
+                                  ) : (
+                                    <span className="topic-score-badge unlocked">
+                                      🔓 Unlocked
+                                    </span>
+                                  )}
+                                </div>
+
+                                <p className="topic-desc">{t.desc}</p>
+
+                                {isUnlocked ? (
+                                  <div className="topic-card-actions-row">
+                                    <button
+                                      type="button"
+                                      className="btn-open-topic-lesson"
+                                      onClick={() =>
+                                        onNavigate("lesson", {
+                                          code: t.code,
+                                          name: t.name,
+                                          unitNumber: unit.unitNumber,
+                                          unitTitle: unit.title,
+                                          desc: t.desc,
+                                          student,
+                                        })
+                                      }
+                                    >
+                                      <span>▶ Study</span>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className={`btn-topic-test-action ${isCompleted ? "passed" : ""}`}
+                                      onClick={() =>
+                                        onNavigate("lesson", {
+                                          code: t.code,
+                                          name: t.name,
+                                          unitNumber: unit.unitNumber,
+                                          unitTitle: unit.title,
+                                          desc: t.desc,
+                                          student,
+                                          startTest: true,
+                                        })
+                                      }
+                                      title="Take 10-Question 10-Minute Assessment"
+                                    >
+                                      <span>
+                                        {isCompleted ? "✓ Qualified (Retake)" : "⚡ 10-Min Test"}
+                                      </span>
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div className="topic-card-actions-row locked-row">
+                                    <button
+                                      type="button"
+                                      className="btn-locked-unit-notice"
+                                      onClick={() =>
+                                        alert(
+                                          `🔒 Section ${t.code} is Locked!\n\nYou must complete and pass the Section ${prevTopic?.code} (${prevTopic?.name}) assessment to qualify for this micro-unit.`
+                                        )
+                                      }
+                                      title={`Prerequisite: Pass Section ${prevTopic?.code} assessment first`}
+                                    >
+                                      <span>🔒 Pass Section {prevTopic?.code} Test to Qualify</span>
+                                    </button>
+                                  </div>
+                                )}
                               </div>
-                              <p className="topic-desc">{t.desc}</p>
-                              <div className="topic-card-actions">
-                                <button
-                                  type="button"
-                                  className="btn-open-topic-lesson"
-                                  onClick={() =>
-                                    onNavigate("lesson", {
-                                      code: t.code,
-                                      name: t.name,
-                                      unitNumber: unit.unitNumber,
-                                      unitTitle: unit.title,
-                                      desc: t.desc,
-                                      student,
-                                    })
-                                  }
-                                >
-                                  <span>▶️ Watch Video & Written Notes</span>
-                                  <span>➔</span>
-                                </button>
-                              </div>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       </div>
                     )}
@@ -553,7 +636,7 @@ function Syllabus({ onNavigate, student, onLogout }) {
                     {/* Unit Footer Actions */}
                     <div className="unit-card-footer">
                       <span className="ucf-note">
-                        📖 Prescribed study chapter: <strong>{unit.bookReference}</strong>
+                        Prescribed study chapter: <strong>{unit.bookReference}</strong>
                       </span>
                       <button
                         type="button"

@@ -1,5 +1,11 @@
 import { useState, useMemo } from "react";
 import "./Faculty.css";
+import ThemeToggle from "./ThemeToggle";
+import {
+  getStoredMicroTestScores,
+  getFacultyUnlockRequests,
+  unlockStudentMicroTest
+} from "./microTopicTests";
 
 // Realistic baseline cohort of engineering students enrolled in Linear Algebra (MA25C02)
 const INITIAL_STUDENTS = [
@@ -317,7 +323,7 @@ const INITIAL_STUDENTS = [
   },
 ];
 
-function Faculty({ onNavigate, registeredStudent }) {
+function Faculty({ onNavigate, registeredStudent, theme, onToggleTheme }) {
   // Combine registered student from current session if available
   const [students, setStudents] = useState(() => {
     let list = [...INITIAL_STUDENTS];
@@ -369,8 +375,10 @@ function Faculty({ onNavigate, registeredStudent }) {
 
   // Selected Student Profile Modal
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [studentNotes, setStudentNotes] = useState("");
-  const [isNoteSaved, setIsNoteSaved] = useState(false);
+
+  // Micro-Topic Test Unlock Requests State
+  const [unlockRequests, setUnlockRequests] = useState(() => getFacultyUnlockRequests());
+  const [microScores, setMicroScores] = useState(() => getStoredMicroTestScores());
 
   // Compute Class KPIs
   const totalCount = students.length;
@@ -380,9 +388,9 @@ function Faculty({ onNavigate, registeredStudent }) {
     : 0;
   const avgPct = Math.round((avgScore / 20) * 100);
 
-  const cat1Count = students.filter((s) => s.category === "category1").length;
-  const cat2Count = students.filter((s) => s.category === "category2").length;
-  const cat3Count = students.filter((s) => s.category === "category3").length;
+  const cat1Count = students.filter((s) => s.category === "category1" || s.category === "bronze").length;
+  const cat2Count = students.filter((s) => s.category === "category2" || s.category === "silver").length;
+  const cat3Count = students.filter((s) => s.category === "category3" || s.category === "gold").length;
 
   // Filtered and Sorted Students
   const filteredStudents = useMemo(() => {
@@ -418,19 +426,6 @@ function Faculty({ onNavigate, registeredStudent }) {
 
   const handleOpenStudentModal = (student) => {
     setSelectedStudent(student);
-    setStudentNotes(student.remarks || "");
-    setIsNoteSaved(false);
-  };
-
-  const handleSaveNotes = () => {
-    if (!selectedStudent) return;
-    setStudents((prev) =>
-      prev.map((s) =>
-        s.id === selectedStudent.id ? { ...s, remarks: studentNotes } : s
-      )
-    );
-    setIsNoteSaved(true);
-    setTimeout(() => setIsNoteSaved(false), 2500);
   };
 
   const handleExportCSV = () => {
@@ -470,7 +465,7 @@ function Faculty({ onNavigate, registeredStudent }) {
 
         <div className="fac-nav-right">
           <div className="instructor-card">
-            <span className="inst-avatar">🎓</span>
+            <span className="inst-avatar">👨‍🏫</span>
             <div className="inst-text">
               <span className="inst-name">Dr. K. Senthil Kumar, Ph.D.</span>
               <span className="inst-role">Professor & Course Head (Dept of Mathematics)</span>
@@ -478,12 +473,23 @@ function Faculty({ onNavigate, registeredStudent }) {
           </div>
 
           <div className="fac-nav-buttons">
+            <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+
             <button
               type="button"
               className="fac-btn-outline"
               onClick={() => onNavigate && onNavigate("home")}
             >
               Portal Home
+            </button>
+            <button
+              type="button"
+              className="fac-btn-outline"
+              style={{ borderColor: "#64748b", color: "#334155" }}
+              onClick={() => onNavigate && onNavigate("admin")}
+              title="Switch to Admin Console"
+            >
+              Admin Console 🛡️
             </button>
             <button
               type="button"
@@ -533,6 +539,76 @@ function Faculty({ onNavigate, registeredStudent }) {
           </div>
         </section>
 
+        {/* Micro-Topic Test Re-Test Unlock Requests Notification Banner */}
+        {unlockRequests.filter((r) => r.status === "pending").length > 0 && (
+          <div style={{
+            background: "#fef2f2",
+            border: "1.5px solid #fca5a5",
+            borderRadius: "12px",
+            padding: "16px 20px",
+            marginBottom: "24px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+            boxShadow: "0 4px 12px rgba(239, 68, 68, 0.08)"
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <span style={{ fontSize: "24px" }}>🔔</span>
+              <div>
+                <strong style={{ fontSize: "15px", color: "#991b1b" }}>
+                  {unlockRequests.filter((r) => r.status === "pending").length} Student(s) Requesting Micro-Topic Re-Test Authorization
+                </strong>
+                <p style={{ margin: "2px 0 0", fontSize: "13px", color: "#b91c1c" }}>
+                  These students have completed all 3 allowed attempts without achieving a qualifying score (&gt; 6 marks) and require faculty permission to re-take.
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+              {unlockRequests.filter((r) => r.status === "pending").map((req) => (
+                <div
+                  key={req.id}
+                  style={{
+                    background: "#ffffff",
+                    border: "1px solid #fca5a5",
+                    borderRadius: "8px",
+                    padding: "10px 14px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    fontSize: "13px"
+                  }}
+                >
+                  <div>
+                    <strong>{req.studentName}</strong> ({req.studentRollNo}) • <span>Section {req.topicCode} (Last Score: {req.lastScore}/10)</span>
+                  </div>
+                  <button
+                    type="button"
+                    style={{
+                      background: "#16a34a",
+                      color: "#ffffff",
+                      border: "none",
+                      padding: "6px 12px",
+                      borderRadius: "6px",
+                      fontWeight: "700",
+                      fontSize: "12px",
+                      cursor: "pointer"
+                    }}
+                    onClick={() => {
+                      unlockStudentMicroTest(req.topicCode, req.studentRollNo);
+                      setUnlockRequests(getFacultyUnlockRequests());
+                      setMicroScores(getStoredMicroTestScores());
+                      alert(`✓ Section ${req.topicCode} test unlocked for ${req.studentName}. Student's attempts have been reset to allow re-testing.`);
+                    }}
+                  >
+                    🔓 Authorize & Unlock (Reset Attempts)
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Classroom Analytics / KPI Grid */}
         <section className="faculty-kpi-grid">
           {/* Card 1: Total Enrolled */}
@@ -557,49 +633,49 @@ function Faculty({ onNavigate, registeredStudent }) {
             <span className="kpi-footer">Evaluated across 4 units</span>
           </div>
 
-          {/* Card 3: Category 1 (Foundational) */}
+          {/* Card 3: Bronze (<= 39%) */}
           <div
             className={`kpi-card clickable ${selectedCategoryFilter === "category1" ? "active-kpi" : ""}`}
             onClick={() => setSelectedCategoryFilter(selectedCategoryFilter === "category1" ? "all" : "category1")}
-            title="Click to filter Category 1 students"
+            title="Click to filter Bronze students"
           >
             <div className="kpi-icon-row">
               <span className="kpi-icon bg-amber">🥉</span>
-              <span className="kpi-chip bg-amber-chip">0 – 9 Marks</span>
+              <span className="kpi-chip bg-amber-chip">≤ 39%</span>
             </div>
             <span className="kpi-value text-amber">{cat1Count}</span>
-            <span className="kpi-label">Category 1: Foundational Track</span>
-            <span className="kpi-footer">Requires remedial rows & 2×2 drills</span>
+            <span className="kpi-label">Bronze: Foundational Support</span>
+            <span className="kpi-footer">Score ≤ 39% • Remedial rows & drills</span>
           </div>
 
-          {/* Card 4: Category 2 (Core) */}
+          {/* Card 4: Silver (40% - 79%) */}
           <div
             className={`kpi-card clickable ${selectedCategoryFilter === "category2" ? "active-kpi" : ""}`}
             onClick={() => setSelectedCategoryFilter(selectedCategoryFilter === "category2" ? "all" : "category2")}
-            title="Click to filter Category 2 students"
+            title="Click to filter Silver students"
           >
             <div className="kpi-icon-row">
               <span className="kpi-icon bg-blue">🥈</span>
-              <span className="kpi-chip bg-blue-chip">10 – 15 Marks</span>
+              <span className="kpi-chip bg-blue-chip">40% – 79%</span>
             </div>
             <span className="kpi-value text-blue">{cat2Count}</span>
-            <span className="kpi-label">Category 2: Core Engineering</span>
-            <span className="kpi-footer">Standard pace • University questions</span>
+            <span className="kpi-label">Silver: Core Engineering</span>
+            <span className="kpi-footer">Score 40%–79% • Standard university pace</span>
           </div>
 
-          {/* Card 5: Category 3 (Advanced) */}
+          {/* Card 5: Gold (>= 80%) */}
           <div
             className={`kpi-card clickable ${selectedCategoryFilter === "category3" ? "active-kpi" : ""}`}
             onClick={() => setSelectedCategoryFilter(selectedCategoryFilter === "category3" ? "all" : "category3")}
-            title="Click to filter Category 3 students"
+            title="Click to filter Gold students"
           >
             <div className="kpi-icon-row">
               <span className="kpi-icon bg-green">🥇</span>
-              <span className="kpi-chip bg-green-chip">23 – 30 Marks</span>
+              <span className="kpi-chip bg-green-chip">≥ 80%</span>
             </div>
             <span className="kpi-value text-green">{cat3Count}</span>
-            <span className="kpi-label">Category 3: Advanced Scholars</span>
-            <span className="kpi-footer">Assigned SVD & Honors proofs</span>
+            <span className="kpi-label">Gold: Advanced Scholars</span>
+            <span className="kpi-footer">Score ≥ 80% • Assigned SVD & Honors proofs</span>
           </div>
         </section>
 
@@ -635,9 +711,9 @@ function Faculty({ onNavigate, registeredStudent }) {
                 onChange={(e) => setSelectedCategoryFilter(e.target.value)}
               >
                 <option value="all">All Categories ({totalCount})</option>
-                <option value="category1">🥉 Category 1: Foundational (0-14 Marks) [{cat1Count}]</option>
-                <option value="category2">🥈 Category 2: Core Engineering (15-22 Marks) [{cat2Count}]</option>
-                <option value="category3">🥇 Category 3: Advanced Scholars (23-30 Marks) [{cat3Count}]</option>
+                <option value="category1">🥉 Bronze: Foundational (Score ≤ 39%) [{cat1Count}]</option>
+                <option value="category2">🥈 Silver: Core Engineering (Score 40% – 79%) [{cat2Count}]</option>
+                <option value="category3">🥇 Gold: Advanced Scholars (Score ≥ 80%) [{cat3Count}]</option>
               </select>
             </div>
 
@@ -851,7 +927,7 @@ function Faculty({ onNavigate, registeredStudent }) {
                       <span className="stu-roll-badge">{stu.rollNo}</span>
                     </div>
                     <span className={`category-tag-pill ${stu.categoryBadge}`}>
-                      {stu.category === "category1" ? "🥉 Cat 1" : stu.category === "category2" ? "🥈 Cat 2" : "🥇 Cat 3"}
+                      {stu.category === "category1" || stu.category === "bronze" ? "🥉 Bronze" : stu.category === "category2" || stu.category === "silver" ? "🥈 Silver" : "🥇 Gold"}
                     </span>
                   </div>
 
@@ -1010,38 +1086,85 @@ function Faculty({ onNavigate, registeredStudent }) {
                 </h4>
                 <div className="spm-pathway-box">
                   <p>
-                    {selectedStudent.category === "category1"
-                      ? "Assigned to Foundational Remediation Module: Focusing on Matrix Algebra & Echelon Basics (LA-F101 to LA-F104) to reinforce fundamental row reduction techniques."
-                      : selectedStudent.category === "category2"
-                      ? "Assigned to Core Engineering Module: Focusing on Solvability & Spectral Theory (LA-C201 to LA-C204) to solve standard university question papers."
-                      : "Assigned to Advanced Scholars Module: Focusing on Advanced Transformations, SVD & Diagonalization (LA-A301 to LA-A304) for honors research readiness."}
+                    {selectedStudent.category === "category1" || selectedStudent.category === "bronze"
+                      ? "🥉 Bronze Pathway (Score ≤ 39%): Assigned to Foundational Remediation Module focusing on Matrix Algebra & Echelon Basics (LA-F101 to LA-F104) to reinforce fundamental row reduction techniques."
+                      : selectedStudent.category === "category2" || selectedStudent.category === "silver"
+                      ? "🥈 Silver Pathway (Score 40% – 79%): Assigned to Core Engineering Module focusing on Solvability & Spectral Theory (LA-C201 to LA-C204) to solve standard university question papers."
+                      : "🥇 Gold Pathway (Score ≥ 80%): Assigned to Advanced Scholars Module focusing on Advanced Transformations, SVD & Diagonalization (LA-A301 to LA-A304) for honors research readiness."}
                   </p>
                 </div>
               </div>
 
-              {/* Faculty Intervention & Remarks Editor */}
+              {/* Micro-Topic Assessment Performance & Unlock Controls */}
               <div className="spm-section">
                 <h4 className="spm-sec-heading">
-                  ✍️ Faculty Remarks & Intervention Notes
+                  ⚡ Micro-Topic Assessment Status & Unlock Controls
                 </h4>
-                <textarea
-                  className="spm-remarks-textarea"
-                  rows="3"
-                  value={studentNotes}
-                  onChange={(e) => setStudentNotes(e.target.value)}
-                  placeholder="Enter instructor notes, academic advice, or remedial session scheduling details for this student..."
-                ></textarea>
-                <div className="spm-remarks-actions">
-                  {isNoteSaved && <span className="save-toast">✓ Notes saved successfully!</span>}
-                  <button
-                    type="button"
-                    className="btn-save-note"
-                    onClick={handleSaveNotes}
-                  >
-                    Save Faculty Notes
-                  </button>
+                <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "10px", padding: "14px" }}>
+                  <div style={{ fontSize: "13px", color: "#64748b", marginBottom: "10px" }}>
+                    Qualifying Criterion: <strong>Score Above 6 Marks (&gt; 6 / 10)</strong> • Maximum Allowed: <strong>3 Attempts</strong>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    {Object.keys(microScores).length > 0 ? (
+                      Object.entries(microScores).map(([tCode, tData]) => {
+                        const isLocked = !tData.qualified && (tData.isLocked || tData.attemptsCount >= 3);
+                        return (
+                          <div
+                            key={tCode}
+                            style={{
+                              background: isLocked ? "#fef2f2" : tData.qualified ? "#ecfdf5" : "#ffffff",
+                              border: `1px solid ${isLocked ? "#fca5a5" : tData.qualified ? "#a7f3d0" : "#cbd5e1"}`,
+                              borderRadius: "8px",
+                              padding: "10px 14px",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              flexWrap: "wrap",
+                              gap: "8px"
+                            }}
+                          >
+                            <div>
+                              <strong style={{ color: "#0f172a" }}>Section {tCode}: {tData.topicName || tCode}</strong>
+                              <div style={{ fontSize: "12px", color: isLocked ? "#991b1b" : tData.qualified ? "#065f46" : "#64748b", marginTop: "2px" }}>
+                                Score: <strong>{tData.score}/10 Marks</strong> • Attempt {tData.attemptsCount || 1} of 3 • {tData.qualified ? "🎉 Qualified (> 6 Marks)" : isLocked ? "⛔ Locked (3 Attempts Failed)" : "⚠️ In Progress (Not Yet Qualified)"}
+                              </div>
+                            </div>
+
+                            {isLocked && (
+                              <button
+                                type="button"
+                                style={{
+                                  background: "#dc2626",
+                                  color: "#ffffff",
+                                  border: "none",
+                                  padding: "6px 14px",
+                                  borderRadius: "6px",
+                                  fontSize: "12px",
+                                  fontWeight: "700",
+                                  cursor: "pointer"
+                                }}
+                                onClick={() => {
+                                  unlockStudentMicroTest(tCode, selectedStudent?.rollNo);
+                                  setMicroScores(getStoredMicroTestScores());
+                                  setUnlockRequests(getFacultyUnlockRequests());
+                                  alert(`Section ${tCode} test unlocked for ${selectedStudent?.name || "Student"}! Student can now re-test.`);
+                                }}
+                              >
+                                🔓 Unlock Test & Reset Attempts
+                              </button>
+                            )}
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div style={{ fontSize: "13px", color: "#94a3b8", padding: "8px 0" }}>
+                        No micro-topic assessment sessions recorded yet.
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
+
             </div>
 
             {/* Modal Footer */}

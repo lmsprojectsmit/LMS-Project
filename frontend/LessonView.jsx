@@ -1,6 +1,48 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./LessonView.css";
-import U1M01 from "./U1M01";
+import MicroTopicTestModal from "./MicroTopicTestModal";
+import {
+  getStoredMicroTestScores,
+  isMicroUnitUnlocked,
+  isMicroUnitCompleted,
+  getNextMicroTopic,
+  getPreviousMicroTopic
+} from "./microTopicTests";
+import ThemeToggle from "./ThemeToggle";
+
+// Video Audio Tracks & Dubbing Configuration (English & Tamil only)
+const VIDEO_LANGUAGES = [
+  { id: "en", name: "English", native: "English", flag: "🇬🇧", tag: "ENG", dubType: "Original University Lecture" },
+  { id: "ta", name: "Tamil", native: "தமிழ்", flag: "🇮🇳", tag: "TAM", dubType: "Anna University Bilingual Audio" },
+];
+
+const getLocalizedVideoData = (code, title, langId) => {
+  const contentMap = {
+    en: {
+      summary: `Step-by-step examination of the core mathematical principles, formal proofs, and worked university problems for Section ${code} - ${title}.`,
+      subtitles: [
+        `Welcome students to Section ${code}. Today we analyze ${title} and its foundational mathematical axioms.`,
+        "Notice the formal condition: any vector operations must preserve closure under vector addition and scalar multiplication.",
+        "Now let us examine the matrix representation and solve the university 8-mark problem step-by-step.",
+        "Full consistency is confirmed using elementary row reductions and rank-nullity criteria."
+      ],
+      audioNotice: "Original English Academic Audio (Prof. Dr. K. Senthil Kumar, Anna University)",
+      activeNote: "English technical lecture audio active. Mathematical notations align with Dr. G. Balaji prescribed textbook."
+    },
+    ta: {
+      summary: `பிரிவு ${code} - ${title} குறித்த விரிவான பாட விளக்கம். அண்ணா பல்கலைக்கழக தேர்வு வினாக்கள், முக்கிய தேற்றங்கள் மற்றும் படிநிலைகள் (Tamil Bilingual Dub).`,
+      subtitles: [
+        `வணக்கம் மாணவர்களே! பிரிவு ${code} - ${title} மற்றும் அதன் முக்கிய இயற்கணித விதிகளை கற்கவுள்ளோம்.`,
+        "இங்கே கவனியுங்கள்: எந்த இரு வெக்டர்களுக்கும் கூட்டல் மற்றும் ஸ்கேலர் பெருக்கல் அடைவு விதி (Closure Axiom) கட்டாயம் பொருந்த வேண்டும்.",
+        "அடுத்து அணி அமைப்பை (Matrix representation) கொண்டு அண்ணா பல்கலைக்கழக 8-மதிப்பெண் கணக்கை படிப்படியாக தீர்ப்போம்.",
+        "ரோ-ரிடக்ஷன் (Row reduction) மற்றும் அணிக்கோவை மூலம் தீர்வு சரிபார்க்கப்பட்டு முழு மதிப்பெண் பெறப்படுகிறது."
+      ],
+      audioNotice: "தமிழ் இருமொழி ஆடியோ விளக்கம் (Tamil Bilingual Dubbed Audio)",
+      activeNote: "அண்ணா பல்கலைக்கழக பொறியியல் கணித பாடத்திட்டத்திற்கு ஏற்ற தமிழ் வழி விளக்க ஆடியோ மற்றும் குறிப்புகள்."
+    }
+  };
+  return contentMap[langId] || contentMap.en;
+};
 
 // Comprehensive curriculum content with Video metadata and Dr. G. Balaji Written Notes
 const LESSON_DATABASE = {
@@ -18,8 +60,7 @@ const LESSON_DATABASE = {
       { time: "00:00", label: "Introduction to Abstract Linear Spaces" },
       { time: "03:15", label: "Vector Addition Axioms (Closure, Associativity, Identity, Inverse)" },
       { time: "07:40", label: "Scalar Multiplication Axioms & Distributive Laws" },
-      { time: "11:25", label: "Standard Examples: Euclidean ℝⁿ, Polynomials Pₙ(t), Matrices Mₘ×ₙ" },
-      { time: "15:10", label: "Counterexample: Why ℝ² with (x₁, y₁) + (x₂, y₂) = (x₁ + x₂, 0) fails" }
+      { time: "11:25", label: "Standard Examples: Euclidean ℝⁿ, Polynomials Pₙ(t), Matrices Mₘ×ₙ" }
     ],
     notes: {
       introduction: "A Vector Space V over the real field ℝ is an algebraic structure consisting of a non-empty set of objects (vectors), together with two operations—vector addition (+) and scalar multiplication (·)—satisfying 10 fundamental axioms.",
@@ -392,13 +433,31 @@ const getLessonData = (code, unitTitle, topicTitle, unitNumber) => {
   };
 };
 
-function LessonView({ onNavigate, student, lessonInfo, onLogout }) {
+function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggleTheme }) {
   const [activeTab, setActiveTab] = useState("all"); // "all" | "video" | "notes"
   const [isPlaying, setIsPlaying] = useState(false);
-  const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [currentTimestamp, setCurrentTimestamp] = useState("03:45");
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [copiedFormula, setCopiedFormula] = useState(null);
+  const [showTestModal, setShowTestModal] = useState(false);
+  const [microScores, setMicroScores] = useState(() => getStoredMicroTestScores());
+  const [videoLanguage, setVideoLanguage] = useState("en");
+  const [showCaptions, setShowCaptions] = useState(true);
+  const [subtitleIndex, setSubtitleIndex] = useState(0);
+  const [langToast, setLangToast] = useState(null);
+
+  // Video Playback Watch Completion Gating
+  const [videoWatched, setVideoWatched] = useState(() => {
+    try {
+      return localStorage.getItem(`eduverse_video_completed_${lessonInfo?.code || "1.1"}`) === "true";
+    } catch {
+      return false;
+    }
+  });
+  const [videoProgress, setVideoProgress] = useState(() => {
+    try {
+      return localStorage.getItem(`eduverse_video_completed_${lessonInfo?.code || "1.1"}`) === "true" ? 100 : 0;
+    } catch {
+      return 0;
+    }
+  });
 
   const studentName = student?.fullName || student?.name || "Student";
   const topicCode = lessonInfo?.code || "1.1";
@@ -407,21 +466,103 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout }) {
   const topicName = lessonInfo?.name || "Vector Spaces & Axioms";
 
   const lesson = getLessonData(topicCode, unitTitle, topicName, unitNumber);
+  const topicScoreData = microScores[lesson.code];
 
-  if (topicCode === "1.1" || topicCode === "U1-M01") {
-    return <U1M01 onNavigate={onNavigate} student={student} onLogout={onLogout} />;
-  }
+  // Qualification to next module strictly requires passing the micro-unit assessment
+  const isCurrentCompleted = isMicroUnitCompleted(lesson.code, microScores);
+  const isCurrentUnlocked = isMicroUnitUnlocked(lesson.code, microScores);
+  const nextTopic = getNextMicroTopic(lesson.code);
+  const prevTopic = getPreviousMicroTopic(lesson.code);
+
+  const selectedLangConfig = VIDEO_LANGUAGES.find((l) => l.id === videoLanguage) || VIDEO_LANGUAGES[0];
+  const localizedVideoData = getLocalizedVideoData(lesson.code, lesson.title, videoLanguage);
+
+  // Synchronize video watch completion status when lesson code changes
+  useEffect(() => {
+    try {
+      const isCompleted = localStorage.getItem(`eduverse_video_completed_${lesson.code}`) === "true";
+      setVideoWatched(isCompleted);
+      setVideoProgress(isCompleted ? 100 : 0);
+    } catch {
+      setVideoWatched(false);
+      setVideoProgress(0);
+    }
+  }, [lesson.code]);
+
+  // Advance video playback watch progress steadily while isPlaying is true
+  useEffect(() => {
+    let watchTimer = null;
+    if (isPlaying && !videoWatched) {
+      watchTimer = setInterval(() => {
+        setVideoProgress((prev) => {
+          if (prev >= 98) {
+            clearInterval(watchTimer);
+            setVideoWatched(true);
+            try {
+              localStorage.setItem(`eduverse_video_completed_${lesson.code}`, "true");
+            } catch (e) {
+              console.error(e);
+            }
+            return 100;
+          }
+          return prev + 2;
+        });
+      }, 750);
+    }
+    return () => {
+      if (watchTimer) clearInterval(watchTimer);
+    };
+  }, [isPlaying, videoWatched, lesson.code]);
+
+  useEffect(() => {
+    if (lessonInfo?.startTest) {
+      try {
+        const isDone = localStorage.getItem(`eduverse_video_completed_${lesson.code}`) === "true";
+        if (isDone || videoWatched) {
+          setShowTestModal(true);
+        } else {
+          alert(
+            `🔒 Assessment Locked!\n\nYou must watch the entire video lecture before you can attend the Section ${lesson.code} assessment.\n\nPlease play and finish the video first.`
+          );
+        }
+      } catch {
+        setShowTestModal(true);
+      }
+    }
+  }, [lessonInfo, lesson.code]);
+
+  // Synchronize dynamic subtitle advancement when playing
+  useEffect(() => {
+    let interval = null;
+    if (isPlaying) {
+      interval = setInterval(() => {
+        setSubtitleIndex((prev) => (prev + 1) % 4);
+      }, 4000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isPlaying]);
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
   };
 
-  const handleCopyFormula = (formula, index) => {
-    if (navigator?.clipboard?.writeText) {
-      navigator.clipboard.writeText(formula).catch(() => {});
+  const handleLanguageChange = (newLang) => {
+    setVideoLanguage(newLang);
+    const target = VIDEO_LANGUAGES.find((l) => l.id === newLang) || VIDEO_LANGUAGES[0];
+    setLangToast(`Video Audio & Subtitles switched to ${target.name} (${target.native}) • ${target.dubType}`);
+    setTimeout(() => setLangToast(null), 3500);
+  };
+
+  const handleOpenAssessment = () => {
+    if (!videoWatched && videoProgress < 100) {
+      alert(
+        `🔒 Assessment Locked!\n\nYou must watch the entire video lecture before you can attend the Section ${lesson.code} assessment.\n\nCurrent Watch Progress: ${Math.round(videoProgress)}%\n\nPlease press ▶️ Play on the chalkboard and complete the video to unlock your test.`
+      );
+      return;
     }
-    setCopiedFormula(index);
-    setTimeout(() => setCopiedFormula(null), 2000);
+    setShowTestModal(true);
   };
 
   return (
@@ -449,6 +590,8 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout }) {
         </div>
 
         <div className="ln-right">
+          <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+
           <div className="student-logged-pill">
             <span>👤</span>
             <span className="sl-name">{studentName}</span>
@@ -469,14 +612,63 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout }) {
       </header>
 
       {/* Main Lesson Body */}
-      <main className="lesson-container">
+      {!isCurrentUnlocked ? (
+        <main className="lesson-container">
+          <div className="locked-lesson-screen">
+            <div className="lls-card">
+              <span className="lls-icon">🔒</span>
+              <span className="lls-badge">ASSESSMENT PASS REQUIRED</span>
+              <h2 className="lls-title">Section {lesson.code} is Locked</h2>
+              <p className="lls-desc">
+                To qualify for <strong>Section {lesson.code}: {lesson.title}</strong>, you must complete and pass the 10-minute assessment of the previous micro-unit first.
+              </p>
+              {prevTopic && (
+                <div className="lls-prereq-box">
+                  <span className="lls-prereq-lbl">Required Prerequisite:</span>
+                  <strong className="lls-prereq-val">
+                    Pass Section {prevTopic.code} ({prevTopic.name}) Assessment
+                  </strong>
+                </div>
+              )}
+              <div className="lls-actions">
+                {prevTopic && (
+                  <button
+                    type="button"
+                    className="btn-go-prereq"
+                    onClick={() =>
+                      onNavigate("lesson", {
+                        code: prevTopic.code,
+                        name: prevTopic.name,
+                        unitNumber: prevTopic.unitNumber,
+                        unitTitle: prevTopic.unitTitle,
+                        student,
+                        startTest: true
+                      })
+                    }
+                  >
+                    ⚡ Take Section {prevTopic.code} Assessment
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="btn-back-syllabus-alt"
+                  onClick={() => onNavigate("syllabus", student)}
+                >
+                  View Full Syllabus
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+      ) : (
+        <main className="lesson-container">
         {/* Lesson Title Header */}
         <section className="lesson-header-strip">
           <div className="lhs-meta-row">
             <span className="lhs-unit-pill">{lesson.unitNumber}: {lesson.unitTitle}</span>
             <span className="lhs-code-pill">Section {lesson.code}</span>
             <span className="lhs-duration-pill">⏱️ {lesson.duration} Lecture Video</span>
-            <span className="lhs-book-pill">📖 {lesson.bookChapter}</span>
+            <span className="lhs-book-pill">{lesson.bookChapter}</span>
           </div>
 
           <div className="lhs-title-row">
@@ -490,10 +682,23 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout }) {
             <div className="lhs-actions">
               <button
                 type="button"
-                className={`btn-mark-complete ${isCompleted ? "completed" : ""}`}
-                onClick={() => setIsCompleted(!isCompleted)}
+                className={`btn-take-micro-test ${!videoWatched ? "locked-test-btn" : ""}`}
+                onClick={handleOpenAssessment}
+                title={
+                  !videoWatched
+                    ? `Watch full lecture video first (${Math.round(videoProgress)}% watched)`
+                    : "Take 10-Minute Assessment"
+                }
               >
-                {isCompleted ? "✓ Lesson Completed" : "Mark as Completed"}
+                {!videoWatched ? (
+                  `🔒 Watch Full Video to Unlock Test (${Math.round(videoProgress)}%)`
+                ) : topicScoreData?.passed ? (
+                  `✓ Assessment Passed: ${topicScoreData.score}/10 (Qualified)`
+                ) : topicScoreData ? (
+                  `⚡ Retake Assessment: ${topicScoreData.score}/10 (Pass to Qualify)`
+                ) : (
+                  "⚡ 10-Min Assessment (Pass to Qualify Next Unit)"
+                )}
               </button>
               <button
                 type="button"
@@ -528,12 +733,19 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout }) {
             >
               📝 Dr. G. Balaji Written Notes Only
             </button>
+            <button
+              type="button"
+              className="mode-btn test-pill-trigger"
+              onClick={() => setShowTestModal(true)}
+            >
+              ⚡ Micro-Topic Test (10 Qs • 10m)
+            </button>
           </div>
         </section>
 
         {/* Content Layout Grid */}
         <div className={`lesson-layout-grid ${activeTab}`}>
-          {/* SECTION 1: VIDEO FILE PLAYER */}
+          {/* SECTION 1: VIDEO FILE PLAYER WITH MULTILINGUAL CONTROLS */}
           {(activeTab === "all" || activeTab === "video") && (
             <section className="video-player-section">
               <div className="video-card">
@@ -542,16 +754,69 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout }) {
                   {/* Mathematical Blackboard Canvas Backdrop */}
                   <div className="chalkboard-screen">
                     <div className="cb-lecture-header">
-                      <span className="cb-logo">📐 EduVerse Virtual Lecture</span>
-                      <span className="cb-live-rec">● HD 1080p</span>
+                      <div className="cb-header-left">
+                        <span className="cb-logo">EduVerse Virtual Lecture</span>
+                        <span className="cb-live-rec">● HD 1080p</span>
+                      </div>
+
+                      {/* Video Language Selector in Blackboard Header */}
+                      <div className="cb-header-right">
+                        <div className="cb-lang-picker" title="Change Video Audio & Subtitles Language">
+                          <span className="cb-lang-picker-icon">🌐</span>
+                          <span className="cb-lang-picker-label">Language:</span>
+                          <select
+                            className="cb-lang-select"
+                            value={videoLanguage}
+                            onChange={(e) => handleLanguageChange(e.target.value)}
+                            aria-label="Change Video Audio Language"
+                          >
+                            {VIDEO_LANGUAGES.map((lang) => (
+                              <option key={lang.id} value={lang.id}>
+                                {lang.flag} {lang.name} ({lang.native})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <button
+                          type="button"
+                          className={`cb-cc-pill ${showCaptions ? "active" : ""}`}
+                          onClick={() => setShowCaptions(!showCaptions)}
+                          title="Toggle Closed Captions (CC)"
+                        >
+                          CC [{selectedLangConfig.tag}]
+                        </button>
+                      </div>
                     </div>
+
+                    {/* Active Dub / Audio Track Notification Banner */}
+                    <div className="cb-active-dub-badge">
+                      <span className="cad-flag">{selectedLangConfig.flag}</span>
+                      <span className="cad-text">
+                        Audio: <strong>{selectedLangConfig.name} ({selectedLangConfig.native})</strong> • {selectedLangConfig.dubType}
+                      </span>
+                      {isPlaying && (
+                        <span className="cad-audio-wave" title="Audio playing">
+                          <span className="wave-bar"></span>
+                          <span className="wave-bar"></span>
+                          <span className="wave-bar"></span>
+                          <span className="wave-bar"></span>
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Language Switch Toast Pill */}
+                    {langToast && (
+                      <div className="cb-lang-toast-pill" role="status">
+                        ✨ {langToast}
+                      </div>
+                    )}
 
                     <div className="cb-main-chalk">
                       <h3 className="cb-title">{lesson.title}</h3>
                       <div className="cb-formula-spotlight">
                         <code>{lesson.notes.axioms[0]?.formula || "A x = b • det(A - λI) = 0"}</code>
                       </div>
-                      <p className="cb-sub">{lesson.videoTopicSummary}</p>
+                      <p className="cb-sub">{localizedVideoData.summary}</p>
                     </div>
 
                     {/* Animated Professor / Speaker Avatar */}
@@ -562,6 +827,14 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout }) {
                         <span className="inst-dept">Dept of Mathematics • Anna University</span>
                       </div>
                     </div>
+
+                    {/* Real-time Closed Captions Overlay Bar */}
+                    {showCaptions && (
+                      <div className="cb-subtitles-bar">
+                        <span className="cb-sub-badge">CC {selectedLangConfig.tag}</span>
+                        <span className="cb-sub-text">{localizedVideoData.subtitles[subtitleIndex]}</span>
+                      </div>
+                    )}
 
                     {/* Big Center Play Overlay Button */}
                     <button
@@ -574,74 +847,57 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout }) {
                     </button>
                   </div>
 
-                  {/* Player Control Bar */}
-                  <div className="player-controls-bar">
-                    <div className="controls-left">
-                      <button
-                        type="button"
-                        className="ctrl-btn play-btn"
-                        onClick={togglePlay}
-                      >
-                        {isPlaying ? "⏸️ Pause" : "▶️ Play"}
-                      </button>
-                      <span className="video-time-display">
-                        {currentTimestamp} / {lesson.duration}
-                      </span>
-                    </div>
-
-                    {/* Simulated Scrubber Bar */}
-                    <div className="scrubber-bar-wrap">
-                      <div className="scrubber-progress" style={{ width: "24%" }}></div>
-                    </div>
-
-                    <div className="controls-right">
-                      {/* Speed Controller */}
-                      <div className="speed-selector">
-                        <span>Speed:</span>
-                        {[0.75, 1, 1.25, 1.5, 2].map((spd) => (
-                          <button
-                            key={spd}
-                            type="button"
-                            className={`spd-btn ${playbackSpeed === spd ? "active" : ""}`}
-                            onClick={() => setPlaybackSpeed(spd)}
-                          >
-                            {spd}x
-                          </button>
-                        ))}
+                    {/* Lecture Video Playback Watch Completion Progress Bar */}
+                    <div className="cb-lecture-progress-strip">
+                      <div className="cb-lps-info">
+                        <span className="cb-lps-status">
+                          {videoWatched ? (
+                            <span className="cb-lps-done">✅ Lecture Video Completed (100%) • Assessment Unlocked!</span>
+                          ) : isPlaying ? (
+                            <span className="cb-lps-playing">▶️ Watching Video: {Math.round(videoProgress)}% (Watch 100% to unlock assessment)</span>
+                          ) : (
+                            <span className="cb-lps-paused">⏸️ Video Paused ({Math.round(videoProgress)}% watched) — Press ▶ on board to continue watching</span>
+                          )}
+                        </span>
+                        <span className="cb-lps-time">
+                          {Math.round(videoProgress)}%
+                        </span>
                       </div>
-
-                      <button
-                        type="button"
-                        className="ctrl-btn"
-                        onClick={() => alert("Entering Fullscreen Mode")}
-                        title="Fullscreen"
-                      >
-                        ⛶
-                      </button>
+                      <div className="cb-lps-track">
+                        <div
+                          className={`cb-lps-bar ${videoWatched ? "done" : ""}`}
+                          style={{ width: `${videoProgress}%` }}
+                        ></div>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Video Chapters & Timeline Markers */}
-                <div className="video-chapters-box">
-                  <h4 className="vcb-title">📑 Video Lecture Chapters & Timestamps</h4>
-                  <div className="chapters-list">
-                    {lesson.timestamps.map((ts, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        className="chapter-item-btn"
-                        onClick={() => {
-                          setCurrentTimestamp(ts.time);
-                          setIsPlaying(true);
-                        }}
-                      >
-                        <span className="ts-time">{ts.time}</span>
-                        <span className="ts-label">{ts.label}</span>
-                        <span className="ts-play-icon">▶</span>
-                      </button>
-                    ))}
+                {/* Multilingual Audio Track & Transcript Banner */}
+                <div className="video-lang-transcript-box">
+                  <div className="vlt-header">
+                    <div className="vlt-title">
+                      <span className="vlt-icon">🌐</span>
+                      <span>Video Language & Audio Track:</span>
+                      <strong className="vlt-lang-highlight">
+                        {selectedLangConfig.name} ({selectedLangConfig.native})
+                      </strong>
+                    </div>
+
+                    <div className="vlt-pills">
+                      {VIDEO_LANGUAGES.map((lang) => (
+                        <button
+                          key={lang.id}
+                          type="button"
+                          className={`vlt-pill ${videoLanguage === lang.id ? "active" : ""}`}
+                          onClick={() => handleLanguageChange(lang.id)}
+                        >
+                          <span className="vlt-pill-flag">{lang.flag}</span>
+                          <span>{lang.name}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
+                  <p className="vlt-desc">{localizedVideoData.activeNote}</p>
                 </div>
               </div>
             </section>
@@ -659,70 +915,6 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout }) {
                 <h2 className="notes-topic-title">{lesson.title} - Complete Notes</h2>
                 <p className="notes-intro-txt">{lesson.notes.introduction}</p>
 
-                {/* Mathematical Axioms & Principles */}
-                <div className="notes-block">
-                  <h3 className="block-title">📐 Key Axioms & Mathematical Definitions</h3>
-                  <div className="axioms-cards-grid">
-                    {lesson.notes.axioms.map((ax, idx) => (
-                      <div key={idx} className="axiom-note-card">
-                        <div className="anc-top">
-                          <span className="anc-name">{ax.name}</span>
-                          <button
-                            type="button"
-                            className="btn-copy-formula"
-                            onClick={() => handleCopyFormula(ax.formula, idx)}
-                            title="Copy formula"
-                          >
-                            {copiedFormula === idx ? "✓ Copied" : "📋 Copy"}
-                          </button>
-                        </div>
-                        <code className="anc-formula">{ax.formula}</code>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Rigorous Step-by-Step Theorems & Proofs */}
-                <div className="notes-block">
-                  <h3 className="block-title">📜 Prescribed Theorems & Formal Proofs</h3>
-                  {lesson.notes.theorems.map((thm, idx) => (
-                    <div key={idx} className="theorem-box">
-                      <div className="thm-header">
-                        <span className="thm-icon">⭐</span>
-                        <h4 className="thm-title">{thm.title}</h4>
-                      </div>
-                      <p className="thm-statement">
-                        <strong>Statement:</strong> {thm.statement}
-                      </p>
-                      <div className="thm-proof-block">
-                        <strong>Proof:</strong>
-                        <p>{thm.proof}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Solved University Example Problem */}
-                <div className="notes-block">
-                  <h3 className="block-title">💡 Solved University Example Problem (Step-by-Step)</h3>
-                  <div className="worked-example-box">
-                    <div className="web-question">
-                      <span className="web-tag">WORKED EXAMPLE</span>
-                      <p>{lesson.notes.workedExample.problem}</p>
-                    </div>
-
-                    <div className="web-solution-steps">
-                      <h5>Complete Step-by-Step Working:</h5>
-                      {lesson.notes.workedExample.steps.map((step, idx) => (
-                        <div key={idx} className="solution-step-line">
-                          <span className="step-num">{idx + 1}</span>
-                          <p className="step-txt">{step}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
                 {/* Exam Tips & Dr. G. Balaji Advice */}
                 <div className="notes-block">
                   <h3 className="block-title">🎯 Exam Tips & Common Mistakes (Dr. G. Balaji)</h3>
@@ -736,6 +928,43 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout }) {
                   </div>
                 </div>
 
+                {/* 10-Minute Micro-Topic Test CTA Card */}
+                <div className="micro-test-cta-card">
+                  <div className="mtc-left">
+                    <div className="mtc-icon">📝</div>
+                    <div>
+                      <div className="mtc-tag">MANDATORY TOPIC ASSESSMENT • 10 QUESTIONS • 10 MINUTES</div>
+                      <h3 className="mtc-title">Take the {lesson.code} {lesson.title} Test</h3>
+                      <p className="mtc-desc">
+                        Test your understanding of the definitions, theorems, and university exam problem patterns for this micro-topic. Time limit: <strong>10:00 minutes</strong> with auto-submission and full Dr. G. Balaji worked solutions.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mtc-right">
+                    {topicScoreData ? (
+                      <div className="mtc-score-badge">
+                        <span className="mtc-score-num">{topicScoreData.score} / 10</span>
+                        <span className={`mtc-score-status ${topicScoreData.passed ? "passed" : "needs-review"}`}>
+                          {topicScoreData.passed ? "✓ Passed (Mastered)" : "⚠️ Needs Revision"}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="mtc-pending-badge">
+                        <span>⏳ Test Not Attempted</span>
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      className="btn-start-micro-test"
+                      onClick={() => setShowTestModal(true)}
+                    >
+                      {topicScoreData ? "🔄 Retake Test (10 Mins)" : "Start Micro-Topic Test (10 Mins)"}
+                    </button>
+                  </div>
+                </div>
+
                 {/* Download / Practice Footer Strip */}
                 <div className="notes-footer-actions">
                   <button
@@ -745,19 +974,78 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout }) {
                   >
                     📥 Download Notes as PDF
                   </button>
-                  <button
-                    type="button"
-                    className="btn-next-syllabus"
-                    onClick={() => onNavigate("syllabus", student)}
-                  >
-                    Next Syllabus Unit ➔
-                  </button>
+
+                  {nextTopic ? (
+                    <button
+                      type="button"
+                      className={`btn-next-syllabus ${!isCurrentCompleted ? "locked-next" : ""}`}
+                      onClick={() => {
+                        if (isCurrentCompleted) {
+                          onNavigate("lesson", {
+                            code: nextTopic.code,
+                            name: nextTopic.name,
+                            unitNumber: nextTopic.unitNumber,
+                            unitTitle: nextTopic.unitTitle,
+                            student
+                          });
+                        } else {
+                          alert(
+                            `🔒 Section ${nextTopic.code} (${nextTopic.name}) is locked!\n\nYou must complete and pass the Section ${lesson.code} (${lesson.title}) assessment to qualify for Section ${nextTopic.code}.`
+                          );
+                        }
+                      }}
+                      title={
+                        isCurrentCompleted
+                          ? `Proceed to next section: ${nextTopic.code}`
+                          : `Pass Section ${lesson.code} assessment first to qualify for Section ${nextTopic.code}`
+                      }
+                    >
+                      {isCurrentCompleted
+                        ? `Next Micro-Unit: Section ${nextTopic.code} ${nextTopic.name} ➔`
+                        : `🔒 Pass Assessment to Qualify for ${nextTopic.code} ➔`}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn-next-syllabus"
+                      onClick={() => onNavigate("syllabus", student)}
+                    >
+                      ✓ All Micro-Units Completed (Back to Syllabus) ➔
+                    </button>
+                  )}
                 </div>
               </div>
             </section>
           )}
         </div>
       </main>
+      )}
+
+      {/* Render 10-Minute Micro-Topic Assessment Modal */}
+      {showTestModal && (
+        <MicroTopicTestModal
+          topicCode={lesson.code}
+          topicName={lesson.title}
+          unitNumber={lesson.unitNumber}
+          unitTitle={lesson.unitTitle}
+          student={student}
+          onClose={() => setShowTestModal(false)}
+          onNextTopic={() => {
+            if (nextTopic) {
+              onNavigate("lesson", {
+                code: nextTopic.code,
+                name: nextTopic.name,
+                unitNumber: nextTopic.unitNumber,
+                unitTitle: nextTopic.unitTitle,
+                student
+              });
+            }
+          }}
+          onCompleteScore={(scoreResult) => {
+            setMicroScores((prev) => ({ ...prev, [lesson.code]: scoreResult }));
+          }}
+        />
+      )}
     </div>
   );
 }

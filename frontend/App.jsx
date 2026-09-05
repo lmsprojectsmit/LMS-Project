@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Home from "./Home";
 import Login from "./Login";
 import Register from "./Register";
@@ -6,6 +6,9 @@ import Assessment from "./Assessment";
 import Faculty from "./Faculty";
 import Syllabus from "./Syllabus";
 import LessonView from "./LessonView";
+import Admin from "./Admin";
+import ThemeToggle from "./ThemeToggle";
+import "./Theme.css";
 
 function App() {
   // Default to the explanatory homepage when opening the website
@@ -13,6 +16,29 @@ function App() {
   const [registeredStudent, setRegisteredStudent] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [currentLesson, setCurrentLesson] = useState(null);
+
+  // Global Theme System: "light" | "dark" (persisted in localStorage)
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem("eduverse_theme") || "light";
+    } catch {
+      return "light";
+    }
+  });
+
+  useEffect(() => {
+    try {
+      document.documentElement.setAttribute("data-theme", theme);
+      document.body.className = `theme-${theme}`;
+      localStorage.setItem("eduverse_theme", theme);
+    } catch (e) {
+      console.error("Failed to persist theme", e);
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
 
   const handleNavigate = (page, data = null) => {
     if (data) {
@@ -56,12 +82,17 @@ function App() {
   };
 
   return (
-    <div className="app-root">
+    <div className={`app-root theme-${theme}`} data-theme={theme}>
+      {/* Floating Theme Quick Switcher available globally */}
+      <ThemeToggle floating theme={theme} onToggle={toggleTheme} />
+
       {currentPage === "home" && (
         <Home
           onNavigate={handleNavigate}
           currentUser={currentUser}
           onLogout={handleLogout}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
       )}
 
@@ -71,6 +102,8 @@ function App() {
           onRegistrationSuccess={(student) => {
             setRegisteredStudent(student);
           }}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
       )}
 
@@ -78,6 +111,8 @@ function App() {
         <Assessment
           onNavigate={handleNavigate}
           studentInfo={registeredStudent}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
       )}
 
@@ -85,6 +120,8 @@ function App() {
         <Login
           onNavigate={handleNavigate}
           registeredStudent={registeredStudent}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
       )}
 
@@ -93,6 +130,8 @@ function App() {
           onNavigate={handleNavigate}
           student={currentUser || registeredStudent}
           onLogout={handleLogout}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
       )}
 
@@ -102,6 +141,8 @@ function App() {
           student={currentUser || registeredStudent}
           lessonInfo={currentLesson}
           onLogout={handleLogout}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
       )}
 
@@ -109,6 +150,18 @@ function App() {
         <Faculty
           onNavigate={handleNavigate}
           registeredStudent={registeredStudent}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+        />
+      )}
+
+      {currentPage === "admin" && (
+        <Admin
+          onNavigate={handleNavigate}
+          onLogout={handleLogout}
+          registeredStudent={registeredStudent}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
       )}
     </div>
