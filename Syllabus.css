@@ -732,9 +732,170 @@
   color: #b91c1c;
 }
 
+/* ----------------------------------------------------------
+   SYLLABUS PORTAL - DARK THEME COMPLETE SYSTEM
+   ---------------------------------------------------------- */
+[data-theme="dark"] .syllabus-platform-name {
+  color: #c7d2fe !important;
+}
+
+[data-theme="dark"] .syllabus-nav-tag {
+  color: #a5b4fc !important;
+}
+
+[data-theme="dark"] .syllabus-nav-center {
+  background: #161f32 !important;
+  border-color: #243048 !important;
+}
+
+[data-theme="dark"] .course-title-txt {
+  color: #c7d2fe !important;
+}
+
+[data-theme="dark"] .student-logged-pill {
+  background: #161f32 !important;
+  border-color: #243048 !important;
+}
+
+[data-theme="dark"] .student-display-name {
+  color: #c7d2fe !important;
+}
+
+[data-theme="dark"] .student-display-role {
+  color: #818cf8 !important;
+}
+
+[data-theme="dark"] .syllabus-nav-btn.secondary {
+  background: #161f32 !important;
+  border-color: #334155 !important;
+  color: #c7d2fe !important;
+}
+
+[data-theme="dark"] .syllabus-nav-btn.secondary:hover {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  border-color: #6366f1 !important;
+}
+
+/* Banner Dark Themed Text */
+[data-theme="dark"] .banner-title {
+  background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 50%, #818cf8 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+[data-theme="dark"] .highlight-student {
+  color: #a5b4fc !important;
+  -webkit-text-fill-color: #a5b4fc !important;
+}
+
+[data-theme="dark"] .banner-subtitle {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .banner-subtitle strong {
+  color: #c7d2fe !important;
+}
+
+[data-theme="dark"] .banner-supertag {
+  background: rgba(99, 102, 241, 0.22) !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+  color: #c7d2fe !important;
+}
+
+[data-theme="dark"] .b-chip {
+  background: rgba(99, 102, 241, 0.18) !important;
+  border-color: rgba(99, 102, 241, 0.35) !important;
+  color: #e0e7ff !important;
+}
+
+[data-theme="dark"] .topic-card {
+  background: #161f32 !important;
+  border-color: #243048 !important;
+  color: #f8fafc !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .topic-card:hover {
+  border-color: #6366f1 !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45) !important;
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] .topic-card .topic-code {
+  background: rgba(99, 102, 241, 0.22) !important;
+  color: #c7d2fe !important;
+}
+
+[data-theme="dark"] .topic-card .topic-name {
+  color: #e0e7ff !important;
+}
+
+[data-theme="dark"] .topic-card .topic-desc {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .topic-card-actions-row {
+  border-top-color: #243048 !important;
+}
+
+[data-theme="dark"] .btn-open-topic-lesson {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #c7d2fe !important;
+}
+
+[data-theme="dark"] .btn-open-topic-lesson:hover {
+  background: #6366f1 !important;
+  border-color: #6366f1 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .btn-topic-test-action {
+  background: linear-gradient(135deg, #4f46e5, #4338ca) !important;
+  border-color: #6366f1 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .btn-topic-test-action:hover {
+  background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4) !important;
+}
+
+[data-theme="dark"] .btn-topic-test-action.passed {
+  background: rgba(16, 185, 129, 0.18) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  color: #6ee7b7 !important;
+}
+
+[data-theme="dark"] .btn-topic-test-action.passed:hover {
+  background: #10b981 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .topic-score-badge.passed {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #34d399 !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+[data-theme="dark"] .topic-score-badge.unlocked {
+  background: rgba(99, 102, 241, 0.2) !important;
+  color: #a5b4fc !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+}
+
+[data-theme="dark"] .topic-score-badge.pending {
+  background: rgba(245, 158, 11, 0.2) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+}
+
+/* Locked Micro Units Specific Overrides in Dark Mode */
 [data-theme="dark"] .topic-card.locked-unit {
   background: #0d1322 !important;
   border-color: #1e293b !important;
+  box-shadow: none !important;
 }
 
 [data-theme="dark"] .topic-card.locked-unit .topic-code {
@@ -743,11 +904,11 @@
 }
 
 [data-theme="dark"] .topic-card.locked-unit .topic-name {
-  color: #94a3b8 !important;
+  color: #64748b !important;
 }
 
 [data-theme="dark"] .topic-card.locked-unit .topic-desc {
-  color: #64748b !important;
+  color: #475569 !important;
 }
 
 [data-theme="dark"] .topic-score-badge.locked {
@@ -766,6 +927,270 @@
   background: rgba(239, 68, 68, 0.15) !important;
   border-color: #ef4444 !important;
   color: #f87171 !important;
+}
+
+/* Accordion Units & Expanded Body in Dark Theme */
+[data-theme="dark"] .unit-accordion-card {
+  background: #111827 !important;
+  border-color: #243048 !important;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .unit-accordion-card.expanded {
+  border-color: #334155 !important;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme="dark"] .unit-accordion-header {
+  background: #111827 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .unit-accordion-header:hover {
+  background: #161f32 !important;
+}
+
+[data-theme="dark"] .unit-icon-bubble {
+  background: #161f32 !important;
+  border-color: #243048 !important;
+  color: #c7d2fe !important;
+}
+
+[data-theme="dark"] .unit-main-title {
+  color: #c7d2fe !important;
+}
+
+[data-theme="dark"] .unit-book-ref {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .unit-book-ref strong {
+  color: #a5b4fc !important;
+}
+
+[data-theme="dark"] .unit-hours-badge,
+[data-theme="dark"] .unit-weight-badge {
+  background: #161f32 !important;
+  border: 1px solid #243048 !important;
+  color: #c7d2fe !important;
+}
+
+[data-theme="dark"] .expand-indicator {
+  background: #161f32 !important;
+  color: #c7d2fe !important;
+  border-color: #243048 !important;
+}
+
+[data-theme="dark"] .unit-accordion-card.expanded .expand-indicator {
+  background: rgba(99, 102, 241, 0.2) !important;
+  color: #a5b4fc !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+}
+
+[data-theme="dark"] .unit-accordion-body {
+  background: #111827 !important;
+  border-top-color: #243048 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .unit-overview-box {
+  background: #161f32 !important;
+  color: #cbd5e1 !important;
+  border-left: 4px solid var(--theme-color, #6366f1) !important;
+}
+
+[data-theme="dark"] .unit-overview-box strong {
+  color: #818cf8 !important;
+}
+
+[data-theme="dark"] .tab-pane-title {
+  color: #c7d2fe !important;
+}
+
+[data-theme="dark"] .tab-pane-sub {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .outcome-item {
+  background: #161f32 !important;
+  border-color: #243048 !important;
+  color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .co-check {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #34d399 !important;
+}
+
+[data-theme="dark"] .exam-question-item {
+  background: rgba(245, 158, 11, 0.1) !important;
+  border-color: rgba(245, 158, 11, 0.25) !important;
+  border-left: 4px solid #f59e0b !important;
+}
+
+[data-theme="dark"] .eq-num {
+  color: #fbbf24 !important;
+}
+
+[data-theme="dark"] .eq-text {
+  color: #fde68a !important;
+}
+
+[data-theme="dark"] .unit-card-footer {
+  border-top-color: #243048 !important;
+}
+
+[data-theme="dark"] .ucf-note {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .ucf-note strong {
+  color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .btn-practice-unit {
+  background: #161f32 !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .btn-practice-unit:hover {
+  background: #4f46e5 !important;
+  border-color: #6366f1 !important;
+  color: #ffffff !important;
+}
+
+/* Controls Bar in Dark Theme */
+[data-theme="dark"] .syllabus-controls-bar {
+  background: #111827 !important;
+  border-color: #243048 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+}
+
+[data-theme="dark"] .unit-tab-btn {
+  background: #161f32 !important;
+  border-color: #243048 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .unit-tab-btn:hover {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+[data-theme="dark"] .unit-tab-btn.active {
+  background: #6366f1 !important;
+  color: #ffffff !important;
+  border-color: #6366f1 !important;
+  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.35) !important;
+}
+
+[data-theme="dark"] .vmt-lbl {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .vmt-btn {
+  background: #161f32 !important;
+  border-color: #243048 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .vmt-btn:hover {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .vmt-btn.active {
+  background: #6366f1 !important;
+  color: #ffffff !important;
+  border-color: #6366f1 !important;
+}
+
+/* Prescribed Book Spotlight in Dark Theme */
+[data-theme="dark"] .syllabus-book-spotlight {
+  background: #111827 !important;
+  border-color: #243048 !important;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.45) !important;
+}
+
+[data-theme="dark"] .sbs-header h2 {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .sbs-header p {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .sbs-book-card {
+  background: #161f32 !important;
+  border-color: #243048 !important;
+}
+
+[data-theme="dark"] .sbs-title-row h3 {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .sbs-author-pill {
+  background: rgba(99, 102, 241, 0.2) !important;
+  color: #c7d2fe !important;
+  border-color: rgba(99, 102, 241, 0.35) !important;
+}
+
+[data-theme="dark"] .sbs-pub {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .sbs-desc {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .sbs-ch-item {
+  background: #111827 !important;
+  border-color: #243048 !important;
+  color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .sbs-ch-item strong {
+  color: #818cf8 !important;
+}
+
+/* Quick Book Card inside Hero in Dark Theme */
+[data-theme="dark"] .quick-book-card {
+  background: #111827 !important;
+  color: #f8fafc !important;
+  border: 1px solid #243048 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .qbc-header h4 {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .qbc-sub {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .qbc-body {
+  border-color: #243048 !important;
+}
+
+[data-theme="dark"] .qbc-title {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .qbc-author {
+  color: #818cf8 !important;
+}
+
+[data-theme="dark"] .qbc-publisher {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .qbc-status-tag {
+  background: rgba(16, 185, 129, 0.18) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  color: #6ee7b7 !important;
 }
 
 .topic-desc {
@@ -1470,5 +1895,25 @@
 
   .banner-title {
     font-size: 17px;
+  }
+
+  .syllabus-nav-right {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .syllabus-unit-card {
+    border-radius: 12px;
+  }
+
+  .topic-item {
+    padding: 10px 8px;
+  }
+
+  .btn-take-micro-test {
+    width: 100%;
+    justify-content: center;
+    padding: 8px 12px;
+    font-size: 12px;
   }
 }

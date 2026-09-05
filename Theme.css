@@ -3,6 +3,48 @@
    ========================================================== */
 
 /* ----------------------------------------------------------
+   0. UNIVERSAL MOBILE VIEWPORT & FLUID LAYOUT BASE
+   Guarantees zero horizontal overflow on mobile phones (320px - 480px)
+   while strictly preserving desktop formatting.
+   ---------------------------------------------------------- */
+html {
+  box-sizing: border-box;
+  -webkit-text-size-adjust: 100%;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+html, body {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#root, .app-root {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+img, svg, canvas, video {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 480px) {
+  input, select, textarea {
+    font-size: 16px; /* Prevents unwanted iOS Safari page zoom on tap */
+  }
+}
+
+/* ----------------------------------------------------------
    1. ROOT VARIABLES & THEME TOKENS
    ---------------------------------------------------------- */
 :root,
@@ -61,8 +103,14 @@ body.theme-dark,
   --home-text-muted: #94a3b8;
   --home-border: #243048;
   --home-primary: #6366f1;
+  --home-primary-dark: #a5b4fc;
   --home-primary-light: rgba(99, 102, 241, 0.16);
   --home-accent-light: rgba(245, 158, 11, 0.16);
+  --home-nav-bg: rgba(15, 23, 42, 0.94);
+  --home-nav-border: #1e293b;
+  --home-nav-link: #c7d2fe;
+  --home-nav-link-hover-bg: rgba(99, 102, 241, 0.22);
+  --home-nav-link-hover: #ffffff;
   --home-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.4);
   --home-shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.5);
   --home-shadow-lg: 0 16px 36px -6px rgba(0, 0, 0, 0.65);
@@ -72,7 +120,7 @@ body.theme-dark,
   --fac-card-bg: #111827;
   --fac-border: #243048;
   --fac-text-main: #f8fafc;
-  --fac-text-muted: #94a3b8;
+  --fac-text-muted: #a5b4fc;
   --fac-primary: #6366f1;
   --fac-primary-light: rgba(99, 102, 241, 0.16);
   --fac-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.3);
@@ -85,7 +133,7 @@ body.theme-dark,
   --admin-border: #1e293b;
   --admin-border-dark: #334155;
   --admin-text-main: #f8fafc;
-  --admin-text-muted: #94a3b8;
+  --admin-text-muted: #a5b4fc;
   --admin-primary-dark: #020617;
   --admin-emerald-light: rgba(5, 150, 105, 0.18);
   --admin-indigo-light: rgba(99, 102, 241, 0.18);
@@ -99,7 +147,7 @@ body.theme-dark,
   --color-bg: #090d16;
   --color-paper: #111827;
   --color-text-main: #f8fafc;
-  --color-text-muted: #94a3b8;
+  --color-text-muted: #a5b4fc;
   --color-border: #243048;
   --color-primary: #6366f1;
   --color-primary-light: rgba(99, 102, 241, 0.16);
@@ -309,6 +357,7 @@ body {
   .syllabus-nav,
   .lesson-nav,
   .home-header,
+  .home-nav,
   .faculty-nav,
   .admin-header,
   .assessment-nav {
@@ -322,14 +371,34 @@ body {
   .course-title-txt,
   .admin-header-title,
   .fac-title,
-  .home-brand-title {
-    color: #f8fafc !important;
+  .home-brand-title,
+  .brand-name {
+    color: #c7d2fe !important;
   }
 
   .syllabus-nav-tag,
   .admin-header-sub,
-  .fac-subtitle {
-    color: #94a3b8 !important;
+  .fac-subtitle,
+  .brand-tagline {
+    color: #a5b4fc !important;
+  }
+
+  .syllabus-nav-center {
+    background: #161f32 !important;
+    border-color: #243048 !important;
+  }
+
+  .student-logged-pill {
+    background: #161f32 !important;
+    border-color: #243048 !important;
+  }
+
+  .student-display-name {
+    color: #c7d2fe !important;
+  }
+
+  .student-display-role {
+    color: #818cf8 !important;
   }
 
   /* SYLLABUS PORTAL PAGE */
@@ -340,37 +409,207 @@ body {
 
   .syllabus-header-card,
   .syllabus-summary-box,
-  .unit-card,
+  .unit-accordion-card,
+  .unit-accordion-header,
+  .unit-accordion-body,
   .syllabus-sidebar,
-  .unit-exam-card,
-  .syllabus-info-box {
+  .syllabus-controls-bar,
+  .syllabus-book-spotlight,
+  .quick-book-card {
     background: #111827 !important;
     border-color: #243048 !important;
     color: #f8fafc !important;
-    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4) !important;
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.45) !important;
   }
 
-  .topic-item {
+  .unit-accordion-header:hover {
+    background: #161f32 !important;
+  }
+
+  /* All Micro Units (Unlocked, Active & Expanded) */
+  .topic-card {
     background: #161f32 !important;
     border-color: #243048 !important;
     color: #f8fafc !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
   }
 
-  .topic-item:hover {
-    background: #1e2a44 !important;
+  .topic-card:hover {
+    background: #1a243b !important;
+    border-color: #6366f1 !important;
+    transform: translateY(-2px);
+  }
+
+  .topic-card .topic-code {
+    background: rgba(99, 102, 241, 0.22) !important;
+    color: #c7d2fe !important;
+  }
+
+  .topic-card .topic-name {
+    color: #e0e7ff !important;
+  }
+
+  .topic-card .topic-desc {
+    color: #94a3b8 !important;
+  }
+
+  .topic-card.locked-unit {
+    background: #0d1322 !important;
+    border-color: #1e293b !important;
+    box-shadow: none !important;
+  }
+
+  .topic-card.locked-unit .topic-code {
+    background: #161f32 !important;
+    color: #64748b !important;
+  }
+
+  .topic-card.locked-unit .topic-name {
+    color: #64748b !important;
+  }
+
+  .topic-card.locked-unit .topic-desc {
+    color: #475569 !important;
+  }
+
+  .unit-main-title,
+  .tab-pane-title,
+  .sbs-header h2,
+  .sbs-title-row h3,
+  .qbc-title,
+  .qbc-header h4 {
+    color: #c7d2fe !important;
+  }
+
+  .qbc-sub {
+    color: #a5b4fc !important;
+  }
+
+  .qbc-author {
+    color: #818cf8 !important;
+  }
+
+  .qbc-publisher {
+    color: #94a3b8 !important;
+  }
+
+  .unit-book-ref {
+    color: #94a3b8 !important;
+  }
+
+  .unit-book-ref strong {
+    color: #a5b4fc !important;
+  }
+
+  .unit-overview-box {
+    background: #161f32 !important;
+    color: #cbd5e1 !important;
+    border-left: 4px solid var(--theme-color, #6366f1) !important;
+  }
+
+  .unit-overview-box strong {
+    color: #818cf8 !important;
+  }
+
+  .tab-pane-sub {
+    color: #94a3b8 !important;
+  }
+
+  .outcome-item,
+  .sbs-book-card,
+  .sbs-ch-item {
+    background: #161f32 !important;
+    border-color: #243048 !important;
+    color: #cbd5e1 !important;
+  }
+
+  .sbs-header p {
+    color: #94a3b8 !important;
+  }
+
+  .sbs-author-pill {
+    background: rgba(99, 102, 241, 0.2) !important;
+    color: #c7d2fe !important;
+  }
+
+  .sbs-ch-item strong {
+    color: #818cf8 !important;
+  }
+
+  .exam-question-item {
+    background: rgba(245, 158, 11, 0.1) !important;
+    border-color: rgba(245, 158, 11, 0.25) !important;
+    border-left: 4px solid #f59e0b !important;
+  }
+
+  .eq-num {
+    color: #fbbf24 !important;
+  }
+
+  .eq-text {
+    color: #fde68a !important;
+  }
+
+  .unit-tab-btn,
+  .vmt-btn,
+  .btn-practice-unit,
+  .btn-open-topic-lesson {
+    background: #161f32 !important;
+    border-color: #243048 !important;
+    color: #c7d2fe !important;
+  }
+
+  .vmt-lbl {
+    color: #a5b4fc !important;
+  }
+
+  .unit-tab-btn:hover,
+  .vmt-btn:hover,
+  .btn-practice-unit:hover,
+  .btn-open-topic-lesson:hover {
+    background: #1e293b !important;
+    border-color: #6366f1 !important;
+    color: #ffffff !important;
+  }
+
+  .unit-tab-btn.active,
+  .vmt-btn.active {
+    background: #6366f1 !important;
+    color: #ffffff !important;
     border-color: #6366f1 !important;
   }
 
-  .topic-title,
-  .unit-title-txt,
-  .unit-hours-badge,
-  .unit-ref-text {
-    color: #f8fafc !important;
+  .btn-topic-test-action {
+    background: linear-gradient(135deg, #4f46e5, #4338ca) !important;
+    border-color: #6366f1 !important;
+    color: #ffffff !important;
   }
 
-  .topic-desc,
-  .unit-overview-p {
-    color: #cbd5e1 !important;
+  .btn-topic-test-action:hover {
+    background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+  }
+
+  .btn-topic-test-action.passed {
+    background: rgba(16, 185, 129, 0.18) !important;
+    border-color: rgba(16, 185, 129, 0.4) !important;
+    color: #6ee7b7 !important;
+  }
+
+  .expand-indicator,
+  .unit-icon-bubble,
+  .unit-hours-badge,
+  .unit-weight-badge {
+    background: #161f32 !important;
+    border-color: #243048 !important;
+    color: #c7d2fe !important;
+  }
+
+  .ucf-note {
+    color: #94a3b8 !important;
+  }
+
+  .ucf-note strong {
+    color: #c7d2fe !important;
   }
 
   .syllabus-nav-btn.secondary,
@@ -379,7 +618,7 @@ body {
   .btn-home-nav {
     background: #161f32 !important;
     border-color: #334155 !important;
-    color: #e2e8f0 !important;
+    color: #c7d2fe !important;
   }
 
   .syllabus-nav-btn.secondary:hover,
@@ -472,6 +711,62 @@ body {
     color: rgba(99, 102, 241, 0.22) !important;
   }
 
+  /* Top Navigation in Home */
+  .home-nav {
+    background: rgba(15, 23, 42, 0.94) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    border-bottom: 1px solid #1e293b !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .home-nav .brand-name {
+    color: #c7d2fe !important;
+  }
+
+  .home-nav .brand-tagline {
+    color: #a5b4fc !important;
+  }
+
+  .home-nav .brand-logo-icon {
+    background: rgba(99, 102, 241, 0.16) !important;
+    border-color: rgba(99, 102, 241, 0.35) !important;
+  }
+
+  /* Navigation Links: Platform Overview, How We Train, Student Benefits, Linear Algebra (MA25C02) */
+  .nav-link-btn {
+    color: #c7d2fe !important;
+    font-weight: 700 !important;
+  }
+
+  .nav-link-btn:hover {
+    color: #ffffff !important;
+    background: rgba(99, 102, 241, 0.22) !important;
+  }
+
+  .home-nav .nav-btn-secondary,
+  .nav-btn-login-shortcut,
+  .nav-btn-syllabus-shortcut {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #c7d2fe !important;
+  }
+
+  .home-nav .nav-btn-secondary:hover,
+  .nav-btn-login-shortcut:hover,
+  .nav-btn-syllabus-shortcut:hover {
+    background: #283548 !important;
+    border-color: #6366f1 !important;
+    color: #ffffff !important;
+  }
+
+  .nav-user-badge {
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: #6ee7b7 !important;
+    border-color: rgba(16, 185, 129, 0.35) !important;
+  }
+
+  /* Homepage Cards & Sections */
   .hero-card,
   .feature-card,
   .benefit-card,
@@ -480,6 +775,11 @@ body {
   .home-section-card,
   .course-unit-pill-card,
   .faculty-spotlight-card,
+  .training-card,
+  .usefulness-item,
+  .spotlight-card,
+  .syllabus-card,
+  .book-card,
   .home-footer {
     background: #111827 !important;
     border-color: #243048 !important;
@@ -487,26 +787,272 @@ body {
     box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.45) !important;
   }
 
-  .hero-headline,
+  .hero-headline {
+    background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 45%, #818cf8 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+  }
+
+  .section-title,
   .section-heading,
+  .spotlight-title,
+  .syllabus-section-header h3,
+  .books-header h3,
+  .use-content h3,
+  .syllabus-card h4,
+  .cta-box h2 {
+    color: #c7d2fe !important;
+  }
+
   .card-heading,
+  .book-info h4 {
+    color: #e0e7ff !important;
+  }
+
   .stat-number {
-    color: #f8fafc !important;
+    color: #818cf8 !important;
+    text-shadow: 0 0 16px rgba(99, 102, 241, 0.35) !important;
+  }
+
+  .highlight-text {
+    background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+  }
+
+  .section-pill {
+    background: rgba(99, 102, 241, 0.16) !important;
+    color: #a5b4fc !important;
+    border-color: rgba(99, 102, 241, 0.35) !important;
+  }
+
+  .section-pill.accent-pill {
+    background: rgba(245, 158, 11, 0.16) !important;
+    color: #fbbf24 !important;
+    border-color: rgba(245, 158, 11, 0.35) !important;
   }
 
   .hero-subhead,
+  .section-subtitle,
   .section-subtext,
   .card-p,
+  .card-body,
+  .spotlight-desc,
+  .use-content p,
+  .syllabus-card p,
+  .book-coverage,
+  .cta-box p,
   .stat-label {
     color: #cbd5e1 !important;
   }
 
-  .nav-link-btn {
+  .card-feature-list li,
+  .syllabus-section-header p,
+  .books-header p,
+  .book-meta {
+    color: #94a3b8 !important;
+  }
+
+  .spotlight-tag,
+  .syllabus-unit,
+  .book-badge,
+  .use-badge {
+    background: rgba(99, 102, 241, 0.22) !important;
+    color: #c7d2fe !important;
+    border-color: rgba(99, 102, 241, 0.35) !important;
+  }
+
+  .book-authors {
+    color: #a5b4fc !important;
+  }
+
+  .book-coverage strong {
+    color: #f8fafc !important;
+  }
+
+  .cta-box {
+    background: linear-gradient(135deg, rgba(67, 56, 202, 0.25) 0%, rgba(99, 102, 241, 0.15) 100%) !important;
+    border: 1px solid #3730a3 !important;
+  }
+
+  /* LOGIN & AUTHENTICATION PORTAL */
+  .login-container {
+    background: radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.2) 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(139, 92, 246, 0.16) 0%, transparent 45%),
+                #090d16 !important;
+  }
+
+  .login-bg-symbol {
+    color: rgba(129, 140, 248, 0.28) !important;
+  }
+
+  .login-card {
+    background: #111827 !important;
+    border-color: #243048 !important;
+    box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.75), 0 0 30px -5px rgba(99, 102, 241, 0.18) !important;
+    color: #f8fafc !important;
+  }
+
+  /* Coloured Headline matching dark theme */
+  .login-card h1 {
+    background: linear-gradient(135deg, #c7d2fe 0%, #818cf8 50%, #c084fc 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.02em !important;
+  }
+
+  /* Coloured Subtitle */
+  .login-card .subtitle {
+    color: #a5b4fc !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.05em !important;
+  }
+
+  /* Coloured Form Labels */
+  .login-card .form-label {
+    color: #c7d2fe !important;
+    font-weight: 600 !important;
+  }
+
+  .login-card input:not([type="checkbox"]),
+  .login-card select {
+    background-color: #161f32 !important;
+    border-color: #2e3d5a !important;
+    color: #f8fafc !important;
+  }
+
+  .login-card input:not([type="checkbox"])::placeholder {
+    color: #64748b !important;
+  }
+
+  .login-card input:not([type="checkbox"]):focus,
+  .login-card select:focus {
+    border-color: #818cf8 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.28) !important;
+    background-color: #1a233a !important;
+  }
+
+  .login-card select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23818cf8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E") !important;
+  }
+
+  .login-card select option {
+    background-color: #111827 !important;
+    color: #f8fafc !important;
+  }
+
+  .show-password {
+    background: rgba(99, 102, 241, 0.18) !important;
+    color: #a5b4fc !important;
+  }
+
+  .show-password:hover {
+    background: rgba(99, 102, 241, 0.32) !important;
+    color: #c7d2fe !important;
+  }
+
+  .remember-label {
     color: #cbd5e1 !important;
   }
 
-  .nav-link-btn:hover {
+  .forgot-link {
     color: #818cf8 !important;
+  }
+
+  .forgot-link:hover {
+    color: #c7d2fe !important;
+  }
+
+  .login-button {
+    background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+    box-shadow: 0 4px 18px rgba(99, 102, 241, 0.4) !important;
+  }
+
+  .login-button:hover {
+    background: linear-gradient(135deg, #818cf8, #6366f1) !important;
+    box-shadow: 0 6px 22px rgba(99, 102, 241, 0.55) !important;
+  }
+
+  .register-text {
+    color: #94a3b8 !important;
+  }
+
+  .register-link {
+    color: #a5b4fc !important;
+    font-weight: 700 !important;
+  }
+
+  .register-link:hover {
+    color: #c7d2fe !important;
+  }
+
+  .back-home-link {
+    color: #818cf8 !important;
+  }
+
+  .back-home-link:hover {
+    color: #c7d2fe !important;
+    background-color: rgba(99, 102, 241, 0.16) !important;
+  }
+
+  .login-back-home {
+    color: #a5b4fc !important;
+  }
+
+  .login-back-home:hover {
+    color: #c7d2fe !important;
+    background-color: rgba(99, 102, 241, 0.16) !important;
+  }
+
+  /* REGISTRATION PORTAL */
+  .register-page {
+    background-color: #090d16 !important;
+    color: #f8fafc !important;
+  }
+
+  .form-card,
+  .reg-sidebar-card,
+  .quick-help-card {
+    background: #111827 !important;
+    border-color: #243048 !important;
+    color: #f8fafc !important;
+    box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.55) !important;
+  }
+
+  .form-header h2,
+  .section-label span,
+  .reg-sidebar-title,
+  .info-title {
+    color: #f8fafc !important;
+  }
+
+  .form-intro,
+  .reg-sidebar-sub,
+  .info-desc {
+    color: #94a3b8 !important;
+  }
+
+  .input-field label {
+    color: #c7d2fe !important;
+  }
+
+  .input-field input,
+  .input-field select {
+    background-color: #161f32 !important;
+    border-color: #2e3d5a !important;
+    color: #f8fafc !important;
+  }
+
+  .input-field input:focus,
+  .input-field select:focus {
+    border-color: #818cf8 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.28) !important;
+  }
+
+  .input-field select option {
+    background-color: #111827 !important;
+    color: #f8fafc !important;
   }
 
   /* FACULTY PORTAL */
@@ -591,29 +1137,127 @@ body {
       linear-gradient(to right, #161f32 1px, transparent 1px) !important;
   }
 
-  .asmt-container,
-  .asmt-paper,
-  .asmt-sidebar,
-  .asmt-question-card,
-  .asmt-results-card {
+  .assessment-header {
+    background: rgba(15, 23, 42, 0.94) !important;
+    border-bottom: 1px solid #1e293b !important;
+  }
+
+  .question-card,
+  .palette-card,
+  .result-hero-card,
+  .score-card,
+  .active-category-card,
+  .lesson-card,
+  .competency-card,
+  .solution-card,
+  .solutions-review-section,
+  .lesson-study-reader-modal {
     background: #111827 !important;
     border-color: #243048 !important;
     color: #f8fafc !important;
     box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5) !important;
   }
 
-  .asmt-option {
+  .brand-title,
+  .palette-title,
+  .cat-tab-title,
+  .acc-name,
+  .comp-name,
+  .review-title,
+  .reader-title {
+    color: #c7d2fe !important;
+  }
+
+  .brand-subtitle,
+  .palette-legend,
+  .cat-tab-range,
+  .comp-marks,
+  .review-subtitle,
+  .reader-meta,
+  .student-roll {
+    color: #a5b4fc !important;
+  }
+
+  .student-name {
+    color: #c7d2fe !important;
+  }
+
+  .result-heading {
+    background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 50%, #818cf8 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+  }
+
+  .result-subheading {
+    color: #a5b4fc !important;
+  }
+
+  .result-subheading strong {
+    color: #c7d2fe !important;
+  }
+
+  .score-card .card-lbl {
+    color: #a5b4fc !important;
+  }
+
+  .big-score .score-num {
+    color: #818cf8 !important;
+  }
+
+  .lesson-title {
+    color: #e0e7ff !important;
+  }
+
+  .lesson-objectives {
+    color: #94a3b8 !important;
+  }
+
+  .sol-qnum {
+    color: #a5b4fc !important;
+  }
+
+  .sol-qtext {
+    color: #e0e7ff !important;
+  }
+
+  .q-title-text {
+    color: #f1f5f9 !important;
+  }
+
+  .q-opt-text {
+    color: #cbd5e1 !important;
+  }
+
+  .q-opt-marker {
+    color: #a5b4fc !important;
+  }
+
+  .q-option-row,
+  .q-num-btn,
+  .nav-arrow-btn,
+  .cat-tab-btn,
+  .filter-tab-btn,
+  .sol-option,
+  .btn-open-lesson,
+  .reader-block {
     background: #161f32 !important;
     border-color: #243048 !important;
-    color: #f8fafc !important;
+    color: #c7d2fe !important;
   }
 
-  .asmt-option:hover {
+  .q-option-row:hover,
+  .q-num-btn:hover,
+  .nav-arrow-btn:hover,
+  .cat-tab-btn:hover,
+  .filter-tab-btn:hover {
     background: #1e2a44 !important;
     border-color: #6366f1 !important;
+    color: #ffffff !important;
   }
 
-  .asmt-option.selected {
+  .q-option-row.selected,
+  .cat-tab-btn.active-tab,
+  .filter-tab-btn.active {
     background: rgba(99, 102, 241, 0.22) !important;
     border-color: #818cf8 !important;
     color: #ffffff !important;
@@ -636,6 +1280,36 @@ body {
     box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.6) !important;
   }
 
+  .register-page .form-header h2 {
+    background: linear-gradient(135deg, #c7d2fe 0%, #818cf8 50%, #c084fc 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+  }
+
+  .register-page .form-intro,
+  .register-page .reg-sidebar-sub,
+  .register-page .login-prompt-box p {
+    color: #a5b4fc !important;
+  }
+
+  .register-page .section-label span,
+  .register-page .input-field label,
+  .register-page .reg-sidebar-title,
+  .register-page .quick-help-card h4,
+  .register-page .nav-back-home {
+    color: #c7d2fe !important;
+  }
+
+  .register-page .info-title,
+  .register-page .link-to-login {
+    color: #818cf8 !important;
+  }
+
+  .register-page .info-desc,
+  .register-page .help-text {
+    color: #cbd5e1 !important;
+  }
+
   .login-input,
   .reg-input,
   .reg-select {
@@ -652,10 +1326,36 @@ body {
   }
 
   /* MICRO TOPIC TEST MODAL */
-  .mtt-container {
+  .mtt-container,
+  .question-box-card,
+  .results-hero-card,
+  .solution-review-card,
+  .ptb-hero-card,
+  .pvb-modal-card {
     background: #111827 !important;
     border-color: #243048 !important;
     color: #f8fafc !important;
+  }
+
+  .mtt-topic-title,
+  .ptb-title,
+  .rh-title {
+    color: #c7d2fe !important;
+  }
+
+  .ptb-sub,
+  .mtt-progress-info,
+  .opt-letter-circle {
+    color: #a5b4fc !important;
+  }
+
+  .qb-prompt {
+    color: #f1f5f9 !important;
+  }
+
+  .opt-text,
+  .rh-msg {
+    color: #cbd5e1 !important;
   }
 
   .mtt-header {
@@ -663,26 +1363,36 @@ body {
     border-color: #1e293b !important;
   }
 
-  .mtt-body,
-  .mtt-question-box,
-  .mtt-footer {
-    background: #111827 !important;
-    border-color: #243048 !important;
-    color: #f8fafc !important;
+  .mtt-test-body-streamlined,
+  .mtt-results-view,
+  .mtt-pretest-briefing {
+    background: #090d16 !important;
   }
 
-  .mtt-option {
+  .mtt-nav-pills-bar {
+    background: #111827 !important;
+    border-color: #1e293b !important;
+  }
+
+  .opt-card,
+  .mtt-q-pill,
+  .sol-opt-row,
+  .stat-pill,
+  .spec-box {
     background: #161f32 !important;
     border-color: #243048 !important;
-    color: #f8fafc !important;
+    color: #c7d2fe !important;
   }
 
-  .mtt-option:hover {
+  .opt-card:hover,
+  .mtt-q-pill:hover {
     background: #1e2a44 !important;
     border-color: #6366f1 !important;
+    color: #ffffff !important;
   }
 
-  .mtt-option.selected {
+  .opt-card.selected,
+  .mtt-q-pill.current {
     background: rgba(99, 102, 241, 0.25) !important;
     border-color: #818cf8 !important;
     color: #ffffff !important;

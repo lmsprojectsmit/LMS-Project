@@ -1056,7 +1056,7 @@ function Assessment({ onNavigate, studentInfo, theme, onToggleTheme }) {
             </div>
 
             <h2 className="result-heading">
-              Student Capability Profiling & Assigned Curriculum
+              Student Capability Profiling & Assessment Results
             </h2>
             <p className="result-subheading">
               Course: <strong>Linear Algebra (MA25C02)</strong> • Evaluated on {totalQuestions} Questions (1 Mark Each) • 25 Minutes Duration
@@ -1100,135 +1100,6 @@ function Assessment({ onNavigate, studentInfo, theme, onToggleTheme }) {
               </div>
             </div>
 
-            {/* ========================================================= */}
-            {/* 3 STUDENT CATEGORIES & DYNAMIC LESSON ASSIGNMENT HUB      */}
-            {/* ========================================================= */}
-            <section className="category-assignment-hub">
-              {/* Category Track Switcher Tabs */}
-              <div className="category-track-tabs">
-                {Object.values(STUDENT_CATEGORIES).map((cat) => {
-                  const isAssigned = cat.id === assignedCategoryId;
-                  const isViewing = cat.id === currentViewedCategoryId;
-
-                  return (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      className={`cat-tab-btn ${cat.badgeClass} ${isViewing ? "active-tab" : ""}`}
-                      onClick={() => setActiveCategoryTab(cat.id)}
-                    >
-                      <span className="cat-tab-icon">{cat.icon}</span>
-                      <div className="cat-tab-info">
-                        <span className="cat-tab-title">{cat.name}</span>
-                        <span className="cat-tab-range">{cat.scoreRangeLabel}</span>
-                      </div>
-                      {isAssigned && (
-                        <span className="cat-assigned-marker">
-                          🎯 YOUR TRACK
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Active Category Information Card */}
-              <div className={`active-category-card ${currentViewedCategory.badgeClass}`}>
-                <div className="acc-header">
-                  <div className="acc-title-cluster">
-                    <span className="acc-icon">{currentViewedCategory.icon}</span>
-                    <div>
-                      <h4 className="acc-name">{currentViewedCategory.title}</h4>
-                      <p className="acc-summary">{currentViewedCategory.summary}</p>
-                    </div>
-                  </div>
-                  {currentViewedCategory.id === assignedCategoryId ? (
-                    <span className="acc-status-tag assigned">
-                      ✓ Assigned to You Based on Your Score
-                    </span>
-                  ) : (
-                    <span className="acc-status-tag view-only">
-                      Previewing Other Track
-                    </span>
-                  )}
-                </div>
-
-                <div className="acc-target-box">
-                  <strong>Target Academic Objective: </strong>
-                  <span>{currentViewedCategory.targetOutcome}</span>
-                </div>
-
-                {/* Assigned Lessons Grid */}
-                <div className="assigned-lessons-grid">
-                  {currentViewedCategory.lessons.map((lesson, lIdx) => (
-                    <div key={lesson.id} className="lesson-card">
-                      <div className="lesson-card-top">
-                        <span className="lesson-unit-badge">{lesson.unit}</span>
-                        <span className="lesson-code-pill">{lesson.code}</span>
-                        <span className="lesson-diff-pill">{lesson.difficulty}</span>
-                      </div>
-
-                      <h4 className="lesson-title">
-                        {lIdx + 1}. {lesson.title}
-                      </h4>
-
-                      <p className="lesson-objectives">
-                        {lesson.objectives}
-                      </p>
-
-                      <div className="lesson-meta-row">
-                        <span className="l-meta">⏱️ {lesson.duration}</span>
-                        <span className="l-meta">📝 {lesson.problems}</span>
-                      </div>
-
-                      <button
-                        type="button"
-                        className="btn-open-lesson"
-                        onClick={() => setActiveLessonModal(lesson)}
-                      >
-                        <span>Open Lesson Notes & Exercises</span>
-                        <span className="l-arrow">➔</span>
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Competency Breakdown across the 4 units */}
-            <div className="competency-section">
-              <h3 className="section-title">
-                📊 Detailed Performance by Mathematical Domain
-              </h3>
-              <div className="competency-grid">
-                {Object.entries(domainBreakdown).map(([code, item]) => {
-                  const unitPct = Math.round((item.correct / item.total) * 100);
-                  return (
-                    <div key={code} className="competency-card">
-                      <div className="comp-header">
-                        <span className="comp-name">{item.name}</span>
-                        <span className="comp-marks">
-                          <strong>{item.correct}</strong> / {item.total} marks ({unitPct}%)
-                        </span>
-                      </div>
-                      <div className="comp-bar">
-                        <div
-                          className={`comp-fill ${unitPct >= 80 ? "fill-high" : unitPct >= 60 ? "fill-med" : "fill-low"}`}
-                          style={{ width: `${unitPct}%` }}
-                        ></div>
-                      </div>
-                      <span className="comp-status">
-                        {unitPct >= 80
-                          ? "✓ Strong Foundation"
-                          : unitPct >= 60
-                          ? "⚡ Moderate Familiarity"
-                          : "⚠️ High Priority for Revision"}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
 
             {/* Actions Toolbar */}
             <div className="result-actions-toolbar">
@@ -1339,143 +1210,7 @@ function Assessment({ onNavigate, studentInfo, theme, onToggleTheme }) {
               </button>
             </div>
 
-            {/* ========================================================= */}
-            {/* DETAILED ANSWER KEY & EXPLANATIONS FOR ALL QUESTIONS      */}
-            {/* ALWAYS VISIBLE DIRECTLY AFTER SUBMITTING                  */}
-            {/* ========================================================= */}
-            <div className="solutions-review-section">
-              <div className="solutions-header-cluster">
-                <div>
-                  <h3 className="review-title">
-                    📝 Detailed Answers & Mathematical Explanations (Questions 1 - {totalQuestions})
-                  </h3>
-                  <p className="review-subtitle">
-                    Examine each question below. If an answer was <strong>FALSE</strong>, review the exact mathematical reason and why your choice was incorrect.
-                  </p>
-                </div>
 
-                {/* Filter Tabs */}
-                <div className="solution-filter-tabs" role="tablist">
-                  <button
-                    type="button"
-                    className={`filter-tab-btn ${solutionFilter === "all" ? "active" : ""}`}
-                    onClick={() => setSolutionFilter("all")}
-                  >
-                    All Questions ({totalQuestions})
-                  </button>
-                  <button
-                    type="button"
-                    className={`filter-tab-btn tab-false ${solutionFilter === "false" ? "active" : ""}`}
-                    onClick={() => setSolutionFilter("false")}
-                  >
-                    ❌ False / Incorrect Only ({incorrectCount})
-                  </button>
-                  <button
-                    type="button"
-                    className={`filter-tab-btn tab-correct ${solutionFilter === "correct" ? "active" : ""}`}
-                    onClick={() => setSolutionFilter("correct")}
-                  >
-                    ✅ Correct Only ({score})
-                  </button>
-                </div>
-              </div>
-
-              {/* Question list */}
-              <div className="solutions-list">
-                {filteredSolutions.map((q) => {
-                  const studentAns = selectedAnswers[q.id];
-                  const isCorrect = studentAns === q.correctAnswer;
-                  const isSkipped = !studentAns;
-                  const questionIndex = ASSESSMENT_QUESTIONS.findIndex((item) => item.id === q.id);
-
-                  return (
-                    <div
-                      key={q.id}
-                      className={`solution-card ${isCorrect ? "sol-correct" : isSkipped ? "sol-skipped" : "sol-wrong"}`}
-                    >
-                      {/* Top Bar */}
-                      <div className="sol-card-top">
-                        <span className="sol-qnum">
-                          Question {questionIndex + 1} • {q.domain} • 1 Mark
-                        </span>
-                        <span className={`sol-status-pill ${isCorrect ? "pill-correct" : isSkipped ? "pill-skipped" : "pill-wrong"}`}>
-                          {isCorrect ? "✅ TRUE / Correct (+1 Mark)" : isSkipped ? "○ FALSE: Skipped / Unanswered (0 Marks)" : "❌ FALSE: Incorrect (0 Marks)"}
-                        </span>
-                      </div>
-
-                      {/* Question Text */}
-                      <p className="sol-qtext">{q.question}</p>
-
-                      {/* Options Grid */}
-                      <div className="sol-options-grid">
-                        {q.options.map((opt) => {
-                          const isSelected = studentAns === opt.id;
-                          const isTheCorrectOne = q.correctAnswer === opt.id;
-
-                          let optClass = "sol-option";
-                          if (isTheCorrectOne) optClass += " opt-correct";
-                          if (isSelected && !isTheCorrectOne) optClass += " opt-wrong-selected";
-
-                          return (
-                            <div key={opt.id} className={optClass}>
-                              <span className="opt-key">{opt.id}</span>
-                              <span className="opt-body">{opt.text}</span>
-                              {isTheCorrectOne && (
-                                <span className="opt-tag tag-correct">
-                                  ✓ Correct Answer
-                                </span>
-                              )}
-                              {isSelected && !isTheCorrectOne && (
-                                <span className="opt-tag tag-wrong">
-                                  ✗ Your Choice (FALSE)
-                                </span>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      {/* FALSE REASON CALLOUT IF INCORRECT */}
-                      {!isCorrect && (
-                        <div className="false-reason-callout">
-                          <div className="false-reason-header">
-                            <span className="false-badge-icon">❌</span>
-                            <span className="false-badge-title">
-                              {isSkipped
-                                ? "Why this was marked FALSE (Skipped with No Answer):"
-                                : `Why Your Selection (${studentAns}) is FALSE:`}
-                            </span>
-                          </div>
-                          
-                          <p className="false-reason-text">
-                            {isSkipped
-                              ? "You did not select an option for this question. The correct choice is Option " + q.correctAnswer + "."
-                              : (q.whyFalse && q.whyFalse[studentAns])
-                              ? q.whyFalse[studentAns]
-                              : `Option ${studentAns} is mathematically incorrect. Option ${q.correctAnswer} is the only valid answer.`}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* DETAILED MATHEMATICAL PROOF & REASON */}
-                      <div className="sol-explanation-box">
-                        <div className="explanation-title-row">
-                          <span className="exp-icon">💡</span>
-                          <strong>Mathematical Principle & Reason for Correct Answer ({q.correctAnswer}):</strong>
-                        </div>
-                        <p className="exp-body-text">{q.explanation}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-
-                {filteredSolutions.length === 0 && (
-                  <div className="empty-solutions-notice">
-                    <p>No questions match the selected filter.</p>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
         </main>
       ) : (
@@ -1647,7 +1382,7 @@ function Assessment({ onNavigate, studentInfo, theme, onToggleTheme }) {
                   className="sidebar-submit-btn"
                   onClick={() => setShowSubmitModal(true)}
                 >
-                  Submit & View Explanations
+                  Submit Assessment
                 </button>
               </div>
             </div>
@@ -1679,7 +1414,7 @@ function Assessment({ onNavigate, studentInfo, theme, onToggleTheme }) {
             )}
 
             <p style={{ fontSize: "13px", color: "#4338ca", fontWeight: "600", marginBottom: "20px" }}>
-              💡 Upon submission, you will be grouped into 1 of 3 academic tracks and assigned customized lessons based on your marks.
+              💡 Upon submission, your diagnostic score and academic track will be computed.
             </p>
 
             <div className="modal-actions">

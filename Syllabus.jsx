@@ -322,24 +322,10 @@ function Syllabus({ onNavigate, student, onLogout, theme, onToggleTheme }) {
             </p>
 
             {student?.hasTakenAssessment && (
-              <div style={{
-                marginTop: "10px",
-                marginBottom: "14px",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "10px",
-                background: "#f0fdf4",
-                border: "1.5px solid #86efac",
-                borderRadius: "8px",
-                padding: "8px 14px",
-                fontSize: "13.5px",
-                color: "#166534",
-                fontWeight: "600",
-                boxShadow: "0 2px 6px rgba(22, 101, 52, 0.08)"
-              }}>
+              <div className="assessed-pathway-badge-row">
                 <span>🎯 Assessed Pathway:</span>
-                <span style={{ color: "#047857", fontWeight: "700" }}>{student.categoryLabel || "Assigned Track"}</span>
-                <span style={{ background: "#dcfce7", color: "#15803d", padding: "2px 8px", borderRadius: "12px", fontWeight: "700" }}>
+                <span className="apb-track">{student.categoryLabel || "Assigned Track"}</span>
+                <span className="apb-score">
                   Score: {student.score} / {student.maxScore || 30} Marks
                 </span>
               </div>

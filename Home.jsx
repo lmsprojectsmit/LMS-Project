@@ -98,27 +98,15 @@ function Home({ onNavigate, currentUser, onLogout, theme, onToggleTheme }) {
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
 
           {currentUser ? (
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div className="nav-auth-cluster">
               <button
                 type="button"
-                className="nav-btn-secondary"
-                style={{ borderColor: "#6366f1", color: "#4338ca", fontWeight: "700", background: "#f5f3ff" }}
+                className="nav-btn-secondary nav-btn-syllabus-shortcut"
                 onClick={() => onNavigate("syllabus", currentUser)}
               >
                 Unit-Wise Syllabus
               </button>
-              <span style={{
-                background: "#ecfdf5",
-                color: "#065f46",
-                border: "1.5px solid #a7f3d0",
-                padding: "6px 14px",
-                borderRadius: "9999px",
-                fontSize: "13px",
-                fontWeight: "700",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px"
-              }}>
+              <span className="nav-user-badge">
                 <span>👤</span>
                 <span>{currentUser.fullName || "Student"}</span>
               </span>
@@ -131,12 +119,11 @@ function Home({ onNavigate, currentUser, onLogout, theme, onToggleTheme }) {
               </button>
             </div>
           ) : (
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div className="nav-auth-cluster">
               <button
                 type="button"
-                className="nav-btn-secondary"
+                className="nav-btn-secondary nav-btn-login-shortcut"
                 onClick={() => onNavigate("login")}
-                style={{ fontWeight: "700", color: "#4338ca", borderColor: "#c7d2fe" }}
               >
                 Login
               </button>
