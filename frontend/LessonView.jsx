@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./LessonView.css";
+import U1M01 from "./U1M01";
 
 // Comprehensive curriculum content with Video metadata and Dr. G. Balaji Written Notes
 const LESSON_DATABASE = {
@@ -406,6 +407,10 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout }) {
   const topicName = lessonInfo?.name || "Vector Spaces & Axioms";
 
   const lesson = getLessonData(topicCode, unitTitle, topicName, unitNumber);
+
+  if (topicCode === "1.1" || topicCode === "U1-M01") {
+    return <U1M01 onNavigate={onNavigate} student={student} onLogout={onLogout} />;
+  }
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);

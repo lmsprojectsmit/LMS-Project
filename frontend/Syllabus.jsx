@@ -25,7 +25,7 @@ const SYLLABUS_UNITS = [
     topics: [
       {
         code: "1.1",
-        name: "Vector Spaces & Axioms",
+        name: "Understanding Vectors",
         desc: "Definition of vector spaces over ℝ, 10 fundamental axioms (addition & scalar multiplication closures, commutativity, associativity, zero element, additive inverse, distributive laws), standard examples ℝⁿ, Pₙ(t), Mₘ×ₙ(ℝ)."
       },
       {
