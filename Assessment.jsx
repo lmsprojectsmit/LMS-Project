@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./Assessment.css";
+import ThemeToggle from "./ThemeToggle";
 
 // 30 Questions (1 mark each, Total: 30 marks)
 // Divided across 4 core domains (Unit I - Unit IV)
@@ -627,16 +628,20 @@ export const ASSESSMENT_QUESTIONS = [
 export const STUDENT_CATEGORIES = {
   category1: {
     id: "category1",
-    name: "Foundational Track",
-    title: "Category 1: Foundational Track (Remediation & Core Basics)",
-    tag: "Category 1 (0 – 14 Marks)",
+    tier: "bronze",
+    name: "Bronze Category (≤ 39%)",
+    shortName: "Bronze",
+    title: "Bronze Category: Foundational Support (Score ≤ 39%)",
+    tag: "🥉 Bronze (≤ 39%)",
     minMarks: 0,
-    maxMarks: 14,
+    maxMarks: 11,
+    minPct: 0,
+    maxPct: 39,
     badgeClass: "badge-cat-1",
     themeColor: "#b45309",
     icon: "🥉",
-    level: "Beginner / Remedial Support",
-    scoreRangeLabel: "0 – 14 Marks (< 50%)",
+    level: "Bronze • Foundational Remediation (Score ≤ 39%)",
+    scoreRangeLabel: "Score ≤ 39% (0 – 11 Marks)",
     summary: "Diagnostic results identify foundational conceptual gaps in matrix multiplication, 2×2/3×3 determinants, and elementary row operations.",
     targetOutcome: "Rebuild core computational confidence through guided video proofs, formula sheets, and remedial row-reduction drills.",
     lessons: [
@@ -696,16 +701,20 @@ export const STUDENT_CATEGORIES = {
   },
   category2: {
     id: "category2",
-    name: "Core Engineering Track",
-    title: "Category 2: Core Engineering Track (Standard University Level)",
-    tag: "Category 2 (15 – 22 Marks)",
-    minMarks: 15,
-    maxMarks: 22,
+    tier: "silver",
+    name: "Silver Category (40% – 79%)",
+    shortName: "Silver",
+    title: "Silver Category: Core Engineering Track (Score 40% – 79%)",
+    tag: "🥈 Silver (40% – 79%)",
+    minMarks: 12,
+    maxMarks: 23,
+    minPct: 40,
+    maxPct: 79,
     badgeClass: "badge-cat-2",
     themeColor: "#4338ca",
     icon: "🥈",
-    level: "Intermediate / Standard University Pace",
-    scoreRangeLabel: "15 – 22 Marks (50% – 75%)",
+    level: "Silver • Standard University Level (Score 40% – 79%)",
+    scoreRangeLabel: "Score 40% – 79% (12 – 23 Marks)",
     summary: "Solid grasp of foundational matrix arithmetic. Focus is on mastering university exam problem sets, Rank-Nullity theorems, and characteristic equations.",
     targetOutcome: "Master the standard MA25C02 syllabus to secure top university grades (A / A+) through structured problem-solving drills and theorem applications.",
     lessons: [
@@ -765,16 +774,20 @@ export const STUDENT_CATEGORIES = {
   },
   category3: {
     id: "category3",
-    name: "Advanced Scholars Track",
-    title: "Category 3: Advanced Scholars Track (Honors & Applications)",
-    tag: "Category 3 (23 – 30 Marks)",
-    minMarks: 23,
+    tier: "gold",
+    name: "Gold Category (≥ 80%)",
+    shortName: "Gold",
+    title: "Gold Category: Advanced Scholars Track (Score ≥ 80%)",
+    tag: "🥇 Gold (≥ 80%)",
+    minMarks: 24,
     maxMarks: 30,
+    minPct: 80,
+    maxPct: 100,
     badgeClass: "badge-cat-3",
     themeColor: "#059669",
     icon: "🥇",
-    level: "Advanced / Honors & Research",
-    scoreRangeLabel: "23 – 30 Marks (> 75%)",
+    level: "Gold • Honors & Research Track (Score ≥ 80%)",
+    scoreRangeLabel: "Score ≥ 80% (24 – 30 Marks)",
     summary: "Exceptional analytical proficiency and theoretical mastery. Assigned lessons emphasize rigorous proof techniques, diagonalization, SVD, and real-world engineering systems.",
     targetOutcome: "Prepare for engineering research, graduate-level machine learning linear algebra, and top academic honors (O Grade).",
     lessons: [
@@ -834,7 +847,7 @@ export const STUDENT_CATEGORIES = {
   }
 };
 
-function Assessment({ onNavigate, studentInfo }) {
+function Assessment({ onNavigate, studentInfo, theme, onToggleTheme }) {
   // Test state
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({}); // { [questionId]: "A" | "B" | ... }
@@ -957,9 +970,10 @@ function Assessment({ onNavigate, studentInfo }) {
   const incorrectCount = totalQuestions - score;
   const percentage = Math.round((score / totalQuestions) * 100);
 
-  // Group Student into 1 of 3 Categories based on score (30 total marks)
+  // Group Student into 3 Categories based on diagnosis test score:
+  // Bronze (less than or equal to 39), Silver (40 to 79), Gold (above or equal to 80)
   const assignedCategoryId =
-    score <= 14 ? "category1" : score <= 22 ? "category2" : "category3";
+    percentage <= 39 ? "category1" : percentage <= 79 ? "category2" : "category3";
   const assignedCategory = STUDENT_CATEGORIES[assignedCategoryId];
 
   // Active viewed category tab defaults to assigned category
@@ -990,7 +1004,6 @@ function Assessment({ onNavigate, studentInfo }) {
       {/* Top Header Bar */}
       <header className="assessment-header">
         <div className="assessment-brand" onClick={() => onNavigate && onNavigate("home")}>
-          <span className="brand-icon">📐</span>
           <div>
             <h1 className="brand-title">EduVerse LMS • Diagnostic Assessment</h1>
             <p className="brand-subtitle">Linear Algebra (MA25C02) • Student Capability Profiler</p>
@@ -1014,6 +1027,8 @@ function Assessment({ onNavigate, studentInfo }) {
           )}
 
           <div className="header-actions">
+            <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+
             <button
               type="button"
               className="exit-btn"
@@ -1171,7 +1186,7 @@ function Assessment({ onNavigate, studentInfo }) {
                         className="btn-open-lesson"
                         onClick={() => setActiveLessonModal(lesson)}
                       >
-                        <span>📖 Open Lesson Notes & Exercises</span>
+                        <span>Open Lesson Notes & Exercises</span>
                         <span className="l-arrow">➔</span>
                       </button>
                     </div>
@@ -1298,7 +1313,7 @@ function Assessment({ onNavigate, studentInfo }) {
                   if (onNavigate) onNavigate("syllabus", studentPayload);
                 }}
               >
-                <span>📖 Go to Unit-Wise Syllabus</span>
+                <span>Go to Unit-Wise Syllabus</span>
                 <span>➔</span>
               </button>
 
@@ -1723,7 +1738,7 @@ function Assessment({ onNavigate, studentInfo }) {
               </div>
 
               <div className="reader-block">
-                <h4 className="reader-sec-title">📖 Comprehensive Study Notes & Principles</h4>
+                <h4 className="reader-sec-title">Comprehensive Study Notes & Principles</h4>
                 <p className="reader-notes-text">{activeLessonModal.notes}</p>
               </div>
 

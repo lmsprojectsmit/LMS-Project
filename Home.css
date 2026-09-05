@@ -2,6 +2,10 @@
    EDUVERSE LMS - HOMEPAGE & EXPLANATORY PORTAL STYLING
    ========================================================== */
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --home-font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --home-font-hand: 'Caveat', cursive, sans-serif;
@@ -292,6 +296,7 @@
 .hero-primary-cta {
   background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
   color: white;
+  text-decoration: none;
   border: none;
   padding: 16px 32px;
   border-radius: 12px;
@@ -299,14 +304,16 @@
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 8px 24px -4px rgba(79, 70, 229, 0.45);
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   transition: all 0.22s ease;
 }
 
 .hero-primary-cta:hover {
   transform: translateY(-2px);
+  color: white;
   box-shadow: 0 12px 28px -4px rgba(79, 70, 229, 0.55);
 }
 
@@ -316,7 +323,7 @@
 }
 
 .hero-primary-cta:hover .cta-arrow {
-  transform: translateX(4px);
+  transform: translateY(4px);
 }
 
 .hero-secondary-cta {
@@ -900,6 +907,7 @@
   max-width: 980px;
   margin: 90px auto 70px;
   padding: 0 24px;
+  scroll-margin-top: 90px;
 }
 
 .callout-card {
@@ -986,6 +994,37 @@
   background: #f8fafc;
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
   color: #1e1b4b;
+}
+
+#dedicated-student-register-btn {
+  scroll-margin: 140px 0;
+}
+
+@keyframes registerBtnPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.9), 0 10px 30px rgba(0, 0, 0, 0.25);
+  }
+  25% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 16px rgba(255, 255, 255, 0), 0 0 30px rgba(255, 255, 255, 0.8), 0 18px 45px rgba(0, 0, 0, 0.45);
+  }
+  50% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0), 0 10px 30px rgba(0, 0, 0, 0.25);
+  }
+  75% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 16px rgba(255, 255, 255, 0), 0 0 30px rgba(255, 255, 255, 0.8), 0 18px 45px rgba(0, 0, 0, 0.45);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0), 0 10px 30px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.btn-highlight-pulse {
+  animation: registerBtnPulse 2s ease-in-out;
 }
 
 .btn-icon {

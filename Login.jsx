@@ -1,7 +1,9 @@
 import { useState } from "react";
 import "./Login.css";
+import { authenticateUser } from "./authStorage";
+import ThemeToggle from "./ThemeToggle";
 
-function Login({ onNavigate, registeredStudent }) {
+function Login({ onNavigate, registeredStudent, theme, onToggleTheme }) {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: registeredStudent?.email || "",
@@ -20,8 +22,38 @@ function Login({ onNavigate, registeredStudent }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login Data:", formData);
-    if (formData.role === "faculty") {
+    const identifier = (formData.email || "").trim();
+    const password = (formData.password || "").trim();
+
+    // 1. Authenticate against master admin or custom provisioned users from Admin Console
+    const authResult = authenticateUser(identifier, password, formData.role);
+
+    if (authResult.success) {
+      const user = authResult.user;
+      if (user.role === "admin") {
+        alert(`Welcome Institutional Administrator: ${user.fullName || user.username}. Redirecting to Admin Console.`);
+        if (onNavigate) onNavigate("admin", user);
+        return;
+      } else if (user.role === "faculty") {
+        alert(`Welcome Faculty: ${user.fullName || user.username}. Redirecting to Faculty Dashboard.`);
+        if (onNavigate) onNavigate("faculty", user);
+        return;
+      } else {
+        alert(`Welcome back, ${user.fullName || user.username}! Directing to your Unit-Wise Syllabus.`);
+        if (onNavigate) onNavigate("syllabus", user);
+        return;
+      }
+    } else if (!authResult.notFound) {
+      // Credentials were found but password or role was wrong
+      alert(authResult.message);
+      return;
+    }
+
+    // 2. Fallback to default demo logins if identifier is not in custom storage
+    if (formData.role === "admin") {
+      alert(`Welcome Institutional Administrator: ${formData.email || "Dr. Arunkumar Natarajan"}. Redirecting to Admin Console.`);
+      if (onNavigate) onNavigate("admin", { role: "admin", email: formData.email, fullName: "Dr. Arunkumar Natarajan" });
+    } else if (formData.role === "faculty") {
       alert(`Welcome Faculty: ${formData.email || "Dr. K. Senthil Kumar"}. Redirecting to Faculty Dashboard.`);
       if (onNavigate) onNavigate("faculty");
     } else {
@@ -76,8 +108,20 @@ function Login({ onNavigate, registeredStudent }) {
       </div>
 
       <div className="login-card">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+          <button
+            type="button"
+            className="login-back-home"
+            onClick={() => onNavigate && onNavigate("home")}
+            style={{ background: "transparent", border: "none", color: "var(--theme-text-muted, #64748b)", fontWeight: 700, cursor: "pointer", fontSize: "13px" }}
+          >
+            ← Home
+          </button>
+          <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+        </div>
+
         <div className="logo" aria-hidden="true">
-          🎓
+          🏛️
         </div>
 
         <h1>Learning Management System</h1>
@@ -93,7 +137,7 @@ function Login({ onNavigate, registeredStudent }) {
               id="login-email"
               type="text"
               name="email"
-              placeholder="e.g. regno@institution.edu or student@institution.edu"
+              placeholder="e.g. username or user@institution.edu"
               value={formData.email}
               onChange={handleChange}
               required
@@ -142,6 +186,8 @@ function Login({ onNavigate, registeredStudent }) {
               <option value="admin">Admin</option>
             </select>
           </div>
+
+
 
           {/* Remember / Forgot */}
           <div className="login-options">
