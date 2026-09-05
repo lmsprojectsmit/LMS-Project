@@ -108,12 +108,11 @@ function Login({ onNavigate, registeredStudent, theme, onToggleTheme }) {
       </div>
 
       <div className="login-card">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+        <div className="login-top-bar">
           <button
             type="button"
             className="login-back-home"
             onClick={() => onNavigate && onNavigate("home")}
-            style={{ background: "transparent", border: "none", color: "var(--theme-text-muted, #64748b)", fontWeight: 700, cursor: "pointer", fontSize: "13px" }}
           >
             ← Home
           </button>

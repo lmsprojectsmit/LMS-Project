@@ -1671,3 +1671,254 @@ body.theme-dark .exp-text,
     width: 100%;
   }
 }
+
+/* =========================================================================
+   COMPREHENSIVE DARK THEME SYSTEM FOR MICRO TOPIC TEST MODAL
+   ========================================================================= */
+[data-theme="dark"] .mtt-overlay {
+  background: rgba(3, 7, 18, 0.88) !important;
+}
+
+[data-theme="dark"] .mtt-container {
+  background: #111827 !important;
+  border-color: #243048 !important;
+  color: #f8fafc !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.75) !important;
+}
+
+[data-theme="dark"] .mtt-header {
+  background: #0b1120 !important;
+  border-bottom-color: #1e293b !important;
+}
+
+[data-theme="dark"] .mtt-topic-title {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .mtt-test-body-streamlined {
+  background: #090d16 !important;
+}
+
+[data-theme="dark"] .mtt-nav-pills-bar {
+  background: #111827 !important;
+  border-bottom-color: #1e293b !important;
+}
+
+[data-theme="dark"] .mtt-progress-info {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .mtt-progress-info strong {
+  color: #818cf8 !important;
+}
+
+[data-theme="dark"] .mtt-answered-txt {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .mtt-q-pill {
+  background: #161f32 !important;
+  border-color: #243048 !important;
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .mtt-q-pill:hover {
+  background: #1e293b !important;
+  border-color: #6366f1 !important;
+  color: #c7d2fe !important;
+}
+
+[data-theme="dark"] .mtt-q-pill.current {
+  background: #6366f1 !important;
+  border-color: #6366f1 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35) !important;
+}
+
+[data-theme="dark"] .mtt-q-pill.answered:not(.current) {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: #10b981 !important;
+  color: #34d399 !important;
+}
+
+[data-theme="dark"] .question-box-card {
+  background: #111827 !important;
+  border-color: #243048 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .qb-top-meta {
+  border-bottom-color: #1e293b !important;
+}
+
+[data-theme="dark"] .qb-qnum {
+  color: #818cf8 !important;
+}
+
+[data-theme="dark"] .qb-weight-pill {
+  background: #161f32 !important;
+  color: #94a3b8 !important;
+  border: 1px solid #243048 !important;
+}
+
+[data-theme="dark"] .qb-prompt {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .opt-card {
+  background: #161f32 !important;
+  border-color: #243048 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .opt-card:hover {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+[data-theme="dark"] .opt-card.selected {
+  background: rgba(99, 102, 241, 0.2) !important;
+  border-color: #818cf8 !important;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25) !important;
+}
+
+[data-theme="dark"] .opt-letter-circle {
+  background: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .opt-card.selected .opt-letter-circle {
+  background: #6366f1 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .opt-text {
+  color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .opt-card.selected .opt-text {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .qb-actions-bar {
+  border-top-color: #1e293b !important;
+}
+
+[data-theme="dark"] .btn-nav-prev {
+  background: #161f32 !important;
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .btn-nav-prev:hover:not(:disabled) {
+  background: #1e293b !important;
+  color: #ffffff !important;
+}
+
+/* Pretest Briefing Cards */
+[data-theme="dark"] .mtt-pretest-briefing {
+  background: #090d16 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .ptb-hero-card,
+[data-theme="dark"] .proctoring-warning-card {
+  background: #111827 !important;
+  border-color: #243048 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .ptb-title,
+[data-theme="dark"] .pwc-title {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .ptb-sub,
+[data-theme="dark"] .pwc-desc {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .spec-box,
+[data-theme="dark"] .pwc-rule-item {
+  background: #161f32 !important;
+  border-color: #243048 !important;
+  color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .spec-lbl {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .spec-val {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .btn-cancel-test {
+  background: #161f32 !important;
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .btn-cancel-test:hover {
+  background: #1e293b !important;
+  color: #ffffff !important;
+}
+
+/* Results & Solution Breakdown */
+[data-theme="dark"] .mtt-results-view {
+  background: #090d16 !important;
+}
+
+[data-theme="dark"] .results-hero-card {
+  background: #111827 !important;
+  border-color: #243048 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .rh-title {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .rh-msg {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .stat-pill {
+  background: #161f32 !important;
+  border-color: #243048 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .solution-review-card {
+  background: #111827 !important;
+  border-color: #243048 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .sol-card-top {
+  border-bottom-color: #1e293b !important;
+}
+
+[data-theme="dark"] .sol-q-text {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .sol-opt-row {
+  background: #161f32 !important;
+  border-color: #243048 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .sol-expl-box {
+  background: #161f32 !important;
+  border-left-color: #6366f1 !important;
+  color: #cbd5e1 !important;
+}
+
+/* Violation Modal */
+[data-theme="dark"] .pvb-modal-card {
+  background: #111827 !important;
+  border-color: #ef4444 !important;
+  color: #f8fafc !important;
+}
