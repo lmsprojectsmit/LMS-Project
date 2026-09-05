@@ -434,7 +434,6 @@ const getLessonData = (code, unitTitle, topicTitle, unitNumber) => {
 };
 
 function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggleTheme }) {
-  const [activeTab, setActiveTab] = useState("all"); // "all" | "video" | "notes"
   const [isPlaying, setIsPlaying] = useState(false);
   const [showTestModal, setShowTestModal] = useState(false);
   const [microScores, setMicroScores] = useState(() => getStoredMicroTestScores());
@@ -700,54 +699,14 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggle
                   "⚡ 10-Min Assessment (Pass to Qualify Next Unit)"
                 )}
               </button>
-              <button
-                type="button"
-                className="btn-print-notes"
-                onClick={() => window.print()}
-              >
-                🖨️ Print Notes PDF
-              </button>
             </div>
-          </div>
-
-          {/* View Mode Switcher */}
-          <div className="lesson-mode-switch">
-            <button
-              type="button"
-              className={`mode-btn ${activeTab === "all" ? "active" : ""}`}
-              onClick={() => setActiveTab("all")}
-            >
-              🖥️ Video & Notes (Side-by-Side)
-            </button>
-            <button
-              type="button"
-              className={`mode-btn ${activeTab === "video" ? "active" : ""}`}
-              onClick={() => setActiveTab("video")}
-            >
-              🎥 Video Lecture Only
-            </button>
-            <button
-              type="button"
-              className={`mode-btn ${activeTab === "notes" ? "active" : ""}`}
-              onClick={() => setActiveTab("notes")}
-            >
-              📝 Dr. G. Balaji Written Notes Only
-            </button>
-            <button
-              type="button"
-              className="mode-btn test-pill-trigger"
-              onClick={() => setShowTestModal(true)}
-            >
-              ⚡ Micro-Topic Test (10 Qs • 10m)
-            </button>
           </div>
         </section>
 
         {/* Content Layout Grid */}
-        <div className={`lesson-layout-grid ${activeTab}`}>
-          {/* SECTION 1: VIDEO FILE PLAYER WITH MULTILINGUAL CONTROLS */}
-          {(activeTab === "all" || activeTab === "video") && (
-            <section className="video-player-section">
+        <div className="lesson-layout-grid">
+          {/* VIDEO FILE PLAYER WITH MULTILINGUAL CONTROLS */}
+          <section className="video-player-section">
               <div className="video-card">
                 {/* Visual Video Player Canvas / Screen */}
                 <div className="video-viewport">
@@ -899,80 +858,21 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggle
                   </div>
                   <p className="vlt-desc">{localizedVideoData.activeNote}</p>
                 </div>
-              </div>
-            </section>
-          )}
 
-          {/* SECTION 2: WRITTEN NOTES & DERIVATIONS */}
-          {(activeTab === "all" || activeTab === "notes") && (
-            <section className="written-notes-section">
-              <div className="notes-paper-card">
-                <div className="notes-header-badge">
-                  <span className="nhb-tag">OFFICIAL WRITTEN LECTURE NOTES</span>
-                  <span className="nhb-ref">{lesson.bookChapter}</span>
-                </div>
-
-                <h2 className="notes-topic-title">{lesson.title} - Complete Notes</h2>
-                <p className="notes-intro-txt">{lesson.notes.introduction}</p>
-
-                {/* Exam Tips & Dr. G. Balaji Advice */}
-                <div className="notes-block">
-                  <h3 className="block-title">🎯 Exam Tips & Common Mistakes (Dr. G. Balaji)</h3>
-                  <div className="exam-tips-list">
-                    {lesson.notes.universityTips.map((tip, idx) => (
-                      <div key={idx} className="tip-item">
-                        <span className="tip-bullet">⚠️</span>
-                        <p>{tip}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* 10-Minute Micro-Topic Test CTA Card */}
-                <div className="micro-test-cta-card">
-                  <div className="mtc-left">
-                    <div className="mtc-icon">📝</div>
-                    <div>
-                      <div className="mtc-tag">MANDATORY TOPIC ASSESSMENT • 10 QUESTIONS • 10 MINUTES</div>
-                      <h3 className="mtc-title">Take the {lesson.code} {lesson.title} Test</h3>
-                      <p className="mtc-desc">
-                        Test your understanding of the definitions, theorems, and university exam problem patterns for this micro-topic. Time limit: <strong>10:00 minutes</strong> with auto-submission and full Dr. G. Balaji worked solutions.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mtc-right">
-                    {topicScoreData ? (
-                      <div className="mtc-score-badge">
-                        <span className="mtc-score-num">{topicScoreData.score} / 10</span>
-                        <span className={`mtc-score-status ${topicScoreData.passed ? "passed" : "needs-review"}`}>
-                          {topicScoreData.passed ? "✓ Passed (Mastered)" : "⚠️ Needs Revision"}
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="mtc-pending-badge">
-                        <span>⏳ Test Not Attempted</span>
-                      </div>
-                    )}
-
-                    <button
-                      type="button"
-                      className="btn-start-micro-test"
-                      onClick={() => setShowTestModal(true)}
-                    >
-                      {topicScoreData ? "🔄 Retake Test (10 Mins)" : "Start Micro-Topic Test (10 Mins)"}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Download / Practice Footer Strip */}
-                <div className="notes-footer-actions">
+                {/* Bottom Navigation & Micro-Topic Test Actions */}
+                <div className="video-lesson-footer-actions">
                   <button
                     type="button"
-                    className="btn-download-pdf"
-                    onClick={() => window.print()}
+                    className={`btn-take-micro-test ${!videoWatched ? "locked-test-btn" : ""}`}
+                    onClick={handleOpenAssessment}
                   >
-                    📥 Download Notes as PDF
+                    {!videoWatched
+                      ? `🔒 Watch Full Video to Unlock Test (${Math.round(videoProgress)}%)`
+                      : topicScoreData?.passed
+                      ? `✓ Assessment Passed (${topicScoreData.score}/10) - Retake Test`
+                      : topicScoreData
+                      ? `⚡ Retake Assessment (${topicScoreData.score}/10)`
+                      : "⚡ Take 10-Minute Assessment (Pass to Qualify)"}
                   </button>
 
                   {nextTopic ? (
@@ -1016,7 +916,6 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggle
                 </div>
               </div>
             </section>
-          )}
         </div>
       </main>
       )}
