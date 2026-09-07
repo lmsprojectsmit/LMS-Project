@@ -630,10 +630,10 @@
 }
 
 .field-group.three-col {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1.25fr 1fr;
 }
 
-@media (max-width: 680px) {
+@media (max-width: 820px) {
   .field-group.two-col,
   .field-group.three-col {
     grid-template-columns: 1fr;
@@ -1427,3 +1427,1213 @@
     display: none !important;
   }
 }
+
+/* ==========================================================
+   PHONE OTP VERIFICATION & SMS NOTIFICATION STYLES
+   ========================================================== */
+
+/* Phone label & verification tags */
+.phone-field-container {
+  position: relative;
+}
+
+.phone-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.phone-verified-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #059669;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+.phone-unverified-tag {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #b45309;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.phone-input-action-wrapper {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  border: 1.5px solid #cbd5e1;
+  border-radius: var(--radius-sm);
+  background-color: white;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.phone-input-action-wrapper:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+}
+
+.phone-input-action-wrapper.is-verified {
+  border-color: #10b981 !important;
+  background-color: #f0fdf4 !important;
+}
+
+.phone-input-action-wrapper.has-error {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
+}
+
+.phone-input-action-wrapper input {
+  flex: 1;
+  min-width: 0;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 10px 12px !important;
+  border-radius: 0 !important;
+  font-size: 14px;
+  color: var(--color-text-main);
+  outline: none !important;
+}
+
+.phone-verify-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  color: #ffffff;
+  border: none;
+  border-left: 1px solid #4338ca;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  margin: 0;
+}
+
+.phone-verify-action-btn:hover {
+  background: linear-gradient(135deg, #4338ca, #3730a3);
+  color: #ffffff;
+}
+
+.phone-verify-action-btn.email-btn-theme {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  border-left: 1px solid #0284c7;
+}
+
+.phone-verify-action-btn.email-btn-theme:hover {
+  background: linear-gradient(135deg, #0369a1, #075985);
+}
+
+.phone-verified-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: #dcfce7;
+  color: #15803d;
+  border: none;
+  border-left: 1px solid #86efac;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 0 11px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: default;
+  margin: 0;
+}
+
+.phone-verified-btn .check-icon {
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.field-success-hint {
+  font-size: 12px;
+  color: #059669;
+  font-weight: 600;
+  margin-top: 4px;
+  display: block;
+}
+
+/* SMS / Email Notification Toast (Floating Incoming Message simulation) */
+.sms-notification-toast {
+  position: fixed;
+  top: 75px;
+  right: 24px;
+  z-index: 1000;
+  max-width: 380px;
+  width: calc(100% - 48px);
+  background: #ffffff;
+  border: 2px solid #6366f1;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.25), 0 4px 12px rgba(0, 0, 0, 0.08);
+  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sms-notification-toast.email-toast-style {
+  border-color: #0284c7;
+  box-shadow: 0 12px 32px rgba(2, 132, 199, 0.25), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.sms-notification-toast.email-toast-style .sms-toast-title {
+  color: #0369a1;
+}
+
+.sms-notification-toast.email-toast-style .sms-otp-code {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.sms-notification-toast.email-toast-style .sms-autofill-btn {
+  background: #0284c7;
+}
+
+.sms-notification-toast.email-toast-style .sms-autofill-btn:hover {
+  background: #0369a1;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.sms-toast-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.sms-toast-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: #312e81;
+}
+
+.sms-time {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+  margin-right: auto;
+  margin-left: 8px;
+}
+
+.sms-close-btn {
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+}
+
+.sms-close-btn:hover {
+  color: #475569;
+}
+
+.sms-toast-body p {
+  margin: 0 0 10px 0;
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.sms-otp-code {
+  background: #ede9fe;
+  color: #4f46e5;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono, monospace);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+}
+
+.sms-toast-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sms-autofill-btn {
+  background: #4f46e5;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sms-autofill-btn:hover {
+  background: #4338ca;
+  transform: scale(1.02);
+}
+
+/* ==========================================================
+   OTP VERIFICATION MODAL STYLES
+   ========================================================== */
+.otp-verification-modal {
+  background: #ffffff;
+  border-radius: 20px;
+  max-width: 440px;
+  width: 90%;
+  padding: 32px 28px;
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.22);
+  position: relative;
+  text-align: center;
+  animation: modalScaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.otp-modal-header {
+  margin-bottom: 22px;
+}
+
+.otp-modal-icon {
+  width: 58px;
+  height: 58px;
+  background: #ede9fe;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin-bottom: 12px;
+}
+
+.otp-modal-header h3 {
+  margin: 0 0 6px 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.otp-modal-header p {
+  margin: 0;
+  font-size: 13.5px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.otp-inputs-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.otp-digit-box {
+  width: 46px;
+  height: 54px;
+  border: 2px solid #cbd5e1;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  font-family: var(--font-mono, monospace);
+  color: #1e1b4b;
+  background: #f8fafc;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.otp-digit-box:focus {
+  border-color: #4f46e5;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+}
+
+.otp-digit-box.filled {
+  border-color: #6366f1;
+  background: #ffffff;
+}
+
+.otp-digit-box.error {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.otp-error-banner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+
+.otp-demo-hint {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 14px;
+}
+
+.otp-hint-code-btn {
+  background: none;
+  border: 1px dashed #6366f1;
+  color: #4f46e5;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono, monospace);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.otp-hint-code-btn:hover {
+  background: #ede9fe;
+}
+
+.otp-resend-row {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 22px;
+}
+
+.otp-timer-text strong {
+  color: #4f46e5;
+}
+
+.otp-resend-btn {
+  background: none;
+  border: none;
+  color: #4f46e5;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.otp-resend-btn:hover {
+  color: #3730a3;
+}
+
+.otp-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.otp-verify-confirm-btn {
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  color: #ffffff;
+  border: none;
+  padding: 13px 20px;
+  border-radius: 10px;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(67, 56, 202, 0.3);
+  transition: all 0.2s;
+}
+
+.otp-verify-confirm-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.otp-verify-confirm-btn:not(:disabled):hover {
+  background: linear-gradient(135deg, #4338ca, #3730a3);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================
+   EMAIL CONFIRMATION & PREVIEW STYLES
+   ========================================================== */
+.email-dispatched-banner {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+}
+
+.email-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.email-badge-icon {
+  font-size: 22px;
+}
+
+.email-banner-left strong {
+  font-size: 13.5px;
+  color: #14532d;
+  display: block;
+}
+
+.email-banner-left p {
+  margin: 2px 0 0 0;
+  font-size: 12px;
+  color: #166534;
+}
+
+.view-email-preview-btn {
+  background: #15803d;
+  color: #ffffff;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.view-email-preview-btn:hover {
+  background: #166534;
+  transform: scale(1.03);
+}
+
+/* Email Preview Modal */
+.email-preview-backdrop {
+  z-index: 1200;
+}
+
+.email-preview-modal-card {
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 680px;
+  width: 92%;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 28px 60px rgba(15, 23, 42, 0.3);
+  overflow: hidden;
+  animation: modalScaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.email-preview-header-bar {
+  background: #1e1b4b;
+  color: #ffffff;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.email-client-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.client-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.client-dot.red { background: #ef4444; }
+.client-dot.yellow { background: #f59e0b; }
+.client-dot.green { background: #10b981; }
+
+.client-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e0e7ff;
+  margin-left: 4px;
+}
+
+.email-preview-header-bar .modal-close-icon {
+  position: static;
+  color: #cbd5e1;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+}
+
+.email-meta-pane {
+  background: #f8fafc;
+  padding: 12px 20px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 13px;
+}
+
+.email-meta-row {
+  display: flex;
+  margin-bottom: 4px;
+}
+
+.email-meta-row:last-child {
+  margin-bottom: 0;
+}
+
+.meta-label {
+  width: 70px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.meta-val {
+  color: #1e293b;
+}
+
+.meta-val.sender {
+  font-weight: 700;
+  color: #4338ca;
+}
+
+.meta-val.subject-bold {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.meta-val.status-delivered {
+  color: #15803d;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.email-body-pane {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+  background: #f1f5f9;
+}
+
+.email-preview-footer {
+  padding: 12px 20px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.email-close-btn {
+  background: #4f46e5;
+  color: #ffffff;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.email-close-btn:hover {
+  background: #4338ca;
+}
+
+/* ==========================================================
+   DARK THEME OVERRIDES
+   ========================================================== */
+[data-theme="dark"] .otp-verification-modal {
+  background: #1e293b;
+  color: #f1f5f9;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .otp-modal-header h3 {
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .otp-modal-header p {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .otp-modal-icon {
+  background: #312e81;
+  border-color: #4338ca;
+}
+
+[data-theme="dark"] .otp-digit-box {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .otp-digit-box:focus {
+  border-color: #818cf8;
+  background: #1e293b;
+}
+
+[data-theme="dark"] .otp-digit-box.filled {
+  border-color: #6366f1;
+  background: #1e293b;
+}
+
+[data-theme="dark"] .sms-notification-toast {
+  background: #1e293b;
+  border-color: #6366f1;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .sms-toast-header {
+  border-bottom-color: #334155;
+}
+
+[data-theme="dark"] .sms-toast-title {
+  color: #c7d2fe;
+}
+
+[data-theme="dark"] .sms-toast-body p {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .email-preview-modal-card {
+  background: #1e293b;
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="dark"] .email-meta-pane {
+  background: #0f172a;
+  border-bottom-color: #334155;
+}
+
+[data-theme="dark"] .meta-val {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .meta-val.subject-bold {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .email-preview-footer {
+  background: #1e293b;
+  border-top-color: #334155;
+}
+
+[data-theme="dark"] .phone-input-action-wrapper {
+  background-color: #1e293b !important;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .phone-input-action-wrapper:focus-within {
+  border-color: #818cf8;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.25);
+}
+
+[data-theme="dark"] .phone-input-action-wrapper.is-verified {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  border-color: #10b981 !important;
+}
+
+[data-theme="dark"] .phone-input-action-wrapper.has-error {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  border-color: #ef4444 !important;
+}
+
+[data-theme="dark"] .phone-input-action-wrapper input {
+  color: #f8fafc !important;
+}
+
+/* ==========================================================
+   GOOGLE-STYLE MULTI-STEP REGISTRATION WIZARD STYLING
+   ========================================================== */
+.google-style-card {
+  padding: 38px 44px !important;
+  border-radius: 24px !important;
+  box-shadow: 0 20px 50px -10px rgba(67, 56, 202, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+@media (max-width: 640px) {
+  .google-style-card {
+    padding: 24px 18px !important;
+    border-radius: 18px !important;
+  }
+}
+
+.google-stepper-container {
+  margin-bottom: 28px;
+}
+
+.google-brand-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.google-account-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 12px auto;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%);
+  border: 1.5px solid #c7d2fe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.google-brand-header h2 {
+  margin: 0 0 6px 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.google-account-sub {
+  margin: 0;
+  font-size: 13.5px;
+  color: #64748b;
+}
+
+.google-account-sub strong {
+  color: #4338ca;
+}
+
+/* Stepper Navigation Pills */
+.google-stepper-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+  position: relative;
+}
+
+@media (max-width: 720px) {
+  .google-stepper-nav {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+}
+
+.google-step-pill {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 6px 14px 6px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-main);
+  text-align: left;
+}
+
+.google-step-pill:hover {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+}
+
+.google-step-pill .step-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.google-step-pill .step-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.google-step-pill.active {
+  background: #ede9fe;
+  border-color: #818cf8;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+}
+
+.google-step-pill.active .step-circle {
+  background: #4f46e5;
+  color: #ffffff;
+}
+
+.google-step-pill.active .step-title {
+  color: #312e81;
+}
+
+.google-step-pill.completed {
+  background: #ecfdf5;
+  border-color: #86efac;
+}
+
+.google-step-pill.completed .step-circle {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.google-step-pill.completed .step-title {
+  color: #065f46;
+}
+
+.google-step-connector {
+  flex: 1;
+  height: 2px;
+  background: #e2e8f0;
+  border-radius: 1px;
+}
+
+.google-step-connector.completed {
+  background: #10b981;
+}
+
+@media (max-width: 720px) {
+  .google-step-connector {
+    display: none;
+  }
+}
+
+/* Stepper Progress Bar */
+.google-progress-bar-track {
+  width: 100%;
+  height: 4px;
+  background: #f1f5f9;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.google-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4f46e5, #06b6d4);
+  border-radius: 999px;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Step Panel & Content */
+.google-step-panel {
+  animation: stepFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes stepFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.panel-step-intro {
+  margin-bottom: 22px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.step-badge-indicator {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #4f46e5;
+  background: #ede9fe;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  letter-spacing: 0.05em;
+}
+
+.panel-step-intro h3 {
+  margin: 0 0 4px 0;
+  font-size: 19px;
+  font-weight: 800;
+  color: #1e1b4b;
+}
+
+.panel-step-intro p {
+  margin: 0;
+  font-size: 13.5px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+/* Academic Standing & Course Info Badges */
+.academic-standing-badge {
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+}
+
+.step-course-preview-card {
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+  margin-bottom: 16px;
+}
+
+.preview-card-icon {
+  font-size: 26px;
+}
+
+.preview-card-details strong {
+  display: block;
+  font-size: 14px;
+  color: #1e3a8a;
+}
+
+.preview-card-details p {
+  margin: 2px 0 0 0;
+  font-size: 12.5px;
+  color: #1d4ed8;
+}
+
+/* Student Registration Snapshot Summary in Step 3 */
+.student-reg-summary-card {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+
+.summary-card-header {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px 16px;
+}
+
+@media (max-width: 720px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summary-grid div {
+  font-size: 12.5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-grid span {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.summary-grid strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+/* Wizard Navigation Buttons */
+.wizard-action-bar {
+  display: flex;
+  align-items: center;
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.wizard-action-bar.single-right {
+  justify-content: flex-end;
+}
+
+.wizard-action-bar.split-actions {
+  justify-content: space-between;
+}
+
+.wizard-next-btn {
+  background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+  color: #ffffff;
+  border: none;
+  padding: 13px 24px;
+  border-radius: 10px;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(67, 56, 202, 0.3);
+  transition: all 0.2s ease;
+}
+
+.wizard-next-btn:hover {
+  background: linear-gradient(135deg, #3730a3 0%, #4f46e5 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(67, 56, 202, 0.4);
+}
+
+.wizard-back-btn {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wizard-back-btn:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+/* Dark Theme Overrides for Wizard */
+[data-theme="dark"] .google-brand-header h2 {
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .google-brand-header .google-account-icon {
+  background: #312e81;
+  border-color: #4338ca;
+}
+
+[data-theme="dark"] .google-step-pill {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .google-step-pill .step-circle {
+  background: #334155;
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .google-step-pill .step-title {
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .google-step-pill.active {
+  background: #1e1b4b;
+  border-color: #818cf8;
+}
+
+[data-theme="dark"] .google-step-pill.active .step-title {
+  color: #e0e7ff;
+}
+
+[data-theme="dark"] .google-progress-bar-track {
+  background: #1e293b;
+}
+
+[data-theme="dark"] .panel-step-intro {
+  border-bottom-color: #334155;
+}
+
+[data-theme="dark"] .panel-step-intro h3 {
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .academic-standing-badge {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .step-course-preview-card {
+  background: #0c4a6e;
+  border-color: #0284c7;
+}
+
+[data-theme="dark"] .preview-card-details strong {
+  color: #e0f2fe;
+}
+
+[data-theme="dark"] .preview-card-details p {
+  color: #bae6fd;
+}
+
+[data-theme="dark"] .student-reg-summary-card {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .summary-card-header {
+  border-bottom-color: #334155;
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .summary-grid strong {
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .wizard-action-bar {
+  border-top-color: #334155;
+}
+
+[data-theme="dark"] .wizard-back-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .wizard-back-btn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+
+

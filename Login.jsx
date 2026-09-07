@@ -112,9 +112,9 @@ function Login({ onNavigate, registeredStudent, theme, onToggleTheme }) {
           <button
             type="button"
             className="login-back-home"
-            onClick={() => onNavigate && onNavigate("home")}
+            onClick={() => (onNavigate ? onNavigate("back") : window.history.back())}
           >
-            ← Home
+            ← Back
           </button>
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
         </div>
@@ -227,14 +227,18 @@ function Login({ onNavigate, registeredStudent, theme, onToggleTheme }) {
 
         <div className="back-home-container">
           <a
-            href="#home"
+            href="#back"
             className="back-home-link"
             onClick={(e) => {
               e.preventDefault();
-              if (onNavigate) onNavigate("home");
+              if (onNavigate) {
+                onNavigate("back");
+              } else {
+                window.history.back();
+              }
             }}
           >
-            ← Back to Platform Overview
+            ← Back to Previous Page
           </a>
         </div>
       </div>
