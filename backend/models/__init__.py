@@ -1,0 +1,3 @@
+from models.diagnostic_question import DiagnosticQuestion
+from models.diagnostic_attempt import DiagnosticAttempt
+from models.diagnostic_response import DiagnosticResponse
