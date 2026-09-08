@@ -56,20 +56,34 @@ img, svg, canvas, video {
   --theme-bg-surface: #ffffff;
   --theme-bg-surface-elevated: #ffffff;
   --theme-bg-subtle: #f1f5f9;
-  --theme-border-subtle: #e2e8f0;
-  --theme-border-strong: #cbd5e1;
-  --theme-text-primary: #0f172a;
-  --theme-text-secondary: #475569;
-  --theme-text-muted: #64748b;
+  --theme-border-subtle: #cbd5e1;
+  --theme-border-strong: #94a3b8;
+  --theme-text-primary: #090d16;
+  --theme-text-secondary: #1e293b;
+  --theme-text-muted: #334155;
   --theme-shadow-card: 0 4px 16px -2px rgba(15, 23, 42, 0.06), 0 2px 4px -1px rgba(15, 23, 42, 0.04);
-  --theme-nav-glass: rgba(255, 255, 255, 0.92);
+  --theme-nav-glass: rgba(255, 255, 255, 0.95);
 
   /* Primary Brand Accents */
-  --theme-primary: #4338ca;
-  --theme-primary-hover: #3730a3;
-  --theme-primary-subtle: #eef2ff;
-  --theme-accent: #f59e0b;
+  --theme-primary: #3730a3;
+  --theme-primary-hover: #312e81;
+  --theme-primary-subtle: #e0e7ff;
+  --theme-accent: #d97706;
   --theme-accent-subtle: #fef3c7;
+}
+
+[data-theme="light"] .home-page .section-title,
+[data-theme="light"] .training-section .section-title,
+[data-theme="light"] .usefulness-section .section-title,
+[data-theme="light"] .section-title {
+  color: #090d16 !important;
+}
+
+[data-theme="light"] .home-page .section-subtitle,
+[data-theme="light"] .training-section .section-subtitle,
+[data-theme="light"] .usefulness-section .section-subtitle,
+[data-theme="light"] .section-subtitle {
+  color: #0f172a !important;
 }
 
 [data-theme="dark"],
@@ -793,7 +807,6 @@ body {
     -webkit-text-fill-color: transparent !important;
   }
 
-  .section-title,
   .section-heading,
   .spotlight-title,
   .syllabus-section-header h3,
@@ -804,6 +817,7 @@ body {
     color: #c7d2fe !important;
   }
 
+  .section-title,
   .card-heading,
   .book-info h4 {
     color: #e0e7ff !important;
@@ -1057,41 +1071,99 @@ body {
 
   /* FACULTY PORTAL */
   .faculty-portal-page {
-    background: #090d16 !important;
+    background-color: #090d16 !important;
     color: #f8fafc !important;
   }
 
-  .fac-stat-card,
-  .fac-filter-bar,
-  .student-table,
-  .fac-chart-card,
-  .fac-modal-card {
+  .faculty-nav {
+    background: rgba(15, 23, 42, 0.94) !important;
+    border-color: #1e293b !important;
+    color: #f8fafc !important;
+  }
+
+  .faculty-hero-banner {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%) !important;
+    border-color: #243048 !important;
+    color: #ffffff !important;
+  }
+
+  .kpi-card,
+  .faculty-toolbar-card,
+  .student-table-wrap,
+  .student-grid-card,
+  .student-profile-modal,
+  .spm-domain-card {
     background: #111827 !important;
     border-color: #243048 !important;
     color: #f8fafc !important;
     box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.45) !important;
   }
 
-  .student-table th {
+  .kpi-card.active-kpi {
+    background: #161f32 !important;
+    border-color: #818cf8 !important;
+  }
+
+  .faculty-student-table th {
     background: #161f32 !important;
     color: #94a3b8 !important;
-    border-bottom: 1px solid #243048 !important;
+    border-bottom: 1.5px solid #243048 !important;
   }
 
-  .student-table td {
+  .faculty-student-table td {
     border-bottom: 1px solid #1e293b !important;
-    color: #e2e8f0 !important;
+    color: #cbd5e1 !important;
   }
 
-  .student-table tr:hover td {
+  .student-row:hover {
     background: #182236 !important;
   }
 
-  .fac-input,
-  .fac-select {
-    background: #161f32 !important;
-    border-color: #334155 !important;
+  .stu-name-txt,
+  .sgc-name,
+  .spm-name,
+  .spm-val {
     color: #f8fafc !important;
+  }
+
+  .kpi-label,
+  .filter-lbl,
+  .spm-sec-heading,
+  .fac-nav-title {
+    color: #c7d2fe !important;
+  }
+
+  .toolbar-search-input,
+  .filter-select,
+  .spm-remarks-textarea {
+    background: #161f32 !important;
+    border-color: #2e3d5a !important;
+    color: #f8fafc !important;
+  }
+
+  .toolbar-search-input:focus,
+  .filter-select:focus,
+  .spm-remarks-textarea:focus {
+    border-color: #818cf8 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.28) !important;
+  }
+
+  .fac-btn-outline,
+  .btn-view-stu,
+  .spm-btn-secondary,
+  .stu-roll-badge,
+  .sgc-score-box,
+  .spm-info-strip,
+  .instructor-card {
+    background: #161f32 !important;
+    border-color: #243048 !important;
+    color: #c7d2fe !important;
+  }
+
+  .spm-header,
+  .spm-footer {
+    background: #0f172a !important;
+    border-color: #243048 !important;
   }
 
   /* ADMIN PORTAL */
@@ -1100,30 +1172,160 @@ body {
     color: #f8fafc !important;
   }
 
-  .adm-card,
-  .adm-table-wrap,
-  .adm-metric-card,
-  .adm-sub-card,
-  .adm-filter-bar {
+  .admin-header {
+    background: rgba(15, 23, 42, 0.94) !important;
+    border-color: #1e293b !important;
+    color: #f8fafc !important;
+  }
+
+  .admin-sidebar {
+    background: #0f172a !important;
+    border-color: #1e293b !important;
+  }
+
+  .admin-hero-card {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #312e81 100%) !important;
+    border-color: #243048 !important;
+    color: #ffffff !important;
+  }
+
+  .admin-kpi-card,
+  .admin-card-section,
+  .user-filter-controls,
+  .admin-table-container,
+  .course-card-admin,
+  .dept-card,
+  .ann-full-card,
+  .admin-modal-card,
+  .auth-credentials-card {
     background: #0f172a !important;
     border-color: #1e293b !important;
     color: #f8fafc !important;
     box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5) !important;
   }
 
-  .admin-table th {
+  .admin-nav-item {
+    color: #cbd5e1 !important;
+  }
+
+  .admin-nav-item:hover {
+    background: #161f32 !important;
+    color: #ffffff !important;
+  }
+
+  .admin-nav-item.active {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(79, 70, 229, 0.18)) !important;
+    border-color: #6366f1 !important;
+    color: #ffffff !important;
+  }
+
+  .admin-data-table th {
     background: #161f32 !important;
     color: #94a3b8 !important;
-    border-bottom: 1px solid #1e293b !important;
+    border-bottom: 1.5px solid #1e293b !important;
   }
 
-  .admin-table td {
+  .admin-data-table td {
     border-bottom: 1px solid #1a2333 !important;
-    color: #e2e8f0 !important;
+    color: #cbd5e1 !important;
   }
 
-  .admin-table tr:hover td {
+  .admin-data-table tr:hover {
     background: #131d31 !important;
+  }
+
+  .admin-input,
+  .admin-textarea,
+  .admin-select,
+  .user-search-input,
+  .admin-input-sm {
+    background: #161f32 !important;
+    border-color: #2e3d5a !important;
+    color: #f8fafc !important;
+  }
+
+  .admin-input:focus,
+  .admin-textarea:focus,
+  .admin-select:focus,
+  .user-search-input:focus {
+    border-color: #818cf8 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.28) !important;
+  }
+
+  .audit-item,
+  .ann-mini-card,
+  .unit-row-admin,
+  .benchmark-box,
+  .diag-stat,
+  .domain-breakdown-card,
+  .dm-cell,
+  .backup-box,
+  .plg-item,
+  .system-health-card,
+  .admin-switch-buttons,
+  .admin-profile-pill,
+  .radio-pill {
+    background: #161f32 !important;
+    border-color: #243048 !important;
+    color: #cbd5e1 !important;
+  }
+
+  .plg-name {
+    color: #f8fafc !important;
+  }
+
+  .plg-desc {
+    color: #94a3b8 !important;
+  }
+
+  .plg-count-txt {
+    color: #c7d2fe !important;
+  }
+
+  .subtab-btn {
+    background: #0f172a !important;
+    border-color: #1e293b !important;
+    color: #cbd5e1 !important;
+  }
+
+  .subtab-btn.active {
+    background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+    color: #ffffff !important;
+    border-color: #818cf8 !important;
+  }
+
+  .cell-user-name,
+  .cca-title,
+  .dept-name,
+  .afc-title,
+  .ahc-title,
+  .kpi-big-num,
+  .modal-title {
+    color: #f8fafc !important;
+  }
+
+  .section-title,
+  .acs-title,
+  .admin-brand-title,
+  .kpi-title,
+  .modal-title {
+    color: #c7d2fe !important;
+  }
+
+  .btn-icon-action,
+  .btn-cred-eye,
+  .btn-cred-copy {
+    background: #161f32 !important;
+    border-color: #243048 !important;
+    color: #cbd5e1 !important;
+  }
+
+  .btn-icon-action:hover,
+  .btn-cred-eye:hover,
+  .btn-cred-copy:hover {
+    background: #1e2a44 !important;
+    border-color: #6366f1 !important;
+    color: #ffffff !important;
   }
 
   /* ASSESSMENT PAGE */

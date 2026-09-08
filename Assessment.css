@@ -1140,7 +1140,8 @@
   margin-bottom: 36px;
 }
 
-.section-title {
+.competency-section .section-title,
+.assessment-page .section-title {
   font-size: 17px;
   font-weight: 700;
   color: var(--color-text-main);

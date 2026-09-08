@@ -100,15 +100,21 @@
   border: 1px solid #bfdbfe;
   padding: 5px 12px;
   border-radius: 10px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .student-logged-pill .user-icon {
   font-size: 16px;
+  flex-shrink: 0;
 }
 
 .student-logged-info {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .student-display-name {
@@ -116,6 +122,9 @@
   font-weight: 700;
   color: #1e3a8a;
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .student-display-role {
@@ -124,6 +133,10 @@
   color: #3b82f6;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
 .syllabus-nav-btn {
@@ -1605,15 +1618,32 @@
   .student-logged-pill {
     padding: 3px 8px;
     font-size: 11px;
-    gap: 5px;
+    gap: 6px;
+    min-width: 0;
+    max-width: 160px;
+    box-sizing: border-box;
+  }
+
+  .student-logged-info {
+    min-width: 0;
+    overflow: hidden;
   }
 
   .student-display-name {
-    font-size: 12px;
+    font-size: 11.5px;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .student-display-role {
-    font-size: 9.5px;
+    font-size: 8.5px;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 0.02em;
   }
 
   .syllabus-nav-btn {

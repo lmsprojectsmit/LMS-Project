@@ -2183,8 +2183,15 @@
 
 @media (max-width: 640px) {
   .google-style-card {
-    padding: 24px 18px !important;
+    padding: 24px 16px !important;
     border-radius: 18px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .google-style-card {
+    padding: 20px 12px !important;
+    border-radius: 16px !important;
   }
 }
 
@@ -2229,21 +2236,35 @@
   color: #4338ca;
 }
 
-/* Stepper Navigation Pills */
+/* Stepper Navigation Pills - Strictly Single Line & Non-Scrollable */
 .google-stepper-nav {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
   margin-bottom: 14px;
   position: relative;
+  width: 100%;
+  overflow: hidden; /* Non-scrollable */
 }
 
 @media (max-width: 720px) {
   .google-stepper-nav {
-    flex-direction: column;
-    gap: 10px;
-    align-items: stretch;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 4px;
+    align-items: center;
+    overflow: hidden; /* Non-scrollable */
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .google-stepper-nav {
+    gap: 3px;
   }
 }
 
@@ -2251,14 +2272,33 @@
   background: #f8fafc;
   border: 1.5px solid #e2e8f0;
   border-radius: 999px;
-  padding: 6px 14px 6px 8px;
+  padding: 6px 12px 6px 8px;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: var(--font-main);
   text-align: left;
+  white-space: nowrap;
+  flex: 1 1 0;
+  min-width: 0;
+  justify-content: center;
+  overflow: hidden;
+}
+
+@media (max-width: 720px) {
+  .google-step-pill {
+    padding: 5px 6px 5px 5px;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .google-step-pill {
+    padding: 4px 5px 4px 4px;
+    gap: 3px;
+  }
 }
 
 .google-step-pill:hover {
@@ -2267,23 +2307,56 @@
 }
 
 .google-step-pill .step-circle {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: #cbd5e1;
   color: #334155;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+@media (max-width: 720px) {
+  .google-step-pill .step-circle {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .google-step-pill .step-circle {
+    width: 16px;
+    height: 16px;
+    font-size: 9px;
+  }
 }
 
 .google-step-pill .step-title {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 700;
   color: #475569;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  .google-step-pill .step-title {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .google-step-pill .step-title {
+    font-size: 8.5px;
+  }
 }
 
 .google-step-pill.active {
@@ -2316,7 +2389,7 @@
 }
 
 .google-step-connector {
-  flex: 1;
+  flex: 0 0 8px;
   height: 2px;
   background: #e2e8f0;
   border-radius: 1px;
@@ -2328,7 +2401,14 @@
 
 @media (max-width: 720px) {
   .google-step-connector {
-    display: none;
+    flex: 0 0 4px;
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .google-step-connector {
+    flex: 0 0 3px;
   }
 }
 

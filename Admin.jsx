@@ -1,13 +1,10 @@
-import { useState, useMemo } from "react";
+import React, { useState } from "react";
 import "./Admin.css";
 import ThemeToggle from "./ThemeToggle";
 import {
   getCustomUsers,
-  saveCustomUser,
-  deleteCustomUser,
   getAdminMasterCredentials,
   saveAdminMasterCredentials,
-  generateRandomPassword,
 } from "./authStorage";
 
 // Baseline Faculty Roster
@@ -330,40 +327,8 @@ const INITIAL_LOGS = [
   { id: "LOG-105", action: "System Backup Completed", user: "Automated Cron Daemon", detail: "Daily snapshot (14.2 MB) verified and encrypted to cloud vault", time: "6 hours ago", type: "system" },
 ];
 
-// Baseline Administrators
-const INITIAL_ADMINS = [
-  {
-    id: "ADM-001",
-    empId: "ADM-INST-001",
-    name: "Dr. Arunkumar Natarajan",
-    username: "admin",
-    password: "password123",
-    email: "admin@institution.edu",
-    phone: "+91 94440 00001",
-    department: "Administration",
-    role: "admin",
-    designation: "Chief Academic Administrator",
-    status: "Active",
-    joinDate: "2015-01-01",
-  },
-  {
-    id: "ADM-002",
-    empId: "ADM-INST-002",
-    name: "Prof. S. Rangarajan",
-    username: "rangarajan.s",
-    password: "password123",
-    email: "rangarajan.s@institution.edu",
-    phone: "+91 94440 00002",
-    department: "Examination Cell",
-    role: "admin",
-    designation: "Controller of Examinations",
-    status: "Active",
-    joinDate: "2017-04-10",
-  },
-];
-
 function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }) {
-  // Navigation Tabs: 'overview', 'users', 'curriculum', 'assessment', 'analytics', 'announcements', 'settings'
+  // Navigation Tabs: 'overview', 'curriculum', 'assessment', 'analytics', 'announcements', 'settings'
   const [activeTab, setActiveTab] = useState("overview");
 
   // Admin Master Credentials State
@@ -375,35 +340,6 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
     fullName: adminCreds.fullName,
   });
   const [showAdminMasterPwd, setShowAdminMasterPwd] = useState(false);
-  const [revealedPasswords, setRevealedPasswords] = useState({});
-
-  const toggleRevealPassword = (id) => {
-    setRevealedPasswords((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const copyCredentialsToClipboard = (username, password, name) => {
-    const text = `EduVerse LMS Credentials\nName: ${name}\nUsername: ${username}\nPassword: ${password}\nURL: http://localhost:5173/`;
-    if (navigator?.clipboard?.writeText) {
-      navigator.clipboard.writeText(text).catch(() => {});
-      showToast(`Credentials for @${username} copied to clipboard!`);
-    } else {
-      alert(text);
-    }
-  };
-
-  // User Management State
-  const [userSubTab, setUserSubTab] = useState("students"); // 'students' | 'faculty' | 'admins'
-
-  const [administrators, setAdministrators] = useState(() => {
-    let list = [...INITIAL_ADMINS];
-    const custom = getCustomUsers().filter((u) => u.role === "admin" || u.userType === "admin");
-    custom.forEach((ca) => {
-      if (!list.some((a) => a.id === ca.id || a.username === ca.username)) {
-        list.unshift(ca);
-      }
-    });
-    return list;
-  });
 
   const [students, setStudents] = useState(() => {
     const enrichedInitial = INITIAL_STUDENTS.map((s) => ({
@@ -472,33 +408,9 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
   const [announcements, setAnnouncements] = useState(INITIAL_ANNOUNCEMENTS);
   const [logs, setLogs] = useState(INITIAL_LOGS);
 
-  // Search & Filters in User Directory
-  const [userSearch, setUserSearch] = useState("");
-  const [deptFilter, setDeptFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
-
   // Modal States
-  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
-  const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
-  const [userToEdit, setUserToEdit] = useState(null);
   const [isAnnouncementModalOpen, setIsAnnouncementModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
-
-  // Add User Form State
-  const [newUserForm, setNewUserForm] = useState({
-    userType: "student", // 'student' | 'faculty' | 'admin'
-    name: "",
-    username: "",
-    password: "",
-    email: "",
-    phone: "",
-    department: "CSE",
-    identifier: "", // Roll No or Emp ID or Admin ID
-    section: "A",
-    designation: "Assistant Professor",
-    status: "Active",
-  });
-  const [showNewUserPassword, setShowNewUserPassword] = useState(false);
 
   // Announcement Form State
   const [newAnnouncementForm, setNewAnnouncementForm] = useState({
@@ -557,225 +469,6 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
   const cat2Count = students.filter((s) => s.category === "category2" || s.category === "silver").length;
   const cat3Count = students.filter((s) => s.category === "category3" || s.category === "gold").length;
 
-  // Filtered Students
-  const filteredStudents = useMemo(() => {
-    return students.filter((s) => {
-      const q = userSearch.toLowerCase().trim();
-      const matchesQuery =
-        !q ||
-        s.name.toLowerCase().includes(q) ||
-        s.rollNo.toLowerCase().includes(q) ||
-        s.email.toLowerCase().includes(q);
-      const matchesDept = deptFilter === "all" || s.department === deptFilter;
-      const matchesStatus = statusFilter === "all" || s.status === statusFilter;
-      return matchesQuery && matchesDept && matchesStatus;
-    });
-  }, [students, userSearch, deptFilter, statusFilter]);
-
-  // Filtered Faculty
-  const filteredFaculty = useMemo(() => {
-    return faculty.filter((f) => {
-      const q = userSearch.toLowerCase().trim();
-      const matchesQuery =
-        !q ||
-        f.name.toLowerCase().includes(q) ||
-        f.empId.toLowerCase().includes(q) ||
-        f.email.toLowerCase().includes(q);
-      const matchesDept =
-        deptFilter === "all" ||
-        f.department.toLowerCase().includes(deptFilter.toLowerCase()) ||
-        (deptFilter === "Mathematics" && f.department === "Mathematics");
-      const matchesStatus = statusFilter === "all" || f.status === statusFilter;
-      return matchesQuery && matchesDept && matchesStatus;
-    });
-  }, [faculty, userSearch, deptFilter, statusFilter]);
-
-  // Filtered Administrators
-  const filteredAdministrators = useMemo(() => {
-    return administrators.filter((a) => {
-      const q = userSearch.toLowerCase().trim();
-      const matchesQuery =
-        !q ||
-        a.name.toLowerCase().includes(q) ||
-        (a.username && a.username.toLowerCase().includes(q)) ||
-        (a.empId && a.empId.toLowerCase().includes(q)) ||
-        a.email.toLowerCase().includes(q);
-      const matchesStatus = statusFilter === "all" || a.status === statusFilter;
-      return matchesQuery && matchesStatus;
-    });
-  }, [administrators, userSearch, statusFilter]);
-
-  // Handle Add User Submit
-  const handleAddUserSubmit = (e) => {
-    e.preventDefault();
-    if (!newUserForm.name || !newUserForm.email || !newUserForm.identifier) {
-      alert("Please fill in all required fields (Name, Email, Roll No / Emp ID).");
-      return;
-    }
-
-    const cleanUsername = (
-      newUserForm.username.trim() ||
-      newUserForm.email.split("@")[0] ||
-      newUserForm.identifier.toLowerCase()
-    ).toLowerCase().replace(/\s+/g, "");
-
-    const cleanPassword = newUserForm.password.trim() || generateRandomPassword();
-
-    if (newUserForm.userType === "student") {
-      const newStu = {
-        id: `STU-${Date.now().toString().slice(-4)}`,
-        rollNo: newUserForm.identifier.toUpperCase(),
-        name: newUserForm.name,
-        username: cleanUsername,
-        password: cleanPassword,
-        email: newUserForm.email,
-        phone: newUserForm.phone || "+91 98000 00000",
-        department: newUserForm.department,
-        year: "I Year (Sem II)",
-        section: newUserForm.section || "A",
-        role: "student",
-        status: newUserForm.status,
-        attendance: 100,
-        hasTakenAssessment: false,
-        score: 0,
-        maxScore: 20,
-        category: "category2",
-        categoryLabel: "Category 2: Core Engineering (Pending Test)",
-        joinDate: new Date().toISOString().slice(0, 10),
-      };
-      setStudents((prev) => [newStu, ...prev]);
-      saveCustomUser(newStu);
-      addLog("New Student Provisioned", "Admin Administrator", `Added ${newStu.name} (@${newStu.username})`, "user");
-      showToast(`Student @${newStu.username} enrolled with login credentials!`);
-    } else if (newUserForm.userType === "faculty") {
-      const newFac = {
-        id: `FAC-${Date.now().toString().slice(-4)}`,
-        empId: newUserForm.identifier.toUpperCase(),
-        name: newUserForm.name,
-        username: cleanUsername,
-        password: cleanPassword,
-        degree: "M.Tech., Ph.D.",
-        email: newUserForm.email,
-        phone: newUserForm.phone || "+91 94000 00000",
-        department: newUserForm.department,
-        role: "faculty",
-        designation: newUserForm.designation,
-        assignedCourses: ["MA25C02 (Linear Algebra)"],
-        status: newUserForm.status,
-        joinDate: new Date().toISOString().slice(0, 10),
-      };
-      setFaculty((prev) => [newFac, ...prev]);
-      saveCustomUser(newFac);
-      addLog("Faculty Appointed", "Admin Administrator", `Added ${newFac.name} (@${newFac.username})`, "faculty");
-      showToast(`Faculty coordinator @${newFac.username} registered with login credentials!`);
-    } else {
-      const newAdm = {
-        id: `ADM-${Date.now().toString().slice(-4)}`,
-        empId: newUserForm.identifier.toUpperCase(),
-        name: newUserForm.name,
-        username: cleanUsername,
-        password: cleanPassword,
-        email: newUserForm.email,
-        phone: newUserForm.phone || "+91 94000 00000",
-        department: newUserForm.department || "Administration",
-        role: "admin",
-        designation: newUserForm.designation || "System Administrator",
-        status: newUserForm.status,
-        joinDate: new Date().toISOString().slice(0, 10),
-      };
-      setAdministrators((prev) => [newAdm, ...prev]);
-      saveCustomUser(newAdm);
-      addLog("Administrator Provisioned", "Admin Administrator", `Added ${newAdm.name} (@${newAdm.username})`, "admin");
-      showToast(`Administrator @${newAdm.username} registered with master credentials!`);
-    }
-
-    setIsAddUserModalOpen(false);
-    setNewUserForm({
-      userType: "student",
-      name: "",
-      username: "",
-      password: "",
-      email: "",
-      phone: "",
-      department: "CSE",
-      identifier: "",
-      section: "A",
-      designation: "Assistant Professor",
-      status: "Active",
-    });
-  };
-
-  // Open Edit User Modal
-  const handleOpenEditModal = (user, type) => {
-    setUserToEdit({ ...user, editType: type });
-    setIsEditUserModalOpen(true);
-  };
-
-  // Save Edit User
-  const handleSaveEditUser = (e) => {
-    e.preventDefault();
-    if (!userToEdit) return;
-
-    if (userToEdit.editType === "student") {
-      setStudents((prev) =>
-        prev.map((s) => (s.id === userToEdit.id ? { ...s, ...userToEdit } : s))
-      );
-      saveCustomUser(userToEdit);
-      addLog("Student Profile Updated", "Admin Administrator", `Updated ${userToEdit.name} (@${userToEdit.username})`, "user");
-      showToast(`Student record for @${userToEdit.username || userToEdit.name} updated.`);
-    } else if (userToEdit.editType === "faculty") {
-      setFaculty((prev) =>
-        prev.map((f) => (f.id === userToEdit.id ? { ...f, ...userToEdit } : f))
-      );
-      saveCustomUser(userToEdit);
-      addLog("Faculty Record Updated", "Admin Administrator", `Updated ${userToEdit.name}`, "faculty");
-      showToast(`Faculty record for @${userToEdit.username || userToEdit.name} updated.`);
-    } else {
-      setAdministrators((prev) =>
-        prev.map((a) => (a.id === userToEdit.id ? { ...a, ...userToEdit } : a))
-      );
-      saveCustomUser(userToEdit);
-      addLog("Administrator Updated", "Admin Administrator", `Updated ${userToEdit.name}`, "admin");
-      showToast(`Administrator record for @${userToEdit.username || userToEdit.name} updated.`);
-    }
-    setIsEditUserModalOpen(false);
-  };
-
-  // Toggle User Status
-  const handleToggleStatus = (id, type, currentStatus) => {
-    const nextStatus = currentStatus === "Active" ? "Suspended" : "Active";
-    if (type === "student") {
-      setStudents((prev) =>
-        prev.map((s) => (s.id === id ? { ...s, status: nextStatus } : s))
-      );
-    } else if (type === "faculty") {
-      setFaculty((prev) =>
-        prev.map((f) => (f.id === id ? { ...f, status: nextStatus } : f))
-      );
-    } else {
-      setAdministrators((prev) =>
-        prev.map((a) => (a.id === id ? { ...a, status: nextStatus } : a))
-      );
-    }
-    addLog("Account Status Changed", "Admin Administrator", `Toggled ID ${id} to ${nextStatus}`, "security");
-    showToast(`Status updated to ${nextStatus}.`);
-  };
-
-  // Delete User
-  const handleDeleteUser = (id, name, type) => {
-    if (!window.confirm(`Are you sure you want to de-register ${name} from the institution records?`)) return;
-    if (type === "student") {
-      setStudents((prev) => prev.filter((s) => s.id !== id));
-    } else if (type === "faculty") {
-      setFaculty((prev) => prev.filter((f) => f.id !== id));
-    } else {
-      setAdministrators((prev) => prev.filter((a) => a.id !== id));
-    }
-    deleteCustomUser(id);
-    addLog("User De-registered", "Admin Administrator", `Removed ${name} (${id})`, "warning");
-    showToast(`${name} was removed from active roster.`);
-  };
-
   // Save Master Admin Credentials
   const handleSaveAdminMasterCreds = (e) => {
     e.preventDefault();
@@ -787,39 +480,6 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
     setAdminCreds(updated);
     addLog("Master Admin Credentials Updated", "Admin Administrator", `Username: @${updated.username}`, "security");
     showToast(`Master Admin credentials updated! Username: @${updated.username}`);
-  };
-
-  // Reset Password Action
-  const handleResetPassword = (email, name) => {
-    alert(`A secure password reset link has been dispatched to ${email} for user ${name}.`);
-    addLog("Password Reset Issued", "Admin Administrator", `Reset email dispatched to ${email}`, "security");
-    showToast(`Password reset link dispatched to ${email}`);
-  };
-
-  // Export User CSV
-  const handleExportUserCSV = () => {
-    const isStudent = userSubTab === "students";
-    let csv = "";
-    if (isStudent) {
-      csv = "Roll No,Full Name,Department,Section,Email,Phone,Score,Category,Status,Attendance\n";
-      filteredStudents.forEach((s) => {
-        csv += `"${s.rollNo}","${s.name}","${s.department}","${s.section}","${s.email}","${s.phone}",${s.score},"${s.categoryLabel}","${s.status}","${s.attendance}%"\n`;
-      });
-    } else {
-      csv = "Emp ID,Full Name,Department,Designation,Email,Phone,Assigned Courses,Status\n";
-      filteredFaculty.forEach((f) => {
-        csv += `"${f.empId}","${f.name}","${f.department}","${f.designation}","${f.email}","${f.phone}","${f.assignedCourses.join(", ")}","${f.status}"\n`;
-      });
-    }
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `EduVerse_${userSubTab}_Roster_${new Date().toISOString().slice(0, 10)}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    showToast("CSV roster generated and downloaded!");
   };
 
   // Add Announcement
@@ -909,7 +569,7 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
         <div className="admin-decor-circle c2" />
         <span className="admin-bg-symbol as1">Rank(A) + Nullity(A) = n</span>
         <span className="admin-bg-symbol as2">P⁻¹ A P = D</span>
-        <span className="admin-bg-symbol as3">Admin • RBAC v2.4</span>
+        <span className="admin-bg-symbol as3">Admin • Regulation 2025</span>
       </div>
 
       {/* Floating Toast Notification */}
@@ -1006,16 +666,6 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
 
             <button
               type="button"
-              className={`admin-nav-item ${activeTab === "users" ? "active" : ""}`}
-              onClick={() => setActiveTab("users")}
-            >
-              <span className="ani-icon">👥</span>
-              <span className="ani-label">User & RBAC Directory</span>
-              <span className="ani-count">{totalStudents + totalFaculty}</span>
-            </button>
-
-            <button
-              type="button"
               className={`admin-nav-item ${activeTab === "curriculum" ? "active" : ""}`}
               onClick={() => setActiveTab("curriculum")}
             >
@@ -1105,12 +755,9 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
                   <button
                     type="button"
                     className="admin-btn-primary"
-                    onClick={() => {
-                      setUserSubTab("students");
-                      setIsAddUserModalOpen(true);
-                    }}
+                    onClick={() => setActiveTab("curriculum")}
                   >
-                    + Add New Student
+                    📚 Manage Curriculum
                   </button>
                   <button
                     type="button"
@@ -1173,9 +820,9 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
               </div>
 
               {/* Adaptive Learning Stream Distribution Card */}
-              <div className="admin-card-section">
+              <div className="admin-card-section pathway-section-card">
                 <div className="acs-header">
-                  <div>
+                  <div className="acs-header-text">
                     <h3 className="acs-title">Adaptive Learning Pathway Distribution (MA25C02)</h3>
                     <p className="acs-sub">Automatic student segregation according to 1-mark diagnostic performance</p>
                   </div>
@@ -1188,50 +835,65 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
                   </button>
                 </div>
 
-                <div className="pathway-distribution-bar">
+                <div className="pathway-distribution-bar" role="progressbar" aria-label="Pathway distribution">
                   <div
                     className="pdb-segment cat1"
                     style={{ width: `${(cat1Count / totalStudents) * 100}%` }}
                     title={`Bronze (≤ 39%): ${cat1Count} students`}
                   >
-                    {Math.round((cat1Count / totalStudents) * 100)}%
+                    <span>{Math.round((cat1Count / totalStudents) * 100)}%</span>
                   </div>
                   <div
                     className="pdb-segment cat2"
                     style={{ width: `${(cat2Count / totalStudents) * 100}%` }}
                     title={`Silver (40%–79%): ${cat2Count} students`}
                   >
-                    {Math.round((cat2Count / totalStudents) * 100)}%
+                    <span>{Math.round((cat2Count / totalStudents) * 100)}%</span>
                   </div>
                   <div
                     className="pdb-segment cat3"
                     style={{ width: `${(cat3Count / totalStudents) * 100}%` }}
                     title={`Gold (≥ 80%): ${cat3Count} students`}
                   >
-                    {Math.round((cat3Count / totalStudents) * 100)}%
+                    <span>{Math.round((cat3Count / totalStudents) * 100)}%</span>
                   </div>
                 </div>
 
                 <div className="pathway-legend-grid">
-                  <div className="plg-item">
+                  <div className="plg-item plg-cat1">
                     <span className="plg-indicator cat1-dot" />
-                    <div>
-                      <strong>🥉 Bronze Category (Score ≤ 39%)</strong>
-                      <p>{cat1Count} Students ({Math.round((cat1Count / totalStudents) * 100)}%) • Remedial foundation & core operations</p>
+                    <div className="plg-content">
+                      <div className="plg-title-row">
+                        <strong className="plg-name">🥉 Bronze Category (Score ≤ 39%)</strong>
+                        <span className="plg-pct-badge cat1-badge">{Math.round((cat1Count / totalStudents) * 100)}%</span>
+                      </div>
+                      <p className="plg-desc">
+                        <span className="plg-count-txt">{cat1Count} Students</span> • Remedial foundation & core operations
+                      </p>
                     </div>
                   </div>
-                  <div className="plg-item">
+                  <div className="plg-item plg-cat2">
                     <span className="plg-indicator cat2-dot" />
-                    <div>
-                      <strong>🥈 Silver Category (Score 40%–79%)</strong>
-                      <p>{cat2Count} Students ({Math.round((cat2Count / totalStudents) * 100)}%) • Standard engineering pace & university papers</p>
+                    <div className="plg-content">
+                      <div className="plg-title-row">
+                        <strong className="plg-name">🥈 Silver Category (Score 40%–79%)</strong>
+                        <span className="plg-pct-badge cat2-badge">{Math.round((cat2Count / totalStudents) * 100)}%</span>
+                      </div>
+                      <p className="plg-desc">
+                        <span className="plg-count-txt">{cat2Count} Students</span> • Standard engineering pace & university papers
+                      </p>
                     </div>
                   </div>
-                  <div className="plg-item">
+                  <div className="plg-item plg-cat3">
                     <span className="plg-indicator cat3-dot" />
-                    <div>
-                      <strong>🥇 Gold Category (Score ≥ 80%)</strong>
-                      <p>{cat3Count} Students ({Math.round((cat3Count / totalStudents) * 100)}%) • Honors track, SVD & quadratic forms</p>
+                    <div className="plg-content">
+                      <div className="plg-title-row">
+                        <strong className="plg-name">🥇 Gold Category (Score ≥ 80%)</strong>
+                        <span className="plg-pct-badge cat3-badge">{Math.round((cat3Count / totalStudents) * 100)}%</span>
+                      </div>
+                      <p className="plg-desc">
+                        <span className="plg-count-txt">{cat3Count} Students</span> • Honors track, SVD & quadratic forms
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1307,485 +969,6 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* ============================================================
-              TAB 2: USER & RBAC DIRECTORY (STUDENTS & FACULTY)
-             ============================================================ */}
-          {activeTab === "users" && (
-            <div className="admin-tab-content fade-in">
-              <div className="users-page-header">
-                <div>
-                  <h2 className="section-title">Institutional User & RBAC Directory</h2>
-                  <p className="section-desc">
-                    Manage student enrollments, faculty appointments, roles, active statuses, and authentication credentials.
-                  </p>
-                </div>
-                <div className="users-header-actions">
-                  <button
-                    type="button"
-                    className="admin-btn-secondary"
-                    onClick={handleExportUserCSV}
-                  >
-                    📥 Export CSV
-                  </button>
-                  <button
-                    type="button"
-                    className="admin-btn-primary"
-                    onClick={() => setIsAddUserModalOpen(true)}
-                  >
-                    + Add New User
-                  </button>
-                </div>
-              </div>
-
-              {/* Sub-tab Pill Switcher */}
-              <div className="user-subtab-bar">
-                <button
-                  type="button"
-                  className={`subtab-btn ${userSubTab === "students" ? "active" : ""}`}
-                  onClick={() => setUserSubTab("students")}
-                >
-                  Students ({students.length})
-                </button>
-                <button
-                  type="button"
-                  className={`subtab-btn ${userSubTab === "faculty" ? "active" : ""}`}
-                  onClick={() => setUserSubTab("faculty")}
-                >
-                  👨‍🏫 Faculty Coordinators ({faculty.length})
-                </button>
-                <button
-                  type="button"
-                  className={`subtab-btn ${userSubTab === "admins" ? "active" : ""}`}
-                  onClick={() => setUserSubTab("admins")}
-                >
-                  🛡️ Administrators ({administrators.length})
-                </button>
-              </div>
-
-              {/* Search and Filters Bar */}
-              <div className="user-filter-controls">
-                <div className="search-input-wrap">
-                  <span className="search-icon">🔍</span>
-                  <input
-                    type="text"
-                    placeholder={`Search by name, ${userSubTab === "students" ? "Roll No" : "Emp ID"}, or email...`}
-                    value={userSearch}
-                    onChange={(e) => setUserSearch(e.target.value)}
-                    className="user-search-input"
-                  />
-                  {userSearch && (
-                    <button type="button" className="clear-search-btn" onClick={() => setUserSearch("")}>
-                      ✕
-                    </button>
-                  )}
-                </div>
-
-                <div className="filter-group">
-                  <label htmlFor="dept-filter" className="filter-label">Department:</label>
-                  <select
-                    id="dept-filter"
-                    value={deptFilter}
-                    onChange={(e) => setDeptFilter(e.target.value)}
-                    className="admin-select"
-                  >
-                    <option value="all">All Departments</option>
-                    <option value="CSE">CSE</option>
-                    <option value="IT">IT</option>
-                    <option value="AI & DS">AI & DS</option>
-                    <option value="ECE">ECE</option>
-                    {userSubTab === "faculty" && <option value="Mathematics">Mathematics</option>}
-                  </select>
-                </div>
-
-                <div className="filter-group">
-                  <label htmlFor="status-filter" className="filter-label">Status:</label>
-                  <select
-                    id="status-filter"
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    className="admin-select"
-                  >
-                    <option value="all">All Statuses</option>
-                    <option value="Active">Active</option>
-                    <option value="Suspended">Suspended</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Students Table */}
-              {userSubTab === "students" && (
-                <div className="admin-table-container">
-                  <table className="admin-data-table">
-                    <thead>
-                      <tr>
-                        <th>Roll No</th>
-                        <th>Student Name & Contact</th>
-                        <th>Dept / Sec</th>
-                        <th>Login Credentials</th>
-                        <th>Diagnostic Score</th>
-                        <th>Pathway Category</th>
-                        <th>Attendance</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredStudents.length === 0 ? (
-                        <tr>
-                          <td colSpan="9" className="empty-table-cell">
-                            No students match your search criteria.
-                          </td>
-                        </tr>
-                      ) : (
-                        filteredStudents.map((s) => (
-                          <tr key={s.id}>
-                            <td className="font-mono font-bold text-indigo">{s.rollNo}</td>
-                            <td>
-                              <div className="cell-user-info">
-                                <span className="cell-user-name">{s.name}</span>
-                                <span className="cell-user-sub">{s.email}</span>
-                              </div>
-                            </td>
-                            <td>
-                              <span className="dept-tag">{s.department}</span>
-                              <span className="sec-tag">Sec {s.section}</span>
-                            </td>
-                            <td>
-                              <div className="cred-badge-box">
-                                <span className="cred-username">@{s.username || s.email?.split("@")[0]}</span>
-                                <div className="cred-pwd-row">
-                                  <span className="cred-pwd-text">
-                                    {revealedPasswords[s.id] ? (s.password || "student123") : "••••••••"}
-                                  </span>
-                                  <button
-                                    type="button"
-                                    className="btn-cred-eye"
-                                    onClick={() => toggleRevealPassword(s.id)}
-                                    title={revealedPasswords[s.id] ? "Hide password" : "Show password"}
-                                  >
-                                    {revealedPasswords[s.id] ? "👁️" : "🙈"}
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="btn-cred-copy"
-                                    onClick={() => copyCredentialsToClipboard(s.username || s.email?.split("@")[0], s.password || "student123", s.name)}
-                                    title="Copy username & password"
-                                  >
-                                    📋
-                                  </button>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              {s.hasTakenAssessment ? (
-                                <span className="score-badge">
-                                  <strong>{s.score}</strong> / {s.maxScore}
-                                </span>
-                              ) : (
-                                <span className="pending-badge">Pending Test</span>
-                              )}
-                            </td>
-                            <td>
-                              <span className={`pathway-badge pb-${s.category === "category1" || s.category === "bronze" ? "category1" : s.category === "category3" || s.category === "gold" ? "category3" : "category2"}`}>
-                                {(s.category === "category3" || s.category === "gold") && "🥇 Gold"}
-                                {(s.category === "category2" || s.category === "silver") && "🥈 Silver"}
-                                {(s.category === "category1" || s.category === "bronze") && "🥉 Bronze"}
-                                {!s.category && "🥈 Silver"}
-                              </span>
-                            </td>
-                            <td>
-                              <div className="att-bar-wrap">
-                                <span>{s.attendance}%</span>
-                                <div className="att-track">
-                                  <div
-                                    className="att-fill"
-                                    style={{
-                                      width: `${s.attendance}%`,
-                                      backgroundColor: s.attendance >= 85 ? "#10b981" : "#f59e0b",
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <span className={`status-pill pill-${s.status.toLowerCase()}`}>
-                                {s.status}
-                              </span>
-                            </td>
-                            <td>
-                              <div className="row-action-buttons">
-                                <button
-                                  type="button"
-                                  className="btn-icon-action"
-                                  onClick={() => handleOpenEditModal(s, "student")}
-                                  title="Edit Student Details"
-                                >
-                                  ✏️
-                                </button>
-                                <button
-                                  type="button"
-                                  className="btn-icon-action"
-                                  onClick={() => handleResetPassword(s.email, s.name)}
-                                  title="Dispatch Password Reset"
-                                >
-                                  🔑
-                                </button>
-                                <button
-                                  type="button"
-                                  className={`btn-icon-action ${s.status === "Active" ? "btn-warn" : "btn-ok"}`}
-                                  onClick={() => handleToggleStatus(s.id, "student", s.status)}
-                                  title={s.status === "Active" ? "Suspend Account" : "Activate Account"}
-                                >
-                                  {s.status === "Active" ? "⏸️" : "▶️"}
-                                </button>
-                                <button
-                                  type="button"
-                                  className="btn-icon-action btn-danger"
-                                  onClick={() => handleDeleteUser(s.id, s.name, "student")}
-                                  title="Remove Student"
-                                >
-                                  🗑️
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-
-              {/* Faculty Table */}
-              {userSubTab === "faculty" && (
-                <div className="admin-table-container">
-                  <table className="admin-data-table">
-                    <thead>
-                      <tr>
-                        <th>Employee ID</th>
-                        <th>Faculty Name</th>
-                        <th>Department & Title</th>
-                        <th>Contact Email</th>
-                        <th>Login Credentials</th>
-                        <th>Assigned Courses</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredFaculty.length === 0 ? (
-                        <tr>
-                          <td colSpan="8" className="empty-table-cell">
-                            No faculty members match your search criteria.
-                          </td>
-                        </tr>
-                      ) : (
-                        filteredFaculty.map((f) => (
-                          <tr key={f.id}>
-                            <td className="font-mono font-bold text-emerald">{f.empId}</td>
-                            <td>
-                              <div className="cell-user-info">
-                                <span className="cell-user-name">{f.name}</span>
-                                <span className="cell-user-sub">{f.degree}</span>
-                              </div>
-                            </td>
-                            <td>
-                              <span className="dept-tag">{f.department}</span>
-                              <div className="cell-user-sub mt-1">{f.designation}</div>
-                            </td>
-                            <td>{f.email}</td>
-                            <td>
-                              <div className="cred-badge-box">
-                                <span className="cred-username">@{f.username || f.email?.split("@")[0]}</span>
-                                <div className="cred-pwd-row">
-                                  <span className="cred-pwd-text">
-                                    {revealedPasswords[f.id] ? (f.password || "faculty123") : "••••••••"}
-                                  </span>
-                                  <button
-                                    type="button"
-                                    className="btn-cred-eye"
-                                    onClick={() => toggleRevealPassword(f.id)}
-                                    title={revealedPasswords[f.id] ? "Hide password" : "Show password"}
-                                  >
-                                    {revealedPasswords[f.id] ? "👁️" : "🙈"}
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="btn-cred-copy"
-                                    onClick={() => copyCredentialsToClipboard(f.username || f.email?.split("@")[0], f.password || "faculty123", f.name)}
-                                    title="Copy username & password"
-                                  >
-                                    📋
-                                  </button>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <div className="course-chip-list">
-                                {f.assignedCourses.map((c, idx) => (
-                                  <span key={idx} className="course-chip">
-                                    {c}
-                                  </span>
-                                ))}
-                              </div>
-                            </td>
-                            <td>
-                              <span className={`status-pill pill-${f.status.toLowerCase()}`}>
-                                {f.status}
-                              </span>
-                            </td>
-                            <td>
-                              <div className="row-action-buttons">
-                                <button
-                                  type="button"
-                                  className="btn-icon-action"
-                                  onClick={() => handleOpenEditModal(f, "faculty")}
-                                  title="Edit Faculty Record"
-                                >
-                                  ✏️
-                                </button>
-                                <button
-                                  type="button"
-                                  className="btn-icon-action"
-                                  onClick={() => handleResetPassword(f.email, f.name)}
-                                  title="Dispatch Password Reset"
-                                >
-                                  🔑
-                                </button>
-                                <button
-                                  type="button"
-                                  className={`btn-icon-action ${f.status === "Active" ? "btn-warn" : "btn-ok"}`}
-                                  onClick={() => handleToggleStatus(f.id, "faculty", f.status)}
-                                  title={f.status === "Active" ? "Suspend Faculty" : "Activate Faculty"}
-                                >
-                                  {f.status === "Active" ? "⏸️" : "▶️"}
-                                </button>
-                                <button
-                                  type="button"
-                                  className="btn-icon-action btn-danger"
-                                  onClick={() => handleDeleteUser(f.id, f.name, "faculty")}
-                                  title="Remove Faculty Member"
-                                >
-                                  🗑️
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-
-              {/* Administrators Table */}
-              {userSubTab === "admins" && (
-                <div className="admin-table-container">
-                  <table className="admin-data-table">
-                    <thead>
-                      <tr>
-                        <th>Admin ID</th>
-                        <th>Administrator Name</th>
-                        <th>Department & Role</th>
-                        <th>Contact Email</th>
-                        <th>Login Credentials</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredAdministrators.length === 0 ? (
-                        <tr>
-                          <td colSpan="7" className="empty-table-cell">
-                            No administrators match your search criteria.
-                          </td>
-                        </tr>
-                      ) : (
-                        filteredAdministrators.map((a) => (
-                          <tr key={a.id}>
-                            <td className="font-mono font-bold text-indigo">{a.empId || a.id}</td>
-                            <td>
-                              <div className="cell-user-info">
-                                <span className="cell-user-name">{a.name}</span>
-                                <span className="cell-user-sub">{a.email}</span>
-                              </div>
-                            </td>
-                            <td>
-                              <span className="dept-tag">{a.department || "Admin"}</span>
-                              <div className="cell-user-sub mt-1">{a.designation}</div>
-                            </td>
-                            <td>{a.email}</td>
-                            <td>
-                              <div className="cred-badge-box">
-                                <span className="cred-username">@{a.username || a.email?.split("@")[0]}</span>
-                                <div className="cred-pwd-row">
-                                  <span className="cred-pwd-text">
-                                    {revealedPasswords[a.id] ? (a.password || "password123") : "••••••••"}
-                                  </span>
-                                  <button
-                                    type="button"
-                                    className="btn-cred-eye"
-                                    onClick={() => toggleRevealPassword(a.id)}
-                                    title={revealedPasswords[a.id] ? "Hide password" : "Show password"}
-                                  >
-                                    {revealedPasswords[a.id] ? "👁️" : "🙈"}
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="btn-cred-copy"
-                                    onClick={() => copyCredentialsToClipboard(a.username || a.email?.split("@")[0], a.password || "password123", a.name)}
-                                    title="Copy username & password"
-                                  >
-                                    📋
-                                  </button>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <span className={`status-pill pill-${(a.status || "Active").toLowerCase()}`}>
-                                {a.status || "Active"}
-                              </span>
-                            </td>
-                            <td>
-                              <div className="row-action-buttons">
-                                <button
-                                  type="button"
-                                  className="btn-icon-action"
-                                  onClick={() => handleOpenEditModal(a, "admin")}
-                                  title="Edit Administrator Record"
-                                >
-                                  ✏️
-                                </button>
-                                <button
-                                  type="button"
-                                  className="btn-icon-action"
-                                  onClick={() => handleResetPassword(a.email, a.name)}
-                                  title="Dispatch Password Reset"
-                                >
-                                  🔑
-                                </button>
-                                {a.id !== "ADM-001" && (
-                                  <button
-                                    type="button"
-                                    className="btn-icon-action btn-danger"
-                                    onClick={() => handleDeleteUser(a.id, a.name, "admin")}
-                                    title="Remove Administrator"
-                                  >
-                                    🗑️
-                                  </button>
-                                )}
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              )}
             </div>
           )}
 
@@ -2389,402 +1572,7 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
       </div>
 
       {/* ============================================================
-          MODAL 1: ADD USER MODAL (STUDENT / FACULTY)
-         ============================================================ */}
-      {isAddUserModalOpen && (
-        <div className="admin-modal-overlay" onClick={() => setIsAddUserModalOpen(false)}>
-          <div className="admin-modal-card" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <div>
-                <h3 className="modal-title">Provision New Institutional User</h3>
-                <p className="modal-sub">Add student or faculty coordinator to EduVerse LMS</p>
-              </div>
-              <button
-                type="button"
-                className="modal-close-btn"
-                onClick={() => setIsAddUserModalOpen(false)}
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleAddUserSubmit} className="modal-form">
-              {/* User Type Toggle */}
-              <div className="form-field">
-                <label className="field-label">User Role</label>
-                <div className="role-radio-group">
-                  <label className={`radio-pill ${newUserForm.userType === "student" ? "active" : ""}`}>
-                    <input
-                      type="radio"
-                      name="userType"
-                      value="student"
-                      checked={newUserForm.userType === "student"}
-                      onChange={() => setNewUserForm({ ...newUserForm, userType: "student" })}
-                    />
-                    <span>Student</span>
-                  </label>
-                  <label className={`radio-pill ${newUserForm.userType === "faculty" ? "active" : ""}`}>
-                    <input
-                      type="radio"
-                      name="userType"
-                      value="faculty"
-                      checked={newUserForm.userType === "faculty"}
-                      onChange={() => setNewUserForm({ ...newUserForm, userType: "faculty" })}
-                    />
-                    <span>👨‍🏫 Faculty</span>
-                  </label>
-                  <label className={`radio-pill ${newUserForm.userType === "admin" ? "active" : ""}`}>
-                    <input
-                      type="radio"
-                      name="userType"
-                      value="admin"
-                      checked={newUserForm.userType === "admin"}
-                      onChange={() => setNewUserForm({ ...newUserForm, userType: "admin" })}
-                    />
-                    <span>🛡️ Administrator</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Login Credentials (Username & Password) */}
-              <div className="auth-credentials-card">
-                <div className="acc-header">
-                  <span className="acc-icon">🔐</span>
-                  <div>
-                    <h4 className="acc-title">Login Credentials (Username & Password)</h4>
-                    <p className="acc-sub">Credentials used to authenticate this user on the LMS login page</p>
-                  </div>
-                </div>
-
-                <div className="form-row-2">
-                  <div className="form-field">
-                    <label className="field-label">Username *</label>
-                    <div className="input-with-prefix">
-                      <span className="input-prefix">@</span>
-                      <input
-                        type="text"
-                        required
-                        placeholder="e.g. arun25 or prof.senthil"
-                        value={newUserForm.username}
-                        onChange={(e) => setNewUserForm({ ...newUserForm, username: e.target.value.toLowerCase().replace(/\s+/g, "") })}
-                        className="admin-input prefix-input"
-                      />
-                    </div>
-                    <span className="field-hint">Unique handle for portal sign in</span>
-                  </div>
-
-                  <div className="form-field">
-                    <div className="field-label-row">
-                      <label className="field-label">Initial Password *</label>
-                      <button
-                        type="button"
-                        className="btn-gen-pwd"
-                        onClick={() => setNewUserForm({ ...newUserForm, password: generateRandomPassword() })}
-                      >
-                        🎲 Auto-Generate
-                      </button>
-                    </div>
-                    <div className="password-input-wrap">
-                      <input
-                        type={showNewUserPassword ? "text" : "password"}
-                        required
-                        placeholder="Min. 6 characters"
-                        value={newUserForm.password}
-                        onChange={(e) => setNewUserForm({ ...newUserForm, password: e.target.value })}
-                        className="admin-input pwd-input font-mono"
-                      />
-                      <button
-                        type="button"
-                        className="btn-toggle-pwd"
-                        onClick={() => setShowNewUserPassword(!showNewUserPassword)}
-                        title={showNewUserPassword ? "Hide password" : "Show password"}
-                      >
-                        {showNewUserPassword ? "👁️" : "🙈"}
-                      </button>
-                    </div>
-                    <span className="field-hint">Password to enter on login portal</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="form-row-2">
-                <div className="form-field">
-                  <label className="field-label">Full Name *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Ramesh K. or Dr. S. Priya"
-                    value={newUserForm.name}
-                    onChange={(e) => setNewUserForm({ ...newUserForm, name: e.target.value })}
-                    className="admin-input"
-                  />
-                </div>
-
-                <div className="form-field">
-                  <label className="field-label">
-                    {newUserForm.userType === "student" ? "Roll / Reg Number *" : "Employee ID *"}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder={newUserForm.userType === "student" ? "e.g. 25CS105" : "e.g. EMP-MTH-105"}
-                    value={newUserForm.identifier}
-                    onChange={(e) => setNewUserForm({ ...newUserForm, identifier: e.target.value })}
-                    className="admin-input"
-                  />
-                </div>
-              </div>
-
-              <div className="form-row-2">
-                <div className="form-field">
-                  <label className="field-label">Institutional Email *</label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="user@institution.edu"
-                    value={newUserForm.email}
-                    onChange={(e) => setNewUserForm({ ...newUserForm, email: e.target.value })}
-                    className="admin-input"
-                  />
-                </div>
-
-                <div className="form-field">
-                  <label className="field-label">Phone Number</label>
-                  <input
-                    type="text"
-                    placeholder="+91 98400 00000"
-                    value={newUserForm.phone}
-                    onChange={(e) => setNewUserForm({ ...newUserForm, phone: e.target.value })}
-                    className="admin-input"
-                  />
-                </div>
-              </div>
-
-              <div className="form-row-2">
-                <div className="form-field">
-                  <label className="field-label">Department</label>
-                  <select
-                    value={newUserForm.department}
-                    onChange={(e) => setNewUserForm({ ...newUserForm, department: e.target.value })}
-                    className="admin-select"
-                  >
-                    <option value="CSE">Computer Science (CSE)</option>
-                    <option value="IT">Information Technology (IT)</option>
-                    <option value="AI & DS">Artificial Intelligence (AI & DS)</option>
-                    <option value="ECE">Electronics (ECE)</option>
-                    {newUserForm.userType === "faculty" && <option value="Mathematics">Mathematics</option>}
-                  </select>
-                </div>
-
-                {newUserForm.userType === "student" ? (
-                  <div className="form-field">
-                    <label className="field-label">Section</label>
-                    <select
-                      value={newUserForm.section}
-                      onChange={(e) => setNewUserForm({ ...newUserForm, section: e.target.value })}
-                      className="admin-select"
-                    >
-                      <option value="A">Section A</option>
-                      <option value="B">Section B</option>
-                      <option value="C">Section C</option>
-                    </select>
-                  </div>
-                ) : (
-                  <div className="form-field">
-                    <label className="field-label">Designation</label>
-                    <input
-                      type="text"
-                      value={newUserForm.designation}
-                      onChange={(e) => setNewUserForm({ ...newUserForm, designation: e.target.value })}
-                      className="admin-input"
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="admin-btn-secondary"
-                  onClick={() => setIsAddUserModalOpen(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="admin-btn-primary">
-                  Confirm & Provision User
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ============================================================
-          MODAL 2: EDIT USER MODAL
-         ============================================================ */}
-      {isEditUserModalOpen && userToEdit && (
-        <div className="admin-modal-overlay" onClick={() => setIsEditUserModalOpen(false)}>
-          <div className="admin-modal-card" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <div>
-                <h3 className="modal-title">Edit User Record</h3>
-                <p className="modal-sub">
-                  Modifying profile for {userToEdit.name} ({userToEdit.rollNo || userToEdit.empId})
-                </p>
-              </div>
-              <button
-                type="button"
-                className="modal-close-btn"
-                onClick={() => setIsEditUserModalOpen(false)}
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleSaveEditUser} className="modal-form">
-              {/* Credentials Update Box */}
-              <div className="auth-credentials-card">
-                <div className="acc-header">
-                  <span className="acc-icon">🔑</span>
-                  <div>
-                    <h4 className="acc-title">Login Credentials</h4>
-                    <p className="acc-sub">Manage username and password for this account</p>
-                  </div>
-                </div>
-
-                <div className="form-row-2">
-                  <div className="form-field">
-                    <label className="field-label">Username</label>
-                    <div className="input-with-prefix">
-                      <span className="input-prefix">@</span>
-                      <input
-                        type="text"
-                        value={userToEdit.username || userToEdit.email?.split("@")[0] || ""}
-                        onChange={(e) => setUserToEdit({ ...userToEdit, username: e.target.value.toLowerCase().replace(/\s+/g, "") })}
-                        className="admin-input prefix-input"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="form-field">
-                    <div className="field-label-row">
-                      <label className="field-label">Password</label>
-                      <button
-                        type="button"
-                        className="btn-gen-pwd"
-                        onClick={() => setUserToEdit({ ...userToEdit, password: generateRandomPassword() })}
-                      >
-                        🎲 Reset / Gen
-                      </button>
-                    </div>
-                    <input
-                      type="text"
-                      value={userToEdit.password || "password123"}
-                      onChange={(e) => setUserToEdit({ ...userToEdit, password: e.target.value })}
-                      className="admin-input font-mono"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="form-row-2">
-                <div className="form-field">
-                  <label className="field-label">Full Name</label>
-                  <input
-                    type="text"
-                    required
-                    value={userToEdit.name}
-                    onChange={(e) => setUserToEdit({ ...userToEdit, name: e.target.value })}
-                    className="admin-input"
-                  />
-                </div>
-
-                <div className="form-field">
-                  <label className="field-label">Email</label>
-                  <input
-                    type="email"
-                    required
-                    value={userToEdit.email}
-                    onChange={(e) => setUserToEdit({ ...userToEdit, email: e.target.value })}
-                    className="admin-input"
-                  />
-                </div>
-              </div>
-
-              <div className="form-row-2">
-                <div className="form-field">
-                  <label className="field-label">Department</label>
-                  <select
-                    value={userToEdit.department}
-                    onChange={(e) => setUserToEdit({ ...userToEdit, department: e.target.value })}
-                    className="admin-select"
-                  >
-                    <option value="CSE">CSE</option>
-                    <option value="IT">IT</option>
-                    <option value="AI & DS">AI & DS</option>
-                    <option value="ECE">ECE</option>
-                    <option value="Mathematics">Mathematics</option>
-                  </select>
-                </div>
-
-                <div className="form-field">
-                  <label className="field-label">Account Status</label>
-                  <select
-                    value={userToEdit.status}
-                    onChange={(e) => setUserToEdit({ ...userToEdit, status: e.target.value })}
-                    className="admin-select"
-                  >
-                    <option value="Active">Active</option>
-                    <option value="Suspended">Suspended</option>
-                  </select>
-                </div>
-              </div>
-
-              {userToEdit.editType === "student" && (
-                <div className="form-row-2">
-                  <div className="form-field">
-                    <label className="field-label">Section</label>
-                    <input
-                      type="text"
-                      value={userToEdit.section || "A"}
-                      onChange={(e) => setUserToEdit({ ...userToEdit, section: e.target.value })}
-                      className="admin-input"
-                    />
-                  </div>
-
-                  <div className="form-field">
-                    <label className="field-label">Attendance (%)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={userToEdit.attendance || 90}
-                      onChange={(e) => setUserToEdit({ ...userToEdit, attendance: Number(e.target.value) })}
-                      className="admin-input"
-                    />
-                  </div>
-                </div>
-              )}
-
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="admin-btn-secondary"
-                  onClick={() => setIsEditUserModalOpen(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="admin-btn-primary">
-                  Save Changes
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ============================================================
-          MODAL 3: BROADCAST ANNOUNCEMENT MODAL
+          MODAL: BROADCAST ANNOUNCEMENT MODAL
          ============================================================ */}
       {isAnnouncementModalOpen && (
         <div className="admin-modal-overlay" onClick={() => setIsAnnouncementModalOpen(false)}>

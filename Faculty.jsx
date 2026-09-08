@@ -429,9 +429,9 @@ function Faculty({ onNavigate, registeredStudent, theme, onToggleTheme }) {
   };
 
   const handleExportCSV = () => {
-    const headers = "Reg No,Name,Department,Section,Email,Phone,Score,Category,Attendance,Lessons Completed,Remarks\n";
+    const headers = "Reg No,Name,Department,Section,Email,Phone,Score,Category,Lessons Completed,Remarks\n";
     const rows = filteredStudents.map((s) =>
-      `"${s.rollNo}","${s.name}","${s.department}","${s.section}","${s.email}","${s.phone}",${s.score},"${s.categoryLabel}",${s.attendance}%,"${s.lessonsCompleted}/${s.totalLessons}","${s.remarks.replace(/"/g, '""')}"`
+      `"${s.rollNo}","${s.name}","${s.department}","${s.section}","${s.email}","${s.phone}",${s.score},"${s.categoryLabel}","${s.lessonsCompleted}/${s.totalLessons}","${s.remarks.replace(/"/g, '""')}"`
     ).join("\n");
     const blob = new Blob([headers + rows], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -485,7 +485,6 @@ function Faculty({ onNavigate, registeredStudent, theme, onToggleTheme }) {
             <button
               type="button"
               className="fac-btn-outline"
-              style={{ borderColor: "#64748b", color: "#334155" }}
               onClick={() => onNavigate && onNavigate("admin")}
               title="Switch to Admin Console"
             >
@@ -542,23 +541,23 @@ function Faculty({ onNavigate, registeredStudent, theme, onToggleTheme }) {
         {/* Micro-Topic Test Re-Test Unlock Requests Notification Banner */}
         {unlockRequests.filter((r) => r.status === "pending").length > 0 && (
           <div style={{
-            background: "#fef2f2",
-            border: "1.5px solid #fca5a5",
+            background: "rgba(239, 68, 68, 0.12)",
+            border: "1.5px solid rgba(239, 68, 68, 0.35)",
             borderRadius: "12px",
             padding: "16px 20px",
             marginBottom: "24px",
             display: "flex",
             flexDirection: "column",
             gap: "12px",
-            boxShadow: "0 4px 12px rgba(239, 68, 68, 0.08)"
+            boxShadow: "0 4px 16px rgba(0, 0, 0, 0.35)"
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               <span style={{ fontSize: "24px" }}>🔔</span>
               <div>
-                <strong style={{ fontSize: "15px", color: "#991b1b" }}>
+                <strong style={{ fontSize: "15px", color: "#fca5a5" }}>
                   {unlockRequests.filter((r) => r.status === "pending").length} Student(s) Requesting Micro-Topic Re-Test Authorization
                 </strong>
-                <p style={{ margin: "2px 0 0", fontSize: "13px", color: "#b91c1c" }}>
+                <p style={{ margin: "2px 0 0", fontSize: "13px", color: "#fecaca" }}>
                   These students have completed all 3 allowed attempts without achieving a qualifying score (&gt; 6 marks) and require faculty permission to re-take.
                 </p>
               </div>
@@ -569,18 +568,19 @@ function Faculty({ onNavigate, registeredStudent, theme, onToggleTheme }) {
                 <div
                   key={req.id}
                   style={{
-                    background: "#ffffff",
-                    border: "1px solid #fca5a5",
+                    background: "#161f32",
+                    border: "1px solid rgba(239, 68, 68, 0.35)",
                     borderRadius: "8px",
                     padding: "10px 14px",
                     display: "flex",
                     alignItems: "center",
                     gap: "12px",
-                    fontSize: "13px"
+                    fontSize: "13px",
+                    color: "#f8fafc"
                   }}
                 >
                   <div>
-                    <strong>{req.studentName}</strong> ({req.studentRollNo}) • <span>Section {req.topicCode} (Last Score: {req.lastScore}/10)</span>
+                    <strong style={{ color: "#ffffff" }}>{req.studentName}</strong> ({req.studentRollNo}) • <span style={{ color: "#c7d2fe" }}>Section {req.topicCode} (Last Score: {req.lastScore}/10)</span>
                   </div>
                   <button
                     type="button"
@@ -804,7 +804,6 @@ function Faculty({ onNavigate, registeredStudent, theme, onToggleTheme }) {
                   <th>Contact Details</th>
                   <th>Diagnostic Score</th>
                   <th>Curriculum Status</th>
-                  <th>Attendance</th>
                   <th style={{ textAlign: "center" }}>Actions</th>
                 </tr>
               </thead>
@@ -848,16 +847,9 @@ function Faculty({ onNavigate, registeredStudent, theme, onToggleTheme }) {
                       {/* Diagnostic Score */}
                       <td>
                         <div className="stu-score-cell">
-                          <div className="score-top-line">
-                            <strong>{stu.score}</strong> / {stu.maxScore} marks
-                            <span className="score-pct-pill">{pct}%</span>
-                          </div>
-                          <div className="mini-score-bar">
-                            <div
-                              className={`mini-fill ${pct >= 80 ? "fill-green" : pct >= 50 ? "fill-blue" : "fill-amber"}`}
-                              style={{ width: `${pct}%` }}
-                            ></div>
-                          </div>
+                          <span className={`score-pct-tag ${pct >= 80 ? "score-high" : pct >= 50 ? "score-mid" : "score-low"}`}>
+                            {pct}%
+                          </span>
                         </div>
                       </td>
 
@@ -871,13 +863,6 @@ function Faculty({ onNavigate, registeredStudent, theme, onToggleTheme }) {
                             {stu.lessonsCompleted === 4 ? "✓ Completed" : "In Progress"}
                           </span>
                         </div>
-                      </td>
-
-                      {/* Attendance */}
-                      <td>
-                        <span className={`att-pill ${stu.attendance >= 90 ? "att-good" : "att-warn"}`}>
-                          {stu.attendance}%
-                        </span>
                       </td>
 
                       {/* Action */}
@@ -897,7 +882,7 @@ function Faculty({ onNavigate, registeredStudent, theme, onToggleTheme }) {
 
                 {filteredStudents.length === 0 && (
                   <tr>
-                    <td colSpan="8" className="no-students-cell">
+                    <td colSpan="7" className="no-students-cell">
                       <div className="empty-roster">
                         <span className="empty-icon">🔍</span>
                         <h4>No students found matching your criteria</h4>
@@ -933,19 +918,14 @@ function Faculty({ onNavigate, registeredStudent, theme, onToggleTheme }) {
 
                   <div className="sgc-dept-row">
                     <span><strong>Dept:</strong> {stu.department} (Sec {stu.section})</span>
-                    <span><strong>Att:</strong> {stu.attendance}%</span>
                   </div>
 
                   <div className="sgc-score-box">
                     <div className="sgc-score-labels">
-                      <span className="lbl">Diagnostic Test:</span>
-                      <strong>{stu.score} / 20 ({pct}%)</strong>
-                    </div>
-                    <div className="mini-score-bar">
-                      <div
-                        className={`mini-fill ${pct >= 80 ? "fill-green" : pct >= 50 ? "fill-blue" : "fill-amber"}`}
-                        style={{ width: `${pct}%` }}
-                      ></div>
+                      <span className="lbl">Diagnostic Score:</span>
+                      <strong className={`score-pct-tag ${pct >= 80 ? "score-high" : pct >= 50 ? "score-mid" : "score-low"}`}>
+                        {pct}%
+                      </strong>
                     </div>
                   </div>
 
@@ -1024,10 +1004,6 @@ function Faculty({ onNavigate, registeredStudent, theme, onToggleTheme }) {
                 <div className="spm-info-item">
                   <span className="spm-lbl">Mobile Number</span>
                   <span className="spm-val">{selectedStudent.phone}</span>
-                </div>
-                <div className="spm-info-item">
-                  <span className="spm-lbl">Attendance</span>
-                  <span className="spm-val text-green">{selectedStudent.attendance}%</span>
                 </div>
                 <div className="spm-info-item">
                   <span className="spm-lbl">Curriculum Progress</span>

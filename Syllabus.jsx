@@ -275,12 +275,7 @@ function Syllabus({ onNavigate, student, onLogout, theme, onToggleTheme }) {
 
           <div className="student-logged-pill">
             <span className="user-icon">👤</span>
-            <div className="student-logged-info">
-              <span className="student-display-name">{studentName}</span>
-              <span className="student-display-role">
-                {student?.categoryLabel ? student.categoryLabel.split(":")[0] : "Enrolled Student"}
-              </span>
-            </div>
+            <span className="student-display-name">{studentName}</span>
           </div>
 
           <button

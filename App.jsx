@@ -30,12 +30,14 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [currentLesson, setCurrentLesson] = useState(null);
 
-  // Global Theme System: "light" | "dark" (persisted in localStorage)
+  // Global Theme System: "light" | "dark" (persisted in localStorage, default "dark")
   const [theme, setTheme] = useState(() => {
     try {
-      return localStorage.getItem("eduverse_theme") || "light";
+      const saved = localStorage.getItem("eduverse_theme");
+      if (saved) return saved;
+      return "dark";
     } catch {
-      return "light";
+      return "dark";
     }
   });
 

@@ -337,7 +337,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
     }, 450);
   };
 
-  // Step 1 Validator: 1. Personal & Contact Details (OTP Verified)
+  // Step 1 Validator: 1. Personal Details
   const validateStep1 = () => {
     const newErrors = {};
 
@@ -594,7 +594,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
                   onClick={() => setCurrentStep(1)}
                 >
                   <span className="step-circle">{currentStep > 1 ? "✓" : "1"}</span>
-                  <span className="step-title">1. Personal & Contact</span>
+                  <span className="step-title">1. Personal Details</span>
                 </button>
 
                 <div className={`google-step-connector ${currentStep > 1 ? "completed" : ""}`} />
@@ -624,7 +624,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
                   }}
                 >
                   <span className="step-circle">3</span>
-                  <span className="step-title">3. Password & Security</span>
+                  <span className="step-title">3. Password</span>
                 </button>
               </div>
 
@@ -640,7 +640,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
             </div>
 
             {/* ============================================================ */}
-            {/* STEP 1: 1. Personal & Contact Details (OTP Verified)         */}
+            {/* STEP 1: 1. Personal Details                                  */}
             {/* ============================================================ */}
             {currentStep === 1 && (
               <div className="google-step-panel step-fade-in">
@@ -648,7 +648,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
                   <div className="step-badge-indicator">
                     <span>STEP 1 OF 3</span>
                   </div>
-                  <h3>1. Personal & Contact Details (OTP Verified)</h3>
+                  <h3>1. Personal Details</h3>
                   <p>Please enter your legal name, date of birth, and complete OTP verification for both Gmail and Phone Number.</p>
                 </div>
 
@@ -956,7 +956,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
                     className="wizard-next-btn"
                     onClick={handleProceedToStep3}
                   >
-                    <span>Continue to Password & Security</span>
+                    <span>Continue to Password</span>
                     <span className="arrow-icon">➔</span>
                   </button>
                 </div>
@@ -964,7 +964,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
             )}
 
             {/* ============================================================ */}
-            {/* STEP 3: 3. Password & Security                              */}
+            {/* STEP 3: 3. Password                                          */}
             {/* ============================================================ */}
             {currentStep === 3 && (
               <div className="google-step-panel step-fade-in">
@@ -972,7 +972,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
                   <div className="step-badge-indicator">
                     <span>STEP 3 OF 3</span>
                   </div>
-                  <h3>3. Password & Security</h3>
+                  <h3>3. Password</h3>
                   <p>Create a strong password for your LMS portal access and confirm your agreement.</p>
                 </div>
 
