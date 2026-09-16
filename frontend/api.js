@@ -1,4 +1,5 @@
-export const API_BASE_URL = 'http://127.0.0.1:8000';
+export const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
 // TODO: Replace with real PostgreSQL student ID provided by backend authentication
 // This is a temporary development configuration for integration testing
