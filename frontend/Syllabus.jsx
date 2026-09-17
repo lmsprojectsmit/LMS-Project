@@ -254,7 +254,7 @@ function Syllabus({ onNavigate, student, onLogout, theme, onToggleTheme }) {
     return getNotesForStudent(student);
   }, [student, driveNotesTrigger]);
 
-  const studentName = student?.fullName || student?.name || "Student";
+  const studentName = student?.full_name || student?.fullName || student?.name || "Student";
   const passedMicroTestsCount = Object.values(microScores).filter((s) => s.passed).length;
   const attemptedMicroTestsCount = Object.keys(microScores).length;
 
