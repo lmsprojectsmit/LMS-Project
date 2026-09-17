@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./Syllabus.css";
 import {
   getStoredMicroTestScores,
@@ -6,6 +6,7 @@ import {
   isMicroUnitCompleted,
   getPreviousMicroTopic
 } from "./microTopicTests";
+import { getNotesForStudent } from "./facultyNotesStorage";
 import ThemeToggle from "./ThemeToggle";
 
 const SYLLABUS_UNITS = [
@@ -237,8 +238,21 @@ const SYLLABUS_UNITS = [
 function Syllabus({ onNavigate, student, onLogout, theme, onToggleTheme }) {
   const [selectedUnit, setSelectedUnit] = useState("all");
   const [expandedUnit, setExpandedUnit] = useState("unit1");
-  const [activeTab, setActiveTab] = useState("topics"); // "topics" | "outcomes" | "questions"
+  const [activeTab, setActiveTab] = useState("topics"); // "topics" | "outcomes" | "questions" | "driveNotes"
   const [microScores, setMicroScores] = useState(() => getStoredMicroTestScores());
+
+  // Listen for faculty notes updates in realtime
+  const [driveNotesTrigger, setDriveNotesTrigger] = useState(0);
+  useEffect(() => {
+    const onNotesUpdated = () => setDriveNotesTrigger((c) => c + 1);
+    window.addEventListener("lms_faculty_notes_updated", onNotesUpdated);
+    return () => window.removeEventListener("lms_faculty_notes_updated", onNotesUpdated);
+  }, []);
+
+  // Filter notes to only those specified by faculty for this student
+  const studentDriveNotes = useMemo(() => {
+    return getNotesForStudent(student);
+  }, [student, driveNotesTrigger]);
 
   const studentName = student?.fullName || student?.name || "Student";
   const passedMicroTestsCount = Object.values(microScores).filter((s) => s.passed).length;
@@ -260,7 +274,7 @@ function Syllabus({ onNavigate, student, onLogout, theme, onToggleTheme }) {
         <div className="syllabus-nav-left">
           <div className="syllabus-logo-badge">∑</div>
           <div>
-            <span className="syllabus-platform-name">EduVerse LMS</span>
+            <span className="syllabus-platform-name">Adaptive LMS</span>
             <span className="syllabus-nav-tag">Student Course Portal</span>
           </div>
         </div>
@@ -333,6 +347,14 @@ function Syllabus({ onNavigate, student, onLogout, theme, onToggleTheme }) {
               <span className="b-chip">Ref: Dr. G. Balaji</span>
               <span className="b-chip micro-test-metric-chip">
                 ⚡ 10-Min Micro Tests: <strong>{passedMicroTestsCount} / 22 Passed</strong>
+              </span>
+              <span
+                className="b-chip b-chip-drive-notes"
+                onClick={() => setActiveTab("driveNotes")}
+                style={{ cursor: "pointer" }}
+                title="Click to view Google Drive study notes provided by your faculty"
+              >
+                📁 Faculty Drive Notes: <strong>{studentDriveNotes.length} Available</strong>
               </span>
             </div>
           </div>
@@ -411,6 +433,14 @@ function Syllabus({ onNavigate, student, onLogout, theme, onToggleTheme }) {
             >
               📝 Exam Questions
             </button>
+            <button
+              type="button"
+              className={`vmt-btn ${activeTab === "driveNotes" ? "active" : ""}`}
+              onClick={() => setActiveTab("driveNotes")}
+              title="View specified Google Drive study materials provided by faculty"
+            >
+              📁 Faculty Drive Notes ({studentDriveNotes.length})
+            </button>
           </div>
         </section>
 
@@ -473,6 +503,7 @@ function Syllabus({ onNavigate, student, onLogout, theme, onToggleTheme }) {
                         <h4 className="tab-pane-title">
                           📋 Detailed Syllabus Breakdown ({unit.topics.length} Sections)
                         </h4>
+
                         <div className="topics-grid">
                           {unit.topics.map((t) => {
                             const tScore = microScores[t.code];
@@ -513,44 +544,75 @@ function Syllabus({ onNavigate, student, onLogout, theme, onToggleTheme }) {
                                 <p className="topic-desc">{t.desc}</p>
 
                                 {isUnlocked ? (
-                                  <div className="topic-card-actions-row">
-                                    <button
-                                      type="button"
-                                      className="btn-open-topic-lesson"
-                                      onClick={() =>
-                                        onNavigate("lesson", {
-                                          code: t.code,
-                                          name: t.name,
-                                          unitNumber: unit.unitNumber,
-                                          unitTitle: unit.title,
-                                          desc: t.desc,
-                                          student,
-                                        })
-                                      }
-                                    >
-                                      <span>▶ Study</span>
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className={`btn-topic-test-action ${isCompleted ? "passed" : ""}`}
-                                      onClick={() =>
-                                        onNavigate("lesson", {
-                                          code: t.code,
-                                          name: t.name,
-                                          unitNumber: unit.unitNumber,
-                                          unitTitle: unit.title,
-                                          desc: t.desc,
-                                          student,
-                                          startTest: true,
-                                        })
-                                      }
-                                      title="Take 10-Question 10-Minute Assessment"
-                                    >
-                                      <span>
-                                        {isCompleted ? "✓ Qualified (Retake)" : "⚡ 10-Min Test"}
-                                      </span>
-                                    </button>
-                                  </div>
+                                  (() => {
+                                    const isVideoDone = isCompleted || (typeof localStorage !== "undefined" && ((localStorage.getItem(`adaptive_video_completed_${t.code}`) || localStorage.getItem(`eduverse_video_completed_${t.code}`)) === "true"));
+
+                                    return (
+                                      <div className="topic-card-actions-row">
+                                        <button
+                                          type="button"
+                                          className="btn-open-topic-lesson"
+                                          onClick={() =>
+                                            onNavigate("lesson", {
+                                              code: t.code,
+                                              name: t.name,
+                                              unitNumber: unit.unitNumber,
+                                              unitTitle: unit.title,
+                                              desc: t.desc,
+                                              student,
+                                            })
+                                          }
+                                        >
+                                          <span>▶ Study</span>
+                                        </button>
+                                        <button
+                                          type="button"
+                                          className={`btn-topic-test-action ${isCompleted ? "passed" : !isVideoDone ? "needs-video" : ""}`}
+                                          onClick={() => {
+                                            if (!isVideoDone) {
+                                              alert(
+                                                `🔒 Video Lecture Required!\n\nYou must watch the complete unskippable lecture video for Section ${t.code} before you can attend the 10-minute assessment.\n\nTaking you to the video lecture now...`
+                                              );
+                                              onNavigate("lesson", {
+                                                code: t.code,
+                                                name: t.name,
+                                                unitNumber: unit.unitNumber,
+                                                unitTitle: unit.title,
+                                                desc: t.desc,
+                                                student,
+                                                startTest: false,
+                                              });
+                                            } else {
+                                              onNavigate("lesson", {
+                                                code: t.code,
+                                                name: t.name,
+                                                unitNumber: unit.unitNumber,
+                                                unitTitle: unit.title,
+                                                desc: t.desc,
+                                                student,
+                                                startTest: true,
+                                              });
+                                            }
+                                          }}
+                                          title={
+                                            isCompleted
+                                              ? "Retake 10-Question 10-Minute Assessment"
+                                              : isVideoDone
+                                              ? "Take 10-Question 10-Minute Assessment"
+                                              : "Watch full unskippable video first to unlock test"
+                                          }
+                                        >
+                                          <span>
+                                            {isCompleted
+                                              ? "✓ Qualified (Retake)"
+                                              : isVideoDone
+                                              ? "⚡ 10-Min Test"
+                                              : "🔒 Watch Video to Test"}
+                                          </span>
+                                        </button>
+                                      </div>
+                                    );
+                                  })()
                                 ) : (
                                   <div className="topic-card-actions-row locked-row">
                                     <button
@@ -611,6 +673,86 @@ function Syllabus({ onNavigate, student, onLogout, theme, onToggleTheme }) {
                             </div>
                           ))}
                         </div>
+                      </div>
+                    )}
+
+                    {/* Tab 4: Faculty Google Drive Notes */}
+                    {activeTab === "driveNotes" && (
+                      <div className="tab-pane-drive-notes">
+                        <div className="tpdn-header">
+                          <div className="tpdn-title-wrap">
+                            <span className="tpdn-icon">📁</span>
+                            <div>
+                              <h4 className="tab-pane-title" style={{ margin: 0 }}>
+                                Faculty Google Drive Study Materials for {unit.unitNumber}
+                              </h4>
+                              <p className="tab-pane-sub" style={{ margin: "2px 0 0" }}>
+                                Lecture notes, handwritten derivations, and slides provided by course faculty for {studentName}.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {(() => {
+                          const unitNotes = studentDriveNotes.filter((n) => n.unitId === unit.id);
+                          if (unitNotes.length === 0) {
+                            return (
+                              <div className="tpdn-empty">
+                                <span className="tpdn-empty-icon">📂</span>
+                                <p>No specific Drive notes currently assigned to your student profile for {unit.unitNumber}.</p>
+                                <small>Your faculty provides notes targeted to your learning track, branch, or specific roll number as appropriate.</small>
+                              </div>
+                            );
+                          }
+                          return (
+                            <div className="tpdn-notes-grid">
+                              {unitNotes.map((note) => (
+                                <div key={note.id} className="student-drive-note-card">
+                                  <div className="sdnc-top">
+                                    <div className="sdnc-format-badge">
+                                      <span>{note.fileType === "pdf" ? "📄" : note.fileType === "slides" ? "📊" : note.fileType === "folder" ? "📁" : "📝"}</span>
+                                      <span>{note.fileType?.toUpperCase()}</span>
+                                    </div>
+                                    <span className="sdnc-scope-tag">
+                                      {note.targetScope === "specific_students"
+                                        ? "🔒 Targeted For You"
+                                        : note.targetScope === "category"
+                                        ? `🎯 Track: ${note.targetCategory === "category1" ? "Bronze (Foundational)" : note.targetCategory === "category3" ? "Gold (Advanced)" : "Silver (Core)"}`
+                                        : note.targetScope === "department"
+                                        ? `🏢 Branch: ${note.targetDept}`
+                                        : "🌐 Course-wide"}
+                                    </span>
+                                  </div>
+
+                                  <h5 className="sdnc-title">{note.title}</h5>
+                                  <p className="sdnc-desc">{note.description}</p>
+
+                                  {note.instructions && (
+                                    <div className="sdnc-instructions">
+                                      <span>📌 <strong>Faculty Note:</strong> {note.instructions}</span>
+                                    </div>
+                                  )}
+
+                                  <div className="sdnc-meta-row">
+                                    <span className="sdnc-faculty">👨‍🏫 {note.facultyName} ({note.facultyDept})</span>
+                                    <span className="sdnc-date">📅 {note.dateFormatted}</span>
+                                  </div>
+
+                                  <a
+                                    href={note.driveUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn-open-student-drive"
+                                    title="Open this study material directly in Google Drive"
+                                  >
+                                    <span>📁 Open in Google Drive</span>
+                                    <span>↗</span>
+                                  </a>
+                                </div>
+                              ))}
+                            </div>
+                          );
+                        })()}
                       </div>
                     )}
 

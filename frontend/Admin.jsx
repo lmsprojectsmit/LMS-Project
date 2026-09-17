@@ -307,7 +307,7 @@ const INITIAL_ANNOUNCEMENTS = [
   },
   {
     id: "ANN-003",
-    title: "EduVerse LMS System Maintenance Window (Sunday 02:00 AM - 04:00 AM)",
+    title: "Adaptive LMS System Maintenance Window (Sunday 02:00 AM - 04:00 AM)",
     content: "Routine database index optimization and cloud backup will be performed. Services may experience intermittent downtime.",
     audience: "Campus-wide",
     target: "all",
@@ -328,7 +328,7 @@ const INITIAL_LOGS = [
 ];
 
 function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }) {
-  // Navigation Tabs: 'overview', 'curriculum', 'assessment', 'analytics', 'announcements', 'settings'
+  // Navigation Tabs: 'overview', 'curriculum', 'assessment', 'announcements', 'settings'
   const [activeTab, setActiveTab] = useState("overview");
 
   // Admin Master Credentials State
@@ -538,7 +538,7 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
   // Backup Full LMS Data (JSON export)
   const handleExportFullJSON = () => {
     const backupData = {
-      institution: "EduVerse Institute of Engineering & Technology",
+      institution: "Adaptive Institute of Engineering & Technology",
       academicYear: "2025–2026",
       semester: "II (Even Semester)",
       exportTimestamp: new Date().toISOString(),
@@ -554,7 +554,7 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `EduVerse_LMS_FullBackup_${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `Adaptive_LMS_FullBackup_${new Date().toISOString().slice(0, 10)}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -586,7 +586,7 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
           <div className="admin-crest">🛡️</div>
           <div>
             <div className="admin-brand-line">
-              <span className="admin-brand-title">EduVerse LMS</span>
+              <span className="admin-brand-title">Adaptive LMS</span>
               <span className="admin-badge-super">ADMIN CONSOLE</span>
             </div>
             <p className="admin-brand-sub">System Administration & Academic Governance</p>
@@ -680,15 +680,6 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
             >
               <span className="ani-icon">📝</span>
               <span className="ani-label">Diagnostic Governance</span>
-            </button>
-
-            <button
-              type="button"
-              className={`admin-nav-item ${activeTab === "analytics" ? "active" : ""}`}
-              onClick={() => setActiveTab("analytics")}
-            >
-              <span className="ani-icon">🏛️</span>
-              <span className="ani-label">Department Analytics</span>
             </button>
 
             <button
@@ -1079,7 +1070,7 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
                 </div>
               </div>
 
-              <div className="admin-two-col-grid">
+              <div className="admin-assessment-layout">
                 {/* Configuration Form */}
                 <div className="admin-card-section">
                   <h3 className="acs-title">1-Mark Diagnostic Test Parameters (MA25C02)</h3>
@@ -1218,122 +1209,12 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
                     </button>
                   </form>
                 </div>
-
-                {/* Performance Analytics on Diagnostic */}
-                <div className="admin-card-section">
-                  <h3 className="acs-title">Cohort Diagnostic Performance Summary</h3>
-                  <p className="acs-sub">Real-time statistics across all enrolled test takers</p>
-
-                  <div className="diag-kpi-row">
-                    <div className="diag-stat">
-                      <span className="ds-value">{assessedStudents.length} / {totalStudents}</span>
-                      <span className="ds-label">Tests Completed</span>
-                    </div>
-                    <div className="diag-stat">
-                      <span className="ds-value">{classAvgScore}</span>
-                      <span className="ds-label">Average Score (Out of 20)</span>
-                    </div>
-                    <div className="diag-stat">
-                      <span className="ds-value">19 / 20</span>
-                      <span className="ds-label">Cohort Highest (Divya N.)</span>
-                    </div>
-                  </div>
-
-                  <div className="domain-breakdown-card">
-                    <h4 className="dbc-title">Syllabus Domain Mastery Index</h4>
-                    <div className="domain-bar-item">
-                      <div className="dbi-top">
-                        <span>Unit I: Matrix Algebra & Elementary Operations</span>
-                        <strong>84% Avg</strong>
-                      </div>
-                      <div className="dbi-track"><div className="dbi-fill" style={{ width: "84%" }} /></div>
-                    </div>
-
-                    <div className="domain-bar-item">
-                      <div className="dbi-top">
-                        <span>Unit II: Determinants & Minors</span>
-                        <strong>76% Avg</strong>
-                      </div>
-                      <div className="dbi-track"><div className="dbi-fill" style={{ width: "76%" }} /></div>
-                    </div>
-
-                    <div className="domain-bar-item">
-                      <div className="dbi-top">
-                        <span>Unit III: Linear Systems & Vector Spaces</span>
-                        <strong>69% Avg</strong>
-                      </div>
-                      <div className="dbi-track"><div className="dbi-fill" style={{ width: "69%", backgroundColor: "#f59e0b" }} /></div>
-                    </div>
-
-                    <div className="domain-bar-item">
-                      <div className="dbi-top">
-                        <span>Unit IV: Characteristic Roots & Cayley-Hamilton</span>
-                        <strong>61% Avg</strong>
-                      </div>
-                      <div className="dbi-track"><div className="dbi-fill" style={{ width: "61%", backgroundColor: "#ef4444" }} /></div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           )}
 
           {/* ============================================================
-              TAB 5: DEPARTMENT & COHORT ANALYTICS
-             ============================================================ */}
-          {activeTab === "analytics" && (
-            <div className="admin-tab-content fade-in">
-              <div className="users-page-header">
-                <div>
-                  <h2 className="section-title">Departmental Performance & Cohort Intelligence</h2>
-                  <p className="section-desc">
-                    Comparative academic analytics across CSE, IT, AI & DS, and ECE student cohorts.
-                  </p>
-                </div>
-              </div>
-
-              <div className="dept-cards-grid">
-                {[
-                  { name: "Computer Science & Engineering", code: "CSE", students: 4, avg: 14.0, pass: "100%", coordinator: "Prof. Rajesh Sharma", cat3: 2, cat2: 1, cat1: 1 },
-                  { name: "Information Technology", code: "IT", students: 2, avg: 15.0, pass: "100%", coordinator: "Dr. V. Anitha", cat3: 1, cat2: 1, cat1: 0 },
-                  { name: "Artificial Intelligence & Data Science", code: "AI & DS", students: 2, avg: 12.0, pass: "100%", coordinator: "Dr. Meenakshi Sundaram", cat3: 1, cat2: 0, cat1: 1 },
-                  { name: "Electronics & Communication Engineering", code: "ECE", students: 2, avg: 9.5, pass: "100%", coordinator: "Dr. K. Senthil Kumar", cat3: 0, cat2: 1, cat1: 1 },
-                ].map((dept) => (
-                  <div key={dept.code} className="dept-card">
-                    <div className="dept-card-top">
-                      <span className="dept-big-tag">{dept.code}</span>
-                      <span className="dept-student-count">{dept.students} Cohort Students</span>
-                    </div>
-                    <h3 className="dept-name">{dept.name}</h3>
-                    <p className="dept-coord">Faculty Liaison: {dept.coordinator}</p>
-
-                    <div className="dept-metrics-row">
-                      <div className="dm-cell">
-                        <span className="dm-val">{dept.avg}</span>
-                        <span className="dm-label">Avg Diagnostic Score</span>
-                      </div>
-                      <div className="dm-cell">
-                        <span className="dm-val">{dept.pass}</span>
-                        <span className="dm-label">Pass Rate</span>
-                      </div>
-                    </div>
-
-                    <div className="dept-stream-bars">
-                      <span className="dsb-label">Stream Split:</span>
-                      <div className="dsb-cluster">
-                        <span className="dsb-chip c3">{dept.cat3} Adv</span>
-                        <span className="dsb-chip c2">{dept.cat2} Core</span>
-                        <span className="dsb-chip c1">{dept.cat1} Found</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ============================================================
-              TAB 6: CAMPUS ANNOUNCEMENTS
+              TAB 4: CAMPUS ANNOUNCEMENTS
              ============================================================ */}
           {activeTab === "announcements" && (
             <div className="admin-tab-content fade-in">
@@ -1389,7 +1270,7 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
           )}
 
           {/* ============================================================
-              TAB 7: SYSTEM SETTINGS & DATA BACKUPS
+              TAB 5: SYSTEM SETTINGS & DATA BACKUPS
              ============================================================ */}
           {activeTab === "settings" && (
             <div className="admin-tab-content fade-in">
@@ -1397,7 +1278,7 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
                 <div>
                   <h2 className="section-title">System Settings & Data Integrity</h2>
                   <p className="section-desc">
-                    LMS environment configuration, database backup snapshots, and institutional academic cycles.
+                    LMS environment configuration, administrator credentials, and database backup snapshots.
                   </p>
                 </div>
               </div>
@@ -1483,54 +1364,7 @@ function Admin({ onNavigate, onLogout, registeredStudent, theme, onToggleTheme }
                   </form>
                 </div>
 
-                {/* Academic Configuration */}
-                <div className="admin-card-section">
-                  <h3 className="acs-title">Institutional Academic Framework</h3>
-                  <p className="acs-sub">Global constants applied across all courses and reporting</p>
 
-                  <div className="settings-field-group">
-                    <div className="form-field">
-                      <label className="field-label">Institution Name</label>
-                      <input
-                        type="text"
-                        defaultValue="EduVerse Institute of Engineering & Technology"
-                        className="admin-input"
-                        readOnly
-                      />
-                    </div>
-
-                    <div className="form-row-2">
-                      <div className="form-field">
-                        <label className="field-label">Current Academic Year</label>
-                        <input
-                          type="text"
-                          defaultValue="2025–2026"
-                          className="admin-input"
-                          readOnly
-                        />
-                      </div>
-                      <div className="form-field">
-                        <label className="field-label">Current Term</label>
-                        <input
-                          type="text"
-                          defaultValue="Semester II (Even)"
-                          className="admin-input"
-                          readOnly
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-field">
-                      <label className="field-label">Curriculum Regulation</label>
-                      <input
-                        type="text"
-                        defaultValue="Regulation 2025 (Outcome Based Education / CBCS)"
-                        className="admin-input"
-                        readOnly
-                      />
-                    </div>
-                  </div>
-                </div>
 
                 {/* Backups and Maintenance */}
                 <div className="admin-card-section">

@@ -1,4 +1,4 @@
-// Notification & Verification Service for EduVerse LMS
+// Notification & Verification Service for Adaptive LMS
 // Handles Phone OTP, Gmail/Email OTP Verification & Post-Registration Confirmation Emails
 
 const SENT_EMAILS_KEY = "lms_sent_emails";
@@ -65,13 +65,13 @@ export const generateRegistrationEmail = (studentData) => {
     timeStyle: "short",
   });
 
-  const subject = `🎓 Course Enrolment Confirmation: Linear Algebra (MA25C02) - Welcome to EduVerse LMS`;
+  const subject = `🎓 Course Enrolment Confirmation: Linear Algebra (MA25C02) - Welcome to Adaptive LMS`;
 
   const htmlContent = `
     <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 620px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; color: #1e293b;">
       <div style="background: linear-gradient(135deg, #4338ca 0%, #312e81 100%); padding: 28px 24px; text-align: center; color: #ffffff;">
         <div style="font-size: 36px; margin-bottom: 8px;">🎓</div>
-        <h1 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em;">EduVerse Learning Management System</h1>
+        <h1 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em;">Adaptive Learning Management System</h1>
         <p style="margin: 6px 0 0 0; font-size: 13.5px; opacity: 0.9;">Official Academic Registration & Enrolment Confirmation</p>
       </div>
 
@@ -136,7 +136,7 @@ export const generateRegistrationEmail = (studentData) => {
       </div>
 
       <div style="background: #f8fafc; padding: 16px 24px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; text-align: center;">
-        <p style="margin: 0 0 4px 0;">EduVerse Academic Management System • Automated Dispatch</p>
+        <p style="margin: 0 0 4px 0;">Adaptive Academic Management System • Automated Dispatch</p>
         <p style="margin: 0;">This email was sent to ${studentData.email} following verified LMS registration.</p>
       </div>
     </div>
@@ -146,7 +146,7 @@ export const generateRegistrationEmail = (studentData) => {
     id: `EMAIL_${Date.now()}`,
     recipient: studentData.email,
     recipientName: studentData.fullName,
-    sender: "EduVerse Registrar <noreply@eduverse.lms>",
+    sender: "Adaptive Registrar <noreply@adaptive.lms>",
     subject,
     htmlContent,
     sentAt: timestamp,

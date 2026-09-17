@@ -1,6 +1,6 @@
 /* ==========================================================
    ADMIN PORTAL & SYSTEM GOVERNANCE DASHBOARD - DARK THEME
-   EduVerse LMS • Linear Algebra & Institutional Platform
+   Adaptive LMS • Linear Algebra & Institutional Platform
    ========================================================== */
 
 :root {
@@ -1806,117 +1806,15 @@
 }
 
 /* ==========================================================
-   TAB 5: DEPARTMENT ANALYTICS
+   TAB 4: ASSESSMENT & GOVERNANCE LAYOUT
    ========================================================== */
-.dept-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+.admin-assessment-layout {
+  max-width: 920px;
+  margin: 0 auto;
 }
-
-.dept-card {
-  background: #0f172a;
-  border: 1.5px solid #1e293b;
-  border-radius: var(--admin-radius-lg);
-  padding: 22px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-}
-
-.dept-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.dept-big-tag {
-  background: rgba(99, 102, 241, 0.2);
-  color: #c7d2fe;
-  font-weight: 800;
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 6px;
-  border: 1px solid rgba(99, 102, 241, 0.35);
-}
-
-.dept-student-count {
-  font-size: 12px;
-  color: #94a3b8;
-  font-weight: 600;
-}
-
-.dept-name {
-  font-size: 16px;
-  font-weight: 800;
-  margin: 0 0 4px;
-  color: #f8fafc;
-}
-
-.dept-coord {
-  font-size: 12px;
-  color: #94a3b8;
-  margin: 0 0 16px;
-}
-
-.dept-metrics-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.dm-cell {
-  background: #161f32;
-  padding: 10px;
-  border-radius: var(--admin-radius-md);
-  border: 1px solid #243048;
-  text-align: center;
-}
-
-.dm-val {
-  display: block;
-  font-size: 18px;
-  font-weight: 800;
-  color: #818cf8;
-}
-
-.dm-label {
-  font-size: 11px;
-  color: #94a3b8;
-}
-
-.dept-stream-bars {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-top: 1px solid #1e293b;
-  padding-top: 12px;
-}
-
-.dsb-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #94a3b8;
-}
-
-.dsb-cluster {
-  display: flex;
-  gap: 6px;
-}
-
-.dsb-chip {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 4px;
-}
-
-.dsb-chip.c3 { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.35); }
-.dsb-chip.c2 { background: rgba(99, 102, 241, 0.2); color: #c7d2fe; border: 1px solid rgba(99, 102, 241, 0.35); }
-.dsb-chip.c1 { background: rgba(245, 158, 11, 0.2); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.35); }
 
 /* ==========================================================
-   TAB 6: FULL ANNOUNCEMENTS
+   TAB 4: FULL ANNOUNCEMENTS
    ========================================================== */
 .announcements-full-list {
   display: flex;
@@ -2161,7 +2059,7 @@
   .admin-two-col-grid {
     grid-template-columns: 1fr;
   }
-  .courses-grid, .dept-cards-grid {
+  .courses-grid {
     grid-template-columns: 1fr;
   }
   .pathway-legend-grid {

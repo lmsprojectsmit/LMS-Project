@@ -202,7 +202,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
     setIncomingToast({
       type: "email",
       icon: "📬",
-      title: "Gmail Inbox • EduVerse LMS",
+      title: "Gmail Inbox • Adaptive LMS",
       target: formData.email,
       otp: session.otp,
       time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
@@ -240,7 +240,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
     setIncomingToast({
       type: "phone",
       icon: "📲",
-      title: "SMS Notification • EduVerse LMS",
+      title: "SMS Notification • Adaptive LMS",
       target: formData.phone,
       otp: session.otp,
       time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
@@ -529,7 +529,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
           </div>
           <div className="sms-toast-body">
             <p>
-              Your EduVerse {incomingToast.type === "email" ? "Gmail" : "Phone"} verification code is <strong className="sms-otp-code">{incomingToast.otp}</strong>. Sent to <em>{incomingToast.target}</em>. Valid for 5 mins.
+              Your Adaptive LMS {incomingToast.type === "email" ? "Gmail" : "Phone"} verification code is <strong className="sms-otp-code">{incomingToast.otp}</strong>. Sent to <em>{incomingToast.target}</em>. Valid for 5 mins.
             </p>
             <div className="sms-toast-actions">
               <button
@@ -551,10 +551,10 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
             className="nav-brand"
             style={{ cursor: "pointer" }}
             onClick={() => onNavigate && onNavigate("home")}
-            title="Back to EduVerse Home"
+            title="Back to Adaptive LMS Home"
           >
             <div className="brand-text">
-              <span className="brand-title">EduVerse LMS</span>
+              <span className="brand-title">Adaptive LMS</span>
               <span className="brand-tag">Academic Portal • Course Enrolment</span>
             </div>
           </div>
@@ -580,7 +580,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
             <div className="google-stepper-container">
               <div className="google-brand-header">
                 <div className="google-account-icon">🎓</div>
-                <h2>Create your EduVerse Student Account</h2>
+                <h2>Create your Adaptive LMS Student Account</h2>
                 <p className="google-account-sub">
                   Enrolling into <strong>Linear Algebra (MA25C02)</strong> • Regulation 2025
                 </p>
@@ -1409,7 +1409,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
                 <span className="client-dot red"></span>
                 <span className="client-dot yellow"></span>
                 <span className="client-dot green"></span>
-                <span className="client-title">📬 EduVerse Webmail • Message Delivered to Inbox</span>
+                <span className="client-title">📬 Adaptive LMS Webmail • Message Delivered to Inbox</span>
               </div>
               <button
                 type="button"

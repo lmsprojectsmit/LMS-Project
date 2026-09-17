@@ -74,7 +74,7 @@ function Home({ onNavigate, currentUser, onLogout, theme, onToggleTheme }) {
       <header className="home-nav">
         <div className="nav-brand-container">
           <div className="brand-titles">
-            <span className="brand-name">EduVerse LMS</span>
+            <span className="brand-name">Adaptive LMS</span>
             <span className="brand-tagline">Academic Learning Management System</span>
           </div>
         </div>
@@ -188,7 +188,7 @@ function Home({ onNavigate, currentUser, onLogout, theme, onToggleTheme }) {
       <section className="training-section" id="training">
         <div className="section-header-block">
           <span className="section-pill">PRACTICE-FIRST PEDAGOGY</span>
-          <h2 className="section-title">In Which Ways Does EduVerse Train Students?</h2>
+          <h2 className="section-title">In Which Ways Does Adaptive LMS Train Students?</h2>
           <p className="section-subtitle">
             Active training methods designed to build strong problem-solving skills and exam confidence.
           </p>
@@ -368,7 +368,7 @@ function Home({ onNavigate, currentUser, onLogout, theme, onToggleTheme }) {
       {/* DEDICATED SEPARATE REGISTRATION BUTTON & CALL TO ACTION */}
       <section className="registration-callout-section" id="register-now">
         <div className="callout-card">
-          <span className="callout-badge">JOIN EDUVERSE TODAY</span>
+          <span className="callout-badge">JOIN ADAPTIVE LMS TODAY</span>
           <h2 className="callout-headline">
             Ready to Master Linear Algebra (MA25C02)?
           </h2>
@@ -405,7 +405,7 @@ function Home({ onNavigate, currentUser, onLogout, theme, onToggleTheme }) {
       <footer className="home-footer">
         <div className="footer-top">
           <div className="footer-brand">
-            <span className="footer-title">EduVerse LMS</span>
+            <span className="footer-title">Adaptive LMS</span>
             <p className="footer-tag">Department of Engineering Mathematics • Academic Portal</p>
           </div>
 
@@ -422,12 +422,12 @@ function Home({ onNavigate, currentUser, onLogout, theme, onToggleTheme }) {
             <button type="button" onClick={() => onNavigate("register")}>Student Registration</button>
             <button type="button" onClick={() => onNavigate("login")}>Student Login</button>
             <button type="button" onClick={() => onNavigate("faculty")}>Faculty Dashboard (Dr. K. Senthil Kumar)</button>
-            <a href="#help" onClick={(e) => { e.preventDefault(); alert("For LMS support contact: support@eduverse.ac.in"); }}>LMS Helpdesk</a>
+            <a href="#help" onClick={(e) => { e.preventDefault(); alert("For LMS support contact: support@adaptivelms.ac.in"); }}>LMS Helpdesk</a>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <p>© 2025–2026 EduVerse LMS. Linear Algebra (MA25C02) Academic Curriculum.</p>
+          <p>© 2025–2026 Adaptive LMS. Linear Algebra (MA25C02) Academic Curriculum.</p>
         </div>
       </footer>
     </div>

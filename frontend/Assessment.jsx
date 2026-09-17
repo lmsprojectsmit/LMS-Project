@@ -1005,7 +1005,7 @@ function Assessment({ onNavigate, studentInfo, theme, onToggleTheme }) {
       <header className="assessment-header">
         <div className="assessment-brand" onClick={() => onNavigate && onNavigate("home")}>
           <div>
-            <h1 className="brand-title">EduVerse LMS • Diagnostic Assessment</h1>
+            <h1 className="brand-title">Adaptive LMS • Diagnostic Assessment</h1>
             <p className="brand-subtitle">Linear Algebra (MA25C02) • Student Capability Profiler</p>
           </div>
         </div>
@@ -1508,7 +1508,7 @@ function Assessment({ onNavigate, studentInfo, theme, onToggleTheme }) {
                 type="button"
                 className="btn-mark-ready"
                 onClick={() => {
-                  alert(`Lesson "${activeLessonModal.title}" recorded as In-Progress in your EduVerse LMS Profile.`);
+                  alert(`Lesson "${activeLessonModal.title}" recorded as In-Progress in your Adaptive LMS Profile.`);
                   setActiveLessonModal(null);
                 }}
               >

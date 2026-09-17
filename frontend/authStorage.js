@@ -1,4 +1,4 @@
-// Centralized Authentication & Credentials Storage for EduVerse LMS
+// Centralized Authentication & Credentials Storage for Adaptive LMS
 
 const CUSTOM_USERS_KEY = "lms_custom_users";
 const ADMIN_CREDS_KEY = "lms_admin_credentials";

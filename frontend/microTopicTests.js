@@ -3492,11 +3492,11 @@ export const ALL_MICRO_TOPICS = [
   { code: "4.5", name: "Singular Value Decomposition (SVD)", unitNumber: "UNIT IV", unitTitle: "Matrix Decomposition & Quadratic Forms" }
 ];
 
-export const COMPLETED_LESSONS_KEY = "eduverse_completed_lessons";
+export const COMPLETED_LESSONS_KEY = "adaptive_completed_lessons";
 
 export const getCompletedLessons = () => {
   try {
-    const raw = localStorage.getItem(COMPLETED_LESSONS_KEY);
+    const raw = localStorage.getItem(COMPLETED_LESSONS_KEY) || localStorage.getItem("eduverse_completed_lessons");
     return raw ? JSON.parse(raw) : {};
   } catch {
     return {};

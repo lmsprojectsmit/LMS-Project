@@ -1,5 +1,5 @@
 /* ==========================================================
-   EDUVERSE LMS - DIAGNOSTIC CAPABILITY ASSESSMENT STYLING
+   ADAPTIVE LMS - DIAGNOSTIC CAPABILITY ASSESSMENT STYLING
    Course: Linear Algebra (MA25C02) • 20 Questions (20 Marks)
    ========================================================== */
 
@@ -2293,7 +2293,7 @@
 }
 
 /* ==========================================================
-   EDUVERSE LMS - COMPREHENSIVE DARK THEME FOR ASSESSMENT
+   ADAPTIVE LMS - COMPREHENSIVE DARK THEME FOR ASSESSMENT
    ========================================================== */
 [data-theme="dark"] .assessment-page {
   background-color: #090d16 !important;

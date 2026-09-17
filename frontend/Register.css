@@ -1,5 +1,5 @@
 /* ==========================================================
-   EDUVERSE LMS - CREATIVE INTERACTIVE REGISTER PAGE STYLING
+   ADAPTIVE LMS - CREATIVE INTERACTIVE REGISTER PAGE STYLING
    Theme: Hand-Crafted Academic Studio & Mathematics-II Hub
    ========================================================== */
 
@@ -128,14 +128,14 @@
 .brand-title {
   font-weight: 800;
   font-size: 19px;
-  color: var(--color-primary-dark);
+  color: #0f172a;
   letter-spacing: -0.02em;
 }
 
 .brand-tag {
   font-size: 12px;
-  color: var(--color-text-muted);
-  font-weight: 500;
+  color: #334155;
+  font-weight: 600;
 }
 
 .nav-actions {

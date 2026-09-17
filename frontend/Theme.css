@@ -1,5 +1,5 @@
 /* ==========================================================
-   EDUVERSE LMS - GLOBAL THEME SYSTEM (LIGHT & DARK MODE)
+   ADAPTIVE LMS - GLOBAL THEME SYSTEM (LIGHT & DARK MODE)
    ========================================================== */
 
 /* ----------------------------------------------------------
@@ -84,6 +84,24 @@ img, svg, canvas, video {
 [data-theme="light"] .usefulness-section .section-subtitle,
 [data-theme="light"] .section-subtitle {
   color: #0f172a !important;
+}
+
+[data-theme="light"] .brand-title,
+[data-theme="light"] .register-nav .brand-title,
+.theme-light .brand-title,
+.theme-light .register-nav .brand-title,
+body.light-theme .brand-title,
+body.light-theme .register-nav .brand-title {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .brand-tag,
+[data-theme="light"] .register-nav .brand-tag,
+.theme-light .brand-tag,
+.theme-light .register-nav .brand-tag,
+body.light-theme .brand-tag,
+body.light-theme .register-nav .brand-tag {
+  color: #334155 !important;
 }
 
 [data-theme="dark"],
@@ -374,7 +392,8 @@ body {
   .home-nav,
   .faculty-nav,
   .admin-header,
-  .assessment-nav {
+  .assessment-nav,
+  .register-nav {
     background: rgba(15, 23, 42, 0.92) !important;
     backdrop-filter: blur(14px) !important;
     border-bottom: 1px solid #1e293b !important;
@@ -386,14 +405,18 @@ body {
   .admin-header-title,
   .fac-title,
   .home-brand-title,
-  .brand-name {
+  .brand-name,
+  .brand-title,
+  .register-nav .brand-title {
     color: #c7d2fe !important;
   }
 
   .syllabus-nav-tag,
   .admin-header-sub,
   .fac-subtitle,
-  .brand-tagline {
+  .brand-tagline,
+  .brand-tag,
+  .register-nav .brand-tag {
     color: #a5b4fc !important;
   }
 

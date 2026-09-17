@@ -248,6 +248,9 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggle
   const playerRef = useRef(null);
   const playerContainerRef = useRef(null);
   const progressIntervalRef = useRef(null);
+  const maxWatchedTimeRef = useRef(0);
+  const skipWarningTimeoutRef = useRef(null);
+  const [skipWarning, setSkipWarning] = useState(false);
 
   const studentName = student?.fullName || student?.name || "Student";
   const topicCode = lessonInfo?.code || "1.1";
@@ -261,7 +264,7 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggle
   // Video Playback Watch Completion Gating from localStorage
   const [videoWatched, setVideoWatched] = useState(() => {
     try {
-      return localStorage.getItem(`eduverse_video_completed_${topicCode}`) === "true";
+      return (localStorage.getItem(`adaptive_video_completed_${topicCode}`) || localStorage.getItem(`eduverse_video_completed_${topicCode}`)) === "true";
     } catch {
       return false;
     }
@@ -269,7 +272,7 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggle
 
   const [videoProgress, setVideoProgress] = useState(() => {
     try {
-      return localStorage.getItem(`eduverse_video_completed_${topicCode}`) === "true" ? 100 : 0;
+      return ((localStorage.getItem(`adaptive_video_completed_${topicCode}`) || localStorage.getItem(`eduverse_video_completed_${topicCode}`)) === "true") ? 100 : 0;
     } catch {
       return 0;
     }
@@ -288,14 +291,18 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggle
   // Synchronize video watch completion status when lesson code changes
   useEffect(() => {
     try {
-      const isCompleted = localStorage.getItem(`eduverse_video_completed_${lesson.code}`) === "true";
+      const isCompleted = (localStorage.getItem(`adaptive_video_completed_${lesson.code}`) || localStorage.getItem(`eduverse_video_completed_${lesson.code}`)) === "true";
       setVideoWatched(isCompleted);
       setVideoProgress(isCompleted ? 100 : 0);
+      maxWatchedTimeRef.current = isCompleted ? 999999 : 0;
       setIsPlaying(false);
+      setSkipWarning(false);
     } catch {
       setVideoWatched(false);
       setVideoProgress(0);
+      maxWatchedTimeRef.current = 0;
       setIsPlaying(false);
+      setSkipWarning(false);
     }
   }, [lesson.code]);
 
@@ -303,14 +310,15 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggle
   const handleVideoCompleted = () => {
     setVideoWatched(true);
     setVideoProgress(100);
+    maxWatchedTimeRef.current = 999999;
     try {
-      localStorage.setItem(`eduverse_video_completed_${lesson.code}`, "true");
+      localStorage.setItem(`adaptive_video_completed_${lesson.code}`, "true");
     } catch (e) {
       console.error(e);
     }
   };
 
-  // Start polling playback progress when playing
+  // Start high-frequency polling to track progress and prevent forward skipping
   const startProgressTracking = (player) => {
     if (progressIntervalRef.current) {
       clearInterval(progressIntervalRef.current);
@@ -321,17 +329,38 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggle
           const currentTime = player.getCurrentTime();
           const duration = player.getDuration();
           if (duration > 0) {
-            const pct = Math.min(100, Math.round((currentTime / duration) * 100));
-            setVideoProgress((prev) => Math.max(prev, pct));
-            if (pct >= 99) {
-              handleVideoCompleted();
+            const isAlreadyCompleted = (localStorage.getItem(`adaptive_video_completed_${lesson.code}`) || localStorage.getItem(`eduverse_video_completed_${lesson.code}`)) === "true";
+            
+            // STRICT UNSKIPPABLE RESTRICTION:
+            // If the student has not completed the video yet, prevent seeking forward!
+            if (!isAlreadyCompleted) {
+              if (currentTime > maxWatchedTimeRef.current + 1.5) {
+                // Instantly snap back to the furthest legitimately watched position
+                player.seekTo(maxWatchedTimeRef.current, true);
+                setSkipWarning(true);
+                if (skipWarningTimeoutRef.current) clearTimeout(skipWarningTimeoutRef.current);
+                skipWarningTimeoutRef.current = setTimeout(() => setSkipWarning(false), 3200);
+              } else {
+                if (currentTime > maxWatchedTimeRef.current) {
+                  maxWatchedTimeRef.current = currentTime;
+                }
+                const pct = Math.min(100, Math.floor((maxWatchedTimeRef.current / duration) * 100));
+                setVideoProgress((prev) => Math.max(prev, pct));
+                
+                // Complete when student legitimately reaches the end
+                if (maxWatchedTimeRef.current >= duration - 2.5) {
+                  handleVideoCompleted();
+                }
+              }
+            } else {
+              setVideoProgress(100);
             }
           }
         }
       } catch (e) {
         console.error("Progress tracking error:", e);
       }
-    }, 1000);
+    }, 300); // 300ms high-frequency check to immediately catch forward scrubs
   };
 
   const stopProgressTracking = () => {
@@ -366,10 +395,12 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggle
           playerVars: {
             autoplay: 0,
             controls: 1,
+            disablekb: 1, // Disable keyboard arrow/scrubbing shortcuts to enforce unskippable playback
             rel: 0,
             modestbranding: 1,
             playsinline: 1,
             enablejsapi: 1,
+            fs: 1,
             origin: window.location.origin
           },
           events: {
@@ -381,9 +412,19 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggle
               // YT.PlayerState: ENDED = 0, PLAYING = 1, PAUSED = 2, BUFFERING = 3, CUED = 5
               if (event.data === 0) {
                 // Video ended / completed!
-                setIsPlaying(false);
-                stopProgressTracking();
-                handleVideoCompleted();
+                const duration = event.target.getDuration ? event.target.getDuration() : 0;
+                const isAlreadyCompleted = (localStorage.getItem(`adaptive_video_completed_${lesson.code}`) || localStorage.getItem(`eduverse_video_completed_${lesson.code}`)) === "true";
+                if (isAlreadyCompleted || (duration > 0 && maxWatchedTimeRef.current >= duration - 3)) {
+                  setIsPlaying(false);
+                  stopProgressTracking();
+                  handleVideoCompleted();
+                } else {
+                  // Attempted to trigger ENDED without having watched all previous seconds
+                  event.target.seekTo(maxWatchedTimeRef.current, true);
+                  setSkipWarning(true);
+                  if (skipWarningTimeoutRef.current) clearTimeout(skipWarningTimeoutRef.current);
+                  skipWarningTimeoutRef.current = setTimeout(() => setSkipWarning(false), 3200);
+                }
               } else if (event.data === 1) {
                 // Video is playing
                 setIsPlaying(true);
@@ -428,19 +469,20 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggle
   useEffect(() => {
     if (lessonInfo?.startTest) {
       try {
-        const isDone = localStorage.getItem(`eduverse_video_completed_${lesson.code}`) === "true";
-        if (isDone || videoWatched) {
+        const isDone = (localStorage.getItem(`adaptive_video_completed_${lesson.code}`) || localStorage.getItem(`eduverse_video_completed_${lesson.code}`)) === "true";
+        if (isDone) {
           setShowTestModal(true);
         } else {
+          setShowTestModal(false);
           alert(
-            `🔒 Assessment Locked!\n\nYou must watch the YouTube video lecture until it finishes before you can attend the Section ${lesson.code} assessment.\n\nPlease play and finish the video first.`
+            `🔒 Assessment Strictly Locked!\n\nYou must complete the full unskippable video lecture for Section ${lesson.code} before you can attend the 10-minute assessment.\n\nPlease watch the video below from start to finish.`
           );
         }
       } catch {
-        setShowTestModal(true);
+        setShowTestModal(false);
       }
     }
-  }, [lessonInfo, lesson.code, videoWatched]);
+  }, [lessonInfo, lesson.code]);
 
   const handleLanguageChange = (newLang) => {
     setVideoLanguage(newLang);
@@ -456,9 +498,10 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggle
   };
 
   const handleOpenAssessment = () => {
-    if (!videoWatched && videoProgress < 100) {
+    const isCompleted = (localStorage.getItem(`adaptive_video_completed_${lesson.code}`) || localStorage.getItem(`eduverse_video_completed_${lesson.code}`)) === "true" || videoWatched;
+    if (!isCompleted) {
       alert(
-        `🔒 Assessment Locked!\n\nYou must watch the entire YouTube video lecture until it is completed before you can attend the Section ${lesson.code} assessment.\n\nCurrent Watch Progress: ${Math.round(videoProgress)}%\n\nPlease complete the video to unlock your test.`
+        `🔒 Assessment Strictly Locked!\n\nYou must watch the entire unskippable lecture video until it is 100% completed before you can attend the Section ${lesson.code} assessment.\n\nCurrent Watch Progress: ${Math.round(videoProgress)}%\n\nPlease complete the video to unlock your test.`
       );
       return;
     }
@@ -613,6 +656,7 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggle
               <div className="yt-player-topbar">
                 <div className="yt-topbar-info">
                   <span className="yt-topbar-badge">📺 YouTube Lecture</span>
+                  <span className="yt-unskippable-badge">🔒 Unskippable</span>
                   <span className="yt-topbar-title">{currentVideoInfo.title}</span>
                 </div>
 
@@ -645,6 +689,12 @@ function LessonView({ onNavigate, student, lessonInfo, onLogout, theme, onToggle
 
               {/* Responsive YouTube Player IFrame Viewport */}
               <div className="video-viewport yt-viewport">
+                {skipWarning && (
+                  <div className="unskippable-warning-banner" role="alert">
+                    <span>⚠️</span>
+                    <span><strong>Fast-forwarding disabled:</strong> Watch the entire video lecture to unlock the micro-unit assessment.</span>
+                  </div>
+                )}
                 <div className="yt-iframe-container" ref={playerContainerRef}>
                   <div id="yt-player-target" className="yt-player-target"></div>
                 </div>

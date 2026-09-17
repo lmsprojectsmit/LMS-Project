@@ -33,7 +33,7 @@ function App() {
   // Global Theme System: "light" | "dark" (persisted in localStorage, default "dark")
   const [theme, setTheme] = useState(() => {
     try {
-      const saved = localStorage.getItem("eduverse_theme");
+      const saved = localStorage.getItem("adaptive_theme") || localStorage.getItem("eduverse_theme");
       if (saved) return saved;
       return "dark";
     } catch {
@@ -45,7 +45,7 @@ function App() {
     try {
       document.documentElement.setAttribute("data-theme", theme);
       document.body.className = `theme-${theme}`;
-      localStorage.setItem("eduverse_theme", theme);
+      localStorage.setItem("adaptive_theme", theme);
     } catch (e) {
       console.error("Failed to persist theme", e);
     }
@@ -86,7 +86,7 @@ function App() {
     }
 
     if (data) {
-      if ((page === "home" || page === "syllabus" || page === "lesson") && data.role) {
+      if ((page === "home" || page === "syllabus" || page === "lesson" || page === "faculty" || page === "admin") && data.role) {
         setCurrentUser(data);
       } else if (data.student && data.student.role) {
         setCurrentUser(data.student);
@@ -202,6 +202,8 @@ function App() {
         <Faculty
           onNavigate={handleNavigate}
           registeredStudent={registeredStudent}
+          currentUser={currentUser}
+          onLogout={handleLogout}
           theme={theme}
           onToggleTheme={toggleTheme}
         />
