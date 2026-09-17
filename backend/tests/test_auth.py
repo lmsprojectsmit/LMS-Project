@@ -72,8 +72,23 @@ def test_registration():
     )
     new_user = register_user(user_data, db)
     assert new_user.email == "newuser@example.com"
-    
+
     # Check that plain password is not accessible but hashed_password is created
     # new_user is a User SQLAlchemy object
     assert new_user.hashed_password != "newpassword123"
+    db.close()
+
+def test_registration_duplicate_email():
+    db = TestingSessionLocal()
+    user_data = UserCreate(
+        email="teststudent@example.com", # already seeded
+        password="newpassword123",
+        full_name="Duplicate User",
+        role="student"
+    )
+    with pytest.raises(HTTPException) as excinfo:
+        register_user(user_data, db)
+
+    assert excinfo.value.status_code == 400
+    assert excinfo.value.detail == "Email already registered"
     db.close()

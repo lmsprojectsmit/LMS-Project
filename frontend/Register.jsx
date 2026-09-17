@@ -1,7 +1,7 @@
 import { useState, useId, useEffect, useRef } from "react";
 import "./Register.css";
 import ThemeToggle from "./ThemeToggle";
-import { saveCustomUser } from "./authStorage";
+import { authAPI } from "./api";
 import { dispatchPhoneOtp, dispatchEmailOtp, sendRegistrationEmail } from "./notificationService";
 
 const DEPARTMENTS = [
@@ -449,7 +449,7 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
   };
 
   // Final Submission Handler
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateStep1()) {
@@ -467,30 +467,45 @@ function Register({ onNavigate, onRegistrationSuccess, isEmbedded = false, theme
       return;
     }
 
-    // 1. Save provisioned student in central credentials storage
-    const studentUser = {
-      ...formData,
-      id: `STUDENT_${formData.rollNo || Date.now()}`,
-      username: formData.rollNo || formData.email.split("@")[0],
-      role: "student",
-      isEmailVerified: true,
-      isPhoneVerified: true,
-      registeredAt: new Date().toISOString(),
-    };
-    saveCustomUser(studentUser);
+    try {
+      // 1. Save user in backend database via auth API
+      const backendUserData = {
+        email: formData.email.trim(),
+        password: formData.password,
+        full_name: formData.fullName.trim(),
+        role: "student",
+      };
 
-    // 2. Dispatch official confirmation email to the student
-    const emailResult = sendRegistrationEmail(studentUser);
-    setSentEmailData(emailResult);
+      const registeredUser = await authAPI.register(backendUserData);
 
-    // 3. Show Enrolment Modal & notify parent
-    setShowEnrolmentModal(true);
-    if (onRegistrationSuccess) {
-      onRegistrationSuccess({
-        ...studentUser,
-        emailSent: true,
-        sentEmailId: emailResult.id,
-      });
+      // 2. Format student data for the frontend state (preserving academic details)
+      const { password, confirmPassword, ...safeFormData } = formData;
+      const studentUser = {
+        ...safeFormData,
+        id: registeredUser.id,
+        username: safeFormData.rollNo || safeFormData.email.split("@")[0],
+        role: "student",
+        isEmailVerified: true,
+        isPhoneVerified: true,
+        registeredAt: new Date().toISOString(),
+      };
+
+      // 3. Dispatch official confirmation email to the student
+      const emailResult = sendRegistrationEmail(studentUser);
+      setSentEmailData(emailResult);
+
+      // 4. Show Enrolment Modal & notify parent
+      setShowEnrolmentModal(true);
+      if (onRegistrationSuccess) {
+        onRegistrationSuccess({
+          ...studentUser,
+          emailSent: true,
+          sentEmailId: emailResult.id,
+        });
+      }
+    } catch (err) {
+      alert("Registration failed: " + (err.message || "An unexpected error occurred."));
+      return;
     }
   };
 
