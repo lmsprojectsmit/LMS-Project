@@ -11,6 +11,7 @@ from routes.diagnostic import router as diagnostic_router
 from routes.micro_units import router as micro_units_router
 from routes.attempts import router as attempts_router
 from routes.mastery import router as mastery_router
+from routes.auth import router as auth_router
 
 app = FastAPI(
     title="MA25C02 Adaptive Linear Algebra LMS",
@@ -22,7 +23,7 @@ app.add_middleware(
     allow_origins=[
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://lms-project-eight-brown.vercel.app",
+    "https://adaptive-linear-algebra-lms.vercel.app",
 ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -33,6 +34,7 @@ app.include_router(diagnostic_router)
 app.include_router(micro_units_router)
 app.include_router(attempts_router)
 app.include_router(mastery_router)
+app.include_router(auth_router)
 
 
 @app.get("/health")

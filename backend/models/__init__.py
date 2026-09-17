@@ -8,3 +8,4 @@ from models.micro_unit import MicroUnit
 from models.prerequisite import Prerequisite
 from models.question import Question
 from models.response import Response
+from models.user import User

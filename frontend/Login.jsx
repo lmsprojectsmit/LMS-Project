@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./Login.css";
-import { authenticateUser } from "./authStorage";
+import { authAPI } from "./api";
 import ThemeToggle from "./ThemeToggle";
 
 function Login({ onNavigate, registeredStudent, theme, onToggleTheme }) {
@@ -20,75 +20,39 @@ function Login({ onNavigate, registeredStudent, theme, onToggleTheme }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const identifier = (formData.email || "").trim();
     const password = (formData.password || "").trim();
 
-    // 1. Authenticate against master admin or custom provisioned users from Admin Console
-    const authResult = authenticateUser(identifier, password, formData.role);
+    try {
+      // 1. Authenticate against real backend
+      const tokenData = await authAPI.login(identifier, password);
 
-    if (authResult.success) {
-      const user = authResult.user;
+      // Store token
+      localStorage.setItem("lms_token", tokenData.access_token);
+
+      // Fetch current user details using token
+      const user = await authAPI.getCurrentUser(tokenData.access_token);
+
+      // Store user details for frontend state
+      localStorage.setItem("lms_user", JSON.stringify(user));
+
       if (user.role === "admin") {
-        alert(`Welcome Institutional Administrator: ${user.fullName || user.username}. Redirecting to Admin Console.`);
+        alert(`Welcome Institutional Administrator: ${user.full_name || user.email}. Redirecting to Admin Console.`);
         if (onNavigate) onNavigate("admin", user);
-        return;
       } else if (user.role === "faculty") {
-        alert(`Welcome Faculty: ${user.fullName || user.username}. Redirecting to Faculty Dashboard.`);
+        alert(`Welcome Faculty: ${user.full_name || user.email}. Redirecting to Faculty Dashboard.`);
         if (onNavigate) onNavigate("faculty", user);
-        return;
       } else {
-        alert(`Welcome back, ${user.fullName || user.username}! Directing to your Unit-Wise Syllabus.`);
+        alert(`Welcome back, ${user.full_name || user.email}! Directing to your Unit-Wise Syllabus.`);
         if (onNavigate) onNavigate("syllabus", user);
-        return;
       }
-    } else if (!authResult.notFound) {
-      // Credentials were found but password or role was wrong
-      alert(authResult.message);
+    } catch (err) {
+      // 401 Unauthorized or other error handling
+      alert(err.message || "Invalid email or password");
+      // Explicitly return and do not redirect
       return;
-    }
-
-    // 2. Fallback to default demo logins if identifier is not in custom storage
-    if (formData.role === "admin") {
-      alert(`Welcome Institutional Administrator: ${formData.email || "Dr. Arunkumar Natarajan"}. Redirecting to Admin Console.`);
-      if (onNavigate) onNavigate("admin", { role: "admin", email: formData.email, fullName: "Dr. Arunkumar Natarajan" });
-    } else if (formData.role === "faculty") {
-      alert(`Welcome Faculty: ${formData.email || "Dr. K. Senthil Kumar"}. Redirecting to Faculty Dashboard.`);
-      if (onNavigate) onNavigate("faculty");
-    } else {
-      // Directs logged-in student directly to their Unit-Wise Course Syllabus
-      let studentDisplayName = formData.email
-        ? formData.email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
-        : "Student";
-
-      let studentData = {
-        fullName: studentDisplayName,
-        email: formData.email,
-        role: "student",
-        isExistingStudent: true,
-      };
-
-      if (registeredStudent) {
-        const emailMatches =
-          !formData.email ||
-          (registeredStudent.email &&
-            registeredStudent.email.toLowerCase() === formData.email.toLowerCase()) ||
-          (registeredStudent.rollNo &&
-            formData.email.toLowerCase().includes(registeredStudent.rollNo.toLowerCase()));
-
-        if (emailMatches) {
-          studentData = {
-            ...registeredStudent,
-            role: "student",
-            isExistingStudent: true,
-          };
-          studentDisplayName = registeredStudent.fullName || studentDisplayName;
-        }
-      }
-
-      alert(`Welcome back, ${studentDisplayName}! Directing to your Unit-Wise Syllabus.`);
-      if (onNavigate) onNavigate("syllabus", studentData);
     }
   };
 
