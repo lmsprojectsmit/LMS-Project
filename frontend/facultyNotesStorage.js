@@ -180,9 +180,9 @@ export function getNotesForStudent(student) {
   if (!student) return [];
   const allNotes = getAllFacultyDriveNotes();
 
-  const studentRoll = (student.rollNo || student.id || "").toUpperCase().trim();
-  const studentDept = (student.department || "").toUpperCase().trim();
-  const studentCat = (student.category || "").toLowerCase().trim();
+  const studentRoll = String(student.rollNo || student.id || "").toUpperCase().trim();
+  const studentDept = String(student.department || "").toUpperCase().trim();
+  const studentCat = String(student.category || "").toLowerCase().trim();
 
   return allNotes.filter((note) => {
     // Rule 1: "all" students scope
