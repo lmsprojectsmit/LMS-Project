@@ -4,8 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from config.database import engine, Base
 from models import micro_unit, learning_resource, prerequisite, question, attempt, response, mastery
 
-# Create all tables
-Base.metadata.create_all(bind=engine)
+# Tables will be created during startup to avoid connection issues on worker fork
 
 from routes.diagnostic import router as diagnostic_router
 from routes.micro_units import router as micro_units_router
@@ -17,6 +16,10 @@ app = FastAPI(
     title="MA25C02 Adaptive Linear Algebra LMS",
     version="1.0.0",
 )
+
+@app.on_event("startup")
+def startup_event():
+    Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
