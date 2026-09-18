@@ -32,8 +32,8 @@ function Login({ onNavigate, registeredStudent, theme, onToggleTheme }) {
       // Store token
       localStorage.setItem("lms_token", tokenData.access_token);
 
-      // Fetch current user details using token
-      const user = await authAPI.getCurrentUser(tokenData.access_token);
+      // Read user details directly from login response (optimization)
+      const user = tokenData.user;
 
       // Store user details for frontend state
       localStorage.setItem("lms_user", JSON.stringify(user));

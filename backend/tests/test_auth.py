@@ -42,6 +42,12 @@ def test_correct_credentials_success():
     response = login(login_data, db)
     assert "access_token" in response
     assert response["token_type"] == "bearer"
+    assert "user" in response
+    user_obj = response["user"]
+    assert user_obj.email == "teststudent@example.com"
+    assert user_obj.full_name == "Test Student"
+    assert user_obj.role == "student"
+    assert hasattr(user_obj, "id")
     db.close()
 
 def test_correct_email_wrong_password():
