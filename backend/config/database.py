@@ -12,7 +12,7 @@ if settings.DATABASE_URL.startswith("postgresql"):
 
 engine = create_engine(
     settings.DATABASE_URL,
-    echo=settings.DEBUG,
+    echo=False,
     pool_pre_ping=True,
     pool_recycle=300, # Recycle connections after 5 minutes to prevent stale Neon connections
     connect_args=connect_args,
