@@ -9,6 +9,7 @@ class Settings:
         "postgresql+psycopg://lms:lms_dev_password@localhost:5432/lms"
     )
     DEBUG: bool = os.getenv("DEBUG", "True").lower() == "true"
+    BCRYPT_ROUNDS: int = int(os.getenv("BCRYPT_ROUNDS", "12"))
 
 
 settings = Settings()

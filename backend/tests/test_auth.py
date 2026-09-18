@@ -98,3 +98,27 @@ def test_registration_duplicate_email():
     assert excinfo.value.status_code == 400
     assert excinfo.value.detail == "Email already registered"
     db.close()
+
+def test_bcrypt_cost_verification():
+    from core.security import verify_password, get_password_hash
+    from config.settings import settings
+    import bcrypt
+    
+    # 1. Test newly generated hash uses configured cost
+    # Default is 12, but it might be overridden in environment, so we check against settings
+    test_pass = "mysecretpassword"
+    new_hash = get_password_hash(test_pass)
+    # Extract cost from hash (e.g. $2b$12$...)
+    cost_str = new_hash.split("$")[2]
+    assert int(cost_str) == settings.BCRYPT_ROUNDS
+    
+    # 2. Test cost-12 hash verifies successfully
+    hash_12 = bcrypt.hashpw(test_pass.encode('utf-8'), bcrypt.gensalt(12)).decode('utf-8')
+    assert verify_password(test_pass, hash_12) is True
+    assert verify_password("wrong", hash_12) is False
+    
+    # 3. Test cost-10 hash verifies successfully
+    hash_10 = bcrypt.hashpw(test_pass.encode('utf-8'), bcrypt.gensalt(10)).decode('utf-8')
+    assert verify_password(test_pass, hash_10) is True
+    assert verify_password("wrong", hash_10) is False
+
